@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import {
   Volume2,
   Lightbulb,
@@ -114,16 +115,23 @@ export default function Home() {
               Denver Event Production
             </motion.p>
 
-            {/* "HOT BEAM" laser-cut text */}
+            {/* Logo reveal */}
             <div className="overflow-hidden">
-              <motion.h1
+              <motion.div
                 initial={{ y: "100%" }}
                 animate={{ y: 0 }}
                 transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-                className="font-heading text-7xl sm:text-8xl md:text-9xl font-bold tracking-wider uppercase text-glow gradient-text"
+                className="flex justify-center"
               >
-                Hot Beam
-              </motion.h1>
+                <Image
+                  src="/logo.png"
+                  alt="Hot Beam Productions"
+                  width={600}
+                  height={164}
+                  className="w-[400px] sm:w-[500px] md:w-[600px] h-auto drop-shadow-[0_0_40px_rgba(255,77,77,0.3)]"
+                  priority
+                />
+              </motion.div>
             </div>
 
             <div className="overflow-hidden mt-2">
