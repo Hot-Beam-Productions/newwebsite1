@@ -66,7 +66,7 @@ export default function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-clip pt-20">
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-background" />
 
