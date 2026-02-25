@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface SectionHeadingProps {
   title: string;
@@ -8,10 +8,16 @@ interface SectionHeadingProps {
   label?: string;
 }
 
-export function SectionHeading({ title, subtitle, label }: SectionHeadingProps) {
+export function SectionHeading({
+  title,
+  subtitle,
+  label,
+}: SectionHeadingProps) {
+  const prefersReduced = useReducedMotion();
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={prefersReduced ? false : { opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.3, ease: "easeOut" }}
