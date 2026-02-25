@@ -4,18 +4,20 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 
 export const metadata: Metadata = {
-  title: "Hot Beam Productions | Denver Event Production",
+  title: "Hot Beam Productions | High-Power Lasers & Touring Production",
   description:
-    "Denver's premier event production company. Audio, lighting, video, lasers, and SFX for unforgettable experiences.",
+    "High-power lasers and touring-grade production. Audio, lighting, video, SFX. Based in Colorado, deployed nationwide.",
   keywords: [
+    "laser production",
     "event production",
-    "Denver",
+    "touring production",
+    "Colorado",
     "audio",
     "lighting",
     "video",
     "lasers",
     "SFX",
-    "stage production",
+    "gear rental",
   ],
 };
 
@@ -26,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className="antialiased bg-background text-foreground">
+      <body className="antialiased bg-background text-foreground font-mono">
         <Navbar />
         <main className="min-h-screen">{children}</main>
         <Footer />

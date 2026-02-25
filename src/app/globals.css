@@ -1,47 +1,100 @@
-@import url("https://fonts.googleapis.com/css2?family=Teko:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Bebas+Neue&family=Archivo+Black&display=swap");
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #0a0a0a;
-  --color-foreground: #ededed;
-  --color-hotbeam-red: #FF4D4D;
-  --color-hotbeam-orange: #FF8C00;
-  --color-hotbeam-glow: #FF6B35;
-  --color-surface: #111111;
-  --color-surface-light: #1a1a1a;
-  --color-border: #222222;
-  --color-muted: #888888;
-  --font-heading: "Teko", sans-serif;
-  --font-body: "Inter", sans-serif;
+  --color-background: #050505;
+  --color-foreground: #e0e0e0;
+  --color-laser-red: #FF4D4D;
+  --color-laser-red-dim: #cc3d3d;
+  --color-surface: #0a0a0a;
+  --color-surface-light: #111111;
+  --color-border: #1a1a1a;
+  --color-border-bright: #2a2a2a;
+  --color-muted: #666666;
+  --color-muted-light: #999999;
+  --font-heading: "Bebas Neue", "Archivo Black", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --font-body: "IBM Plex Mono", monospace;
+}
+
+html {
+  position: relative;
+}
+
+/* Noise texture overlay */
+html::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
 }
 
 body {
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
 }
 
-/* Scrollbar styling */
+/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: #050505;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 4px;
+  background: #222;
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #FF4D4D;
 }
 
-/* Glow text utility */
+/* Glow text */
 .text-glow {
-  text-shadow: 0 0 20px rgba(255, 77, 77, 0.5), 0 0 40px rgba(255, 140, 0, 0.3);
+  text-shadow: 0 0 10px rgba(255, 77, 77, 0.6), 0 0 30px rgba(255, 77, 77, 0.3);
+}
+
+/* Monospaced label */
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Spec divider line */
+.spec-line {
+  height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-border-bright) 0,
+    var(--color-border-bright) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #FF4D4D 0%, #ff6666 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* Scanline overlay */
@@ -58,32 +111,20 @@ body {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0, 0, 0, 0.03) 2px,
-    rgba(0, 0, 0, 0.03) 4px
+    rgba(255, 77, 77, 0.02) 2px,
+    rgba(255, 77, 77, 0.02) 4px
   );
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.15s ease;
 }
 
 .scanline-overlay:hover::after {
   opacity: 1;
 }
 
-/* Laser line animation */
-@keyframes laser-scan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
-}
-
-.laser-line {
-  animation: laser-scan 3s ease-in-out infinite;
-}
-
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, #FF4D4D, #FF8C00);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Selection */
+::selection {
+  background: rgba(255, 77, 77, 0.3);
+  color: #fff;
 }

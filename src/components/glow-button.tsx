@@ -21,18 +21,18 @@ export function GlowButton({
   onClick,
 }: GlowButtonProps) {
   const baseStyles =
-    "relative inline-flex items-center justify-center px-8 py-3 font-semibold text-sm rounded transition-all duration-300 group overflow-hidden";
+    "relative inline-flex items-center justify-center px-6 py-2.5 text-xs font-mono font-medium tracking-wider uppercase transition-all duration-150";
 
   const variants = {
     primary: cn(
-      "bg-gradient-to-r from-hotbeam-red to-hotbeam-orange text-white",
-      "hover:shadow-[0_0_30px_rgba(255,77,77,0.4),0_0_60px_rgba(255,140,0,0.2)]",
+      "bg-laser-red text-white border border-laser-red",
+      "hover:bg-laser-red-dim hover:shadow-[0_0_20px_rgba(255,77,77,0.3)]",
       "active:scale-[0.98]"
     ),
     outline: cn(
-      "border border-hotbeam-red/40 text-hotbeam-red bg-transparent",
-      "hover:bg-hotbeam-red/10 hover:border-hotbeam-red",
-      "hover:shadow-[0_0_20px_rgba(255,77,77,0.2)]"
+      "border border-laser-red/40 text-laser-red bg-transparent",
+      "hover:bg-laser-red/10 hover:border-laser-red",
+      "active:scale-[0.98]"
     ),
   };
 
@@ -41,14 +41,14 @@ export function GlowButton({
   if (href) {
     return (
       <Link href={href} className={classes}>
-        <span className="relative z-10">{children}</span>
+        {children}
       </Link>
     );
   }
 
   return (
     <button type={type} onClick={onClick} className={classes}>
-      <span className="relative z-10">{children}</span>
+      {children}
     </button>
   );
 }

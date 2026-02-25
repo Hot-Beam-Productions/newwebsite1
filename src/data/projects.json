@@ -1,0 +1,62 @@
+[
+  {
+    "id": "red-rocks-2024",
+    "title": "Red Rocks - Full Production",
+    "client": "Live Nation",
+    "date": "2024-09-14",
+    "services": ["lighting", "lasers", "sfx"],
+    "description": "Full lighting and laser rig for a 9,500-cap amphitheatre show. 48x MegaPointe, 12x Kvant lasers, cryo and haze.",
+    "featured": true,
+    "slug": "red-rocks-2024"
+  },
+  {
+    "id": "summit-2024",
+    "title": "Denver Tech Summit",
+    "client": "TechStars",
+    "date": "2024-06-22",
+    "services": ["audio", "video", "lighting"],
+    "description": "Corporate keynote production with d&b V-Series PA, LED wall, and architectural lighting for 2,000 attendees.",
+    "featured": false,
+    "slug": "denver-tech-summit"
+  },
+  {
+    "id": "mountain-music-fest",
+    "title": "Mountain Music Festival",
+    "client": "Colorado Events Co",
+    "date": "2024-07-04",
+    "services": ["audio", "lighting", "lasers", "sfx"],
+    "description": "Multi-stage festival build. Main stage: full d&b rig, 80+ fixtures, laser array, cryo and flame effects.",
+    "featured": true,
+    "slug": "mountain-music-fest"
+  },
+  {
+    "id": "corporate-gala-2024",
+    "title": "Annual Corporate Gala",
+    "client": "Deloitte",
+    "date": "2024-11-15",
+    "services": ["lighting", "video", "audio"],
+    "description": "Black-tie gala production at the Colorado Convention Center. Chandeliers, uplighting, IMAG, and PA.",
+    "featured": false,
+    "slug": "corporate-gala"
+  },
+  {
+    "id": "neon-nights",
+    "title": "Neon Nights Festival",
+    "client": "AEG Presents",
+    "date": "2024-08-10",
+    "services": ["lasers", "sfx", "lighting"],
+    "description": "EDM festival headliner package. 20x lasers, full cryo, flame bars, and haze throughout the venue.",
+    "featured": true,
+    "slug": "neon-nights"
+  },
+  {
+    "id": "ecotech-launch",
+    "title": "Product Launch - EcoTech",
+    "client": "EcoTech Inc",
+    "date": "2024-03-20",
+    "services": ["video", "lighting", "audio"],
+    "description": "Product reveal with motorized LED wall, precision spot cues, and distributed PA system for 500 guests.",
+    "featured": false,
+    "slug": "ecotech-launch"
+  }
+]
