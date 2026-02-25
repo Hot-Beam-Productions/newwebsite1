@@ -9,10 +9,10 @@
   --color-laser-amber-dim: oklch(68% 0.09 82);
   --color-surface: oklch(11% 0.012 260);
   --color-surface-light: oklch(14% 0.012 260);
-  --color-border: oklch(21% 0.01 260);
-  --color-border-bright: oklch(30% 0.015 260);
-  --color-muted: oklch(69% 0.02 260);
-  --color-muted-light: oklch(78% 0.018 260);
+  --color-border: oklch(24% 0.012 260);
+  --color-border-bright: oklch(36% 0.018 260);
+  --color-muted: oklch(76% 0.018 260);
+  --color-muted-light: oklch(84% 0.016 260);
 
   --font-display: var(--font-sora), sans-serif;
   --font-heading: var(--font-sora), sans-serif;
@@ -37,7 +37,7 @@ body {
     var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-body);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.6;
   letter-spacing: 0.005em;
 }

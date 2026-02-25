@@ -11,7 +11,7 @@
     "instagramHandle": "@hotbeamproductions",
     "instagramUrl": "https://www.instagram.com/hotbeamproductions/",
     "heroLogo": "/logo.png",
-    "valueProposition": "Technical production for live experiences where precision, reliability, and creative control matter."
+    "valueProposition": "Technical production for live events that need to run right the first time."
   },
   "navigation": [
     {
@@ -52,7 +52,7 @@
     "hero": {
       "eyebrow": "Denver, Colorado | Live Event Production",
       "departmentLine": "Audio · Lighting · Lasers · Video · SFX",
-      "description": "We engineer and run full technical systems for concerts, festivals, and corporate environments. From pre-production through final cue, one crew owns the outcome.",
+      "description": "We design and run technical production for concerts, festivals, and corporate events. One team handles the project from prep to show call.",
       "primaryCta": {
         "label": "View Recent Work",
         "href": "/work"
@@ -64,15 +64,15 @@
     },
     "services": {
       "label": "Capabilities",
-      "title": "Built For Critical Shows",
-      "subtitle": "Each department is advanced, engineered, and executed by specialists who work the show day.",
+      "title": "Built For Demanding Shows",
+      "subtitle": "Specialists in each department plan it, build it, and run it on show day.",
       "featuredServiceId": "lasers",
       "items": [
         {
           "id": "audio",
           "icon": "volume",
           "title": "Audio",
-          "description": "System design, deployment, and tuning for speech clarity and musical impact. We specify arrays to the room and mix to the audience, not a template.",
+          "description": "System design, deployment, and tuning for clear speech and strong musical impact.",
           "highlights": [
             "d&b and L-Acoustics ecosystems",
             "FOH + monitor workflows",
@@ -83,7 +83,7 @@
           "id": "lighting",
           "icon": "lightbulb",
           "title": "Lighting",
-          "description": "Show lighting that supports performance and camera, with cue stacks built for real run-of-show conditions.",
+          "description": "Show lighting for both live audience and camera, built for real run-of-show conditions.",
           "highlights": [
             "grandMA3 programming",
             "Touring and architectural rigs",
@@ -94,7 +94,7 @@
           "id": "video",
           "icon": "monitor",
           "title": "Video",
-          "description": "End-to-end video systems for LED, IMAG, and playback. We handle routing, switching, processing, and signal integrity across the entire chain.",
+          "description": "End-to-end LED, IMAG, and playback systems with reliable routing, switching, and processing.",
           "highlights": [
             "ROE LED and Barco processing",
             "Multi-screen confidence systems",
@@ -105,7 +105,7 @@
           "id": "lasers",
           "icon": "zap",
           "title": "Lasers",
-          "description": "Variance-compliant laser production with disciplined safety controls and creative beam architecture synchronized to show content.",
+          "description": "Variance-compliant laser production with strict safety controls and clean cue sync.",
           "highlights": [
             "FDA-compliant operation",
             "Kvant Spectrum inventory",
@@ -116,7 +116,7 @@
           "id": "sfx",
           "icon": "sparkles",
           "title": "SFX",
-          "description": "CO2, haze, confetti, and atmospheric effects integrated with lighting and audio cues to land exactly on moment.",
+          "description": "CO2, haze, confetti, and atmospherics timed to lighting and audio cues.",
           "highlights": [
             "Cryo and haze deployment",
             "Cue-synced effect timing",
@@ -141,7 +141,7 @@
     ],
     "closingCta": {
       "title": "Your Creative Direction. Our Technical Delivery.",
-      "description": "Bring the brief, rider, or rough concept. We will translate it into a production plan and a quote you can defend.",
+      "description": "Send the brief, rider, or rough concept. We will return a clear production plan and quote.",
       "button": {
         "label": "Start a Project",
         "href": "/contact"
@@ -292,13 +292,13 @@
     "heading": {
       "label": "The Company",
       "title": "Built By Operators",
-      "subtitle": "A technical team that advances deeply, communicates clearly, and executes under pressure."
+      "subtitle": "A technical team that plans thoroughly, communicates clearly, and executes under pressure."
     },
-    "storyTitle": "Production Partners, Not Order Takers",
+    "storyTitle": "Production Partners",
     "story": [
-      "Hot Beam was built by people who spend their weekends in steel-toe boots and comms headsets, not behind sales decks. We started the company to deliver the standard we wanted to encounter on show sites: accurate prep, reliable systems, and accountable leadership.",
-      "Every project is advanced by the same people who call cues and manage load-out. That continuity reduces handoff failure, keeps communication tight, and protects your schedule when conditions shift.",
-      "Our clients include promoters, agencies, venues, and production managers who need a technically fluent partner with clear pricing, practical solutions, and no surprises on show day."
+      "Hot Beam was built by working show crew. We started the company to provide accurate prep, reliable systems, and accountable leadership.",
+      "The same team that plans your project runs your show. Fewer handoffs means clearer communication and fewer surprises.",
+      "We support promoters, agencies, venues, and production managers with practical plans and clear pricing."
     ],
     "stats": [
       {
@@ -321,15 +321,15 @@
     "values": [
       {
         "title": "Technical Rigor",
-        "description": "We read riders line by line, model systems before load-in, and build documentation your stakeholders can trust."
+        "description": "We read riders carefully, model systems before load-in, and document every step."
       },
       {
         "title": "Single-Team Accountability",
-        "description": "The team that scopes your show is the team that delivers it. Fewer layers, faster decisions, fewer misses."
+        "description": "The team that scopes your show is the team that delivers it. Fewer layers, faster decisions."
       },
       {
         "title": "Creative Discipline",
-        "description": "Design choices are driven by intent, sightlines, camera needs, and cue timing, not just fixture counts."
+        "description": "Design decisions follow show goals, sightlines, camera needs, and cue timing."
       }
     ],
     "partners": [
@@ -337,14 +337,14 @@
         "id": "daniel",
         "name": "Daniel Mankin",
         "role": "Co-Founder · Technical Director",
-        "bio": "Daniel leads system architecture, laser operations, and show programming. He is FDA LSO certified and advances high-risk technical packages for complex venues.",
+        "bio": "Daniel leads system architecture, laser operations, and show programming. He is FDA LSO certified.",
         "imageUrl": "https://pub-XXXX.r2.dev/team/daniel.jpg"
       },
       {
         "id": "beau",
         "name": "Beau",
         "role": "Co-Founder · Production Manager",
-        "bio": "Beau leads logistics, crew operations, and site execution. He aligns schedules, vendors, and staffing so technical plans stay realistic from prep through strike.",
+        "bio": "Beau leads logistics, crew operations, and site execution. He keeps schedules, vendors, and staffing aligned from prep through strike.",
         "imageUrl": "https://pub-XXXX.r2.dev/team/beau.jpg"
       }
     ],
@@ -369,8 +369,8 @@
       }
     ],
     "closingCta": {
-      "title": "Need A Production Partner Who Can Execute?",
-      "description": "Send your venue, timeline, and objectives. We will return a grounded technical plan and budget path.",
+      "title": "Need A Production Team That Can Execute?",
+      "description": "Send your venue, timeline, and goals. We will return a practical technical plan and budget path.",
       "button": {
         "label": "Start a Conversation",
         "href": "/contact"
@@ -588,17 +588,17 @@
     "heading": {
       "label": "Contact",
       "title": "Request A Proposal",
-      "subtitle": "Share your event brief and technical priorities. We will respond with an actionable production path."
+      "subtitle": "Share your event brief and technical priorities. We will respond with a clear next step."
     },
     "directContactTitle": "Direct Contact",
     "cards": [
       {
         "title": "Response Window",
-        "body": "Proposal requests receive a response within one business day. Time-sensitive shows should call directly."
+        "body": "Proposal requests receive a response within one business day. For urgent shows, call directly."
       },
       {
         "title": "Coverage",
-        "body": "Based in Denver and regularly deployed across the Front Range, mountain venues, and national tours."
+        "body": "Based in Denver, with regular work across the Front Range, mountain venues, and national tours."
       }
     ],
     "eventTypes": [
@@ -619,12 +619,12 @@
     ],
     "success": {
       "title": "Request Received",
-      "message": "Your brief has been delivered to our production desk. We will follow up within one business day."
+      "message": "Your brief has been received. We will follow up within one business day."
     },
     "submitLabel": "Send Proposal Request"
   },
   "footer": {
-    "description": "Live event production partner for concerts, brand activations, and corporate stages. We design clearly, advance thoroughly, and execute with discipline.",
+    "description": "Live event production for concerts, brand activations, and corporate stages. Clear plans, reliable execution.",
     "departments": [
       "Audio",
       "Lighting",
