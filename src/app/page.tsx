@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Image from "next/image";
 import {
   Volume2,
@@ -12,197 +9,114 @@ import {
 } from "lucide-react";
 import { GlowButton } from "@/components/glow-button";
 import { SectionHeading } from "@/components/section-heading";
+import { HeroBeams } from "@/components/hero-animations";
 
 const services = [
   {
     icon: Volume2,
     title: "Audio",
     description:
-      "Full-scale sound systems, from intimate corporate events to arena-sized festivals. Crystal-clear audio that moves the crowd.",
+      "d&b audiotechnik and L-Acoustics line arrays. From a 300-person general session to a 10,000-capacity festival main stage, we size and tune the system to the room — not the rental invoice.",
   },
   {
     icon: Lightbulb,
     title: "Lighting",
     description:
-      "Architectural lighting, intelligent fixtures, and custom designs that transform any venue into a visual masterpiece.",
+      "grandMA3 programming, MAC Ultra fixtures, and Robe moving heads. Full touring rigs and corporate one-offs. Patch to blackout, we handle the full technical workflow.",
   },
   {
     icon: Monitor,
     title: "Video",
     description:
-      "LED walls, projection mapping, and live IMAG that deliver stunning visual impact at every scale.",
+      "ROE LED walls, Barco processing, and Resolume media servers. Whether it's a 40-tile stage backdrop or a 3-screen corporate confidence system, we engineer the signal chain.",
   },
   {
     icon: Zap,
     title: "Lasers",
     description:
-      "High-powered laser systems that cut through the darkness with precision. Our signature specialty.",
+      "FDA-registered Class IIIb and IV systems. Kvant Spectrum RGBW projectors, ILDA time-code sync, and custom beam choreography. We hold the variance, we run the show.",
   },
   {
     icon: Sparkles,
     title: "SFX",
     description:
-      "Cryo jets, flame effects, confetti, and haze — the finishing touches that make moments unforgettable.",
+      "CryoFX CO2 cannons, MDG haze, confetti, and flame effects. We integrate SFX into the lighting and audio cue stack so the drops hit on time, every time.",
   },
 ];
-
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.1 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: "easeOut" as const },
-  },
-};
 
 export default function Home() {
   return (
     <>
-      {/* Hero Section */}
+      {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-clip pt-20">
-        {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-background" />
+        <HeroBeams />
 
-        {/* Animated beams */}
-        <div className="absolute inset-0 overflow-hidden opacity-20">
-          <motion.div
-            className="absolute top-0 left-1/4 w-[2px] h-full bg-gradient-to-b from-transparent via-laser-cyan to-transparent"
-            animate={{ y: ["-100%", "100%"] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-          />
-          <motion.div
-            className="absolute top-0 left-1/2 w-[1px] h-full bg-gradient-to-b from-transparent via-laser-cyan-dim to-transparent"
-            animate={{ y: ["-100%", "100%"] }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "linear",
-              delay: 1,
-            }}
-          />
-          <motion.div
-            className="absolute top-0 left-3/4 w-[2px] h-full bg-gradient-to-b from-transparent via-laser-cyan to-transparent"
-            animate={{ y: ["-100%", "100%"] }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: "linear",
-              delay: 2,
-            }}
-          />
-        </div>
-
-        {/* Content */}
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-sm font-medium tracking-[0.3em] uppercase text-laser-cyan mb-6"
-            >
-              Denver Event Production
-            </motion.p>
+          <p className="text-sm font-medium tracking-[0.3em] uppercase text-laser-cyan mb-6">
+            Denver, CO — Live Event Production
+          </p>
 
-            {/* Logo reveal */}
-            <div className="overflow-hidden">
-              <motion.div
-                initial={{ y: "100%" }}
-                animate={{ y: 0 }}
-                transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-                className="flex justify-center"
-              >
-                <Image
-                  src="/logo.png"
-                  alt="Hot Beam Productions"
-                  width={600}
-                  height={164}
-                  className="w-[400px] sm:w-[500px] md:w-[600px] h-auto drop-shadow-[0_0_40px_rgba(255,77,77,0.3)]"
-                  priority
-                />
-              </motion.div>
-            </div>
+          <div className="overflow-hidden">
+            <Image
+              src="/logo.png"
+              alt="Hot Beam Productions"
+              width={600}
+              height={164}
+              className="w-[400px] sm:w-[500px] md:w-[600px] h-auto mx-auto drop-shadow-[0_0_40px_rgba(0,245,255,0.2)]"
+              priority
+            />
+          </div>
 
-            <div className="overflow-hidden mt-2">
-              <motion.h2
-                initial={{ y: "100%" }}
-                animate={{ y: 0 }}
-                transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-                className="font-heading text-2xl sm:text-3xl md:text-4xl tracking-wider uppercase text-foreground/80"
-              >
-                Experience the Art of Illumination
-              </motion.h2>
-            </div>
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl tracking-wider uppercase text-foreground/80 mt-2">
+            Audio · Lighting · Lasers · Video · SFX
+          </h2>
 
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1, duration: 0.8 }}
-              className="mt-8 text-muted text-lg max-w-2xl mx-auto"
-            >
-              Audio. Lighting. Video. Lasers. SFX. We craft immersive
-              experiences that push the boundaries of live event production.
-            </motion.p>
+          <p className="mt-8 text-muted text-base max-w-2xl mx-auto leading-relaxed">
+            We build production rigs for touring acts, festivals, corporate events, and private
+            shows. Tier-1 gear, experienced crew, honest quotes. Based in Denver — deployed
+            everywhere.
+          </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.3, duration: 0.6 }}
-              className="mt-10 flex gap-4 justify-center flex-wrap"
-            >
-              <GlowButton href="/work" variant="primary">
-                See Our Work
-                <ArrowRight className="inline ml-2 w-4 h-4" />
-              </GlowButton>
-              <GlowButton href="/contact" variant="outline">
-                Get a Quote
-              </GlowButton>
-            </motion.div>
-          </motion.div>
+          <div className="mt-10 flex gap-4 justify-center flex-wrap">
+            <GlowButton href="/work" variant="primary">
+              See Our Work
+              <ArrowRight className="inline ml-2 w-4 h-4" aria-hidden="true" />
+            </GlowButton>
+            <GlowButton href="/contact" variant="outline">
+              Get a Quote
+            </GlowButton>
+          </div>
         </div>
 
-        {/* Bottom gradient fade */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
       </section>
 
-      {/* Services Section */}
-      <section className="py-24 px-6">
+      {/* Services */}
+      <section className="py-24 px-6" aria-labelledby="services-heading">
         <div className="max-w-7xl mx-auto">
           <SectionHeading
+            label="Capabilities"
             title="What We Do"
-            subtitle="Full-service event production with cutting-edge technology and creative precision."
+            subtitle="Full-service production with the technical depth to execute at any scale. We own our gear, we employ our crew, and we show up ready to work."
           />
 
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+          <div
+            id="services-heading"
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {services.map((service) => (
-              <motion.div
+              <div
                 key={service.title}
-                variants={itemVariants}
                 className="group relative p-8 rounded-lg bg-surface border border-border hover:border-laser-cyan/30 transition-all duration-500 scanline-overlay"
               >
-                {/* Glow effect on hover */}
                 <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-laser-cyan/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
                 <div className="relative z-10">
                   <div className="w-12 h-12 rounded-lg bg-laser-cyan/10 flex items-center justify-center mb-6 group-hover:bg-laser-cyan/20 transition-colors">
-                    <service.icon className="w-6 h-6 text-laser-cyan" />
+                    <service.icon
+                      className="w-6 h-6 text-laser-cyan"
+                      aria-hidden="true"
+                    />
                   </div>
                   <h3 className="font-heading text-2xl tracking-wider uppercase text-foreground mb-3">
                     {service.title}
@@ -211,35 +125,28 @@ export default function Home() {
                     {service.description}
                   </p>
                 </div>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA */}
       <section className="py-24 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="font-heading text-5xl md:text-6xl font-bold tracking-wider uppercase gradient-text">
-              Ready to Elevate Your Event?
-            </h2>
-            <p className="mt-6 text-muted text-lg max-w-xl mx-auto">
-              Whether it&apos;s a corporate gala, a music festival, or a private
-              party — we bring the production value that sets you apart.
-            </p>
-            <div className="mt-10">
-              <GlowButton href="/contact" variant="primary">
-                Start Your Project
-                <ArrowRight className="inline ml-2 w-4 h-4" />
-              </GlowButton>
-            </div>
-          </motion.div>
+          <h2 className="font-heading text-5xl md:text-6xl font-bold tracking-wider uppercase gradient-text">
+            Your Rider. Our Rig.
+          </h2>
+          <p className="mt-6 text-muted text-base max-w-xl mx-auto leading-relaxed">
+            Send us the event specs and we&apos;ll build a quote from the ground up — no canned
+            packages, no hidden labor charges.
+          </p>
+          <div className="mt-10">
+            <GlowButton href="/contact" variant="primary">
+              Start Your Project
+              <ArrowRight className="inline ml-2 w-4 h-4" aria-hidden="true" />
+            </GlowButton>
+          </div>
         </div>
       </section>
     </>
