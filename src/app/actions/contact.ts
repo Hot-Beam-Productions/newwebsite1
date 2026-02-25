@@ -39,7 +39,7 @@ export async function submitContactForm(
   // 1. Validate input
   const parsed = ContactSchema.safeParse(raw);
   if (!parsed.success) {
-    return { success: false, error: parsed.error.errors[0].message };
+    return { success: false, error: parsed.error.issues[0].message };
   }
 
   // 2. Verify Turnstile token
