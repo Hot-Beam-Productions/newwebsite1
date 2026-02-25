@@ -10,6 +10,7 @@ import {
 import { GlowButton } from "@/components/glow-button";
 import { SectionHeading } from "@/components/section-heading";
 import { HeroBeams } from "@/components/hero-animations";
+import { InstagramFeed } from "@/components/instagram-feed";
 
 const services = [
   {
@@ -130,6 +131,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Instagram Feed */}
+      <InstagramFeed />
 
       {/* CTA */}
       <section className="py-24 px-6">

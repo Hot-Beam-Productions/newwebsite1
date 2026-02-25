@@ -7,8 +7,8 @@ const ContentSecurityPolicy = [
   "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
-  `img-src 'self' data: blob: https://${R2_HOSTNAME}`,
-  "connect-src 'self' https://challenges.cloudflare.com",
+  `img-src 'self' data: blob: https://${R2_HOSTNAME} https://*.cdninstagram.com https://*.instagram.com`,
+  "connect-src 'self' https://challenges.cloudflare.com https://graph.instagram.com",
   "frame-src https://challenges.cloudflare.com",
   "object-src 'none'",
   "base-uri 'self'",
@@ -21,6 +21,14 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: R2_HOSTNAME,
+      },
+      {
+        protocol: "https",
+        hostname: "*.cdninstagram.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.instagram.com",
       },
     ],
   },
