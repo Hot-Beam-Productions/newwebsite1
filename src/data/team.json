@@ -1,0 +1,38 @@
+{
+  "partners": [
+    {
+      "id": "daniel",
+      "name": "Daniel Mankin",
+      "role": "Co-Founder & Technical Director",
+      "bio": "Daniel handles system design, laser operation, and show programming. Trained in photonics and live systems engineering. Has operated laser rigs at Red Rocks, Civic Center Park, and venues across the Front Range. FDA LSO certified.",
+      "imageUrl": "https://pub-XXXX.r2.dev/team/daniel.jpg"
+    },
+    {
+      "id": "beau",
+      "name": "Beau [Last Name]",
+      "role": "Co-Founder & Production Manager",
+      "bio": "Beau leads logistics, venue relationships, and crew coordination. Built his career running audio for regional touring acts before co-founding Hot Beam. Manages the gear inventory, vendor relationships, and advance production process.",
+      "imageUrl": "https://pub-XXXX.r2.dev/team/beau.jpg"
+    }
+  ],
+  "crew": [
+    {
+      "id": "crew-01",
+      "name": "Crew Member",
+      "role": "A1 / FOH Engineer",
+      "imageUrl": "https://pub-XXXX.r2.dev/team/crew-01.jpg"
+    },
+    {
+      "id": "crew-02",
+      "name": "Crew Member",
+      "role": "Lighting Programmer",
+      "imageUrl": "https://pub-XXXX.r2.dev/team/crew-02.jpg"
+    },
+    {
+      "id": "crew-03",
+      "name": "Crew Member",
+      "role": "Video Engineer",
+      "imageUrl": "https://pub-XXXX.r2.dev/team/crew-03.jpg"
+    }
+  ]
+}
