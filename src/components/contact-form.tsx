@@ -1,19 +1,12 @@
 "use client";
 
-import { useActionState } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { useState } from "react";
 import { Send, CheckCircle, AlertCircle } from "lucide-react";
 import { GlowButton } from "@/components/glow-button";
-import {
-  submitContactForm,
-  type ContactFormState,
-} from "@/app/actions/contact";
 
 const inputStyles =
   "w-full px-4 py-3 rounded bg-surface border border-border text-foreground placeholder:text-muted/60 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/40 transition-colors";
-
-const initialState: ContactFormState = { success: false };
 
 const gearOptions = [
   "Audio / PA System",
@@ -25,13 +18,50 @@ const gearOptions = [
 ];
 
 export function ContactForm() {
-  const [state, action, pending] = useActionState(
-    submitContactForm,
-    initialState
-  );
+  const [pending, setPending] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | undefined>();
   const [turnstileToken, setTurnstileToken] = useState("");
 
-  if (state.success) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setPending(true);
+    setError(undefined);
+
+    const formData = new FormData(e.currentTarget);
+
+    const body = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      phone: formData.get("phone") || undefined,
+      eventDate: formData.get("eventDate") || undefined,
+      venue: formData.get("venue") || undefined,
+      eventType: formData.get("eventType") || undefined,
+      gearNeeds: formData.getAll("gearNeeds") as string[],
+      message: formData.get("message"),
+      turnstileToken,
+    };
+
+    try {
+      const res = await fetch(process.env.NEXT_PUBLIC_WORKER_URL!, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = (await res.json()) as { success: boolean; error?: string };
+      if (data.success) {
+        setSuccess(true);
+      } else {
+        setError(data.error ?? "Something went wrong. Please try again.");
+      }
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  if (success) {
     return (
       <div className="text-center py-20" role="status">
         <CheckCircle
@@ -50,14 +80,7 @@ export function ContactForm() {
   }
 
   return (
-    <form action={action} className="space-y-6">
-      {/* Hidden Turnstile token */}
-      <input
-        type="hidden"
-        name="cf-turnstile-response"
-        value={turnstileToken}
-      />
-
+    <form onSubmit={handleSubmit} className="space-y-6">
       {/* Invisible Turnstile widget */}
       <Turnstile
         siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
@@ -66,13 +89,13 @@ export function ContactForm() {
       />
 
       {/* Error state */}
-      {state.error && (
+      {error && (
         <div
           className="flex items-center gap-3 p-4 rounded bg-red-950/30 border border-red-900/40 text-red-400 text-sm"
           role="alert"
         >
           <AlertCircle className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
-          {state.error}
+          {error}
         </div>
       )}
 
