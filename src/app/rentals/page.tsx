@@ -148,7 +148,7 @@ export default function RentalsPage() {
                 onClick={() => setActiveCategory(cat.value)}
                 className={`flex items-center gap-2 px-4 py-2 rounded text-sm font-medium transition-all duration-300 ${
                   activeCategory === cat.value
-                    ? "bg-hotbeam-red/20 text-hotbeam-red border border-hotbeam-red/40"
+                    ? "bg-laser-cyan/20 text-laser-cyan border border-laser-cyan/40"
                     : "bg-surface border border-border text-muted hover:text-foreground hover:border-white/20"
                 }`}
               >
@@ -166,7 +166,7 @@ export default function RentalsPage() {
               placeholder="Search gear..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full lg:w-64 pl-10 pr-4 py-2 rounded bg-surface border border-border text-foreground placeholder:text-muted text-sm focus:outline-none focus:border-hotbeam-red/40 transition-colors"
+              className="w-full lg:w-64 pl-10 pr-4 py-2 rounded bg-surface border border-border text-foreground placeholder:text-muted text-sm focus:outline-none focus:border-laser-cyan/40 transition-colors"
             />
           </div>
         </div>
@@ -187,13 +187,13 @@ export default function RentalsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
-                className="group bg-surface border border-border rounded-lg overflow-hidden hover:border-hotbeam-red/30 transition-all duration-500"
+                className="group bg-surface border border-border rounded-lg overflow-hidden hover:border-laser-cyan/30 transition-all duration-500"
               >
                 {/* Image */}
                 <div className="relative h-48 bg-surface-light flex items-center justify-center">
                   <div className="text-center">
-                    <div className="w-12 h-12 mx-auto rounded-full bg-hotbeam-red/10 flex items-center justify-center mb-2">
-                      <span className="font-heading text-lg text-hotbeam-red">
+                    <div className="w-12 h-12 mx-auto rounded-full bg-laser-cyan/10 flex items-center justify-center mb-2">
+                      <span className="font-heading text-lg text-laser-cyan">
                         {item.name[0]}
                       </span>
                     </div>

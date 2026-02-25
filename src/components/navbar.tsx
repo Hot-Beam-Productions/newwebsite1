@@ -38,14 +38,14 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="mono-label !text-muted-light hover:!text-laser-red transition-colors duration-150"
+              className="mono-label !text-muted-light hover:!text-laser-cyan transition-colors duration-150"
             >
               {link.label}
             </Link>
           ))}
           <Link
             href="/contact"
-            className="mono-label !text-laser-red border border-laser-red/40 px-4 py-2 hover:bg-laser-red/10 transition-all duration-150"
+            className="mono-label !text-laser-cyan border border-laser-cyan/40 px-4 py-2 hover:bg-laser-cyan/10 transition-all duration-150"
           >
             Request Quote
           </Link>
@@ -77,7 +77,7 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="mono-label !text-sm !text-muted-light hover:!text-laser-red transition-colors"
+                  className="mono-label !text-sm !text-muted-light hover:!text-laser-cyan transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -85,7 +85,7 @@ export function Navbar() {
               <Link
                 href="/contact"
                 onClick={() => setMobileOpen(false)}
-                className="mono-label !text-sm !text-laser-red border border-laser-red/40 px-4 py-2 text-center hover:bg-laser-red/10 transition-all mt-2"
+                className="mono-label !text-sm !text-laser-cyan border border-laser-cyan/40 px-4 py-2 text-center hover:bg-laser-cyan/10 transition-all mt-2"
               >
                 Request Quote
               </Link>

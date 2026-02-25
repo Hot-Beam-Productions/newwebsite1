@@ -14,11 +14,11 @@ export function RentalCard({ item, index = 0 }: RentalCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.15, delay: index * 0.03, ease: "easeOut" }}
-      className="group bg-surface border border-border hover:border-laser-red/40 transition-colors duration-200"
+      className="group bg-surface border border-border hover:border-laser-cyan/40 transition-colors duration-200"
     >
       {/* Header bar */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-surface-light">
-        <span className="mono-label text-laser-red">{item.category}</span>
+        <span className="mono-label text-laser-cyan">{item.category}</span>
         <span className="mono-label">
           {item.available ? "IN STOCK" : "ON RENTAL"}
         </span>
@@ -55,7 +55,7 @@ export function RentalCard({ item, index = 0 }: RentalCardProps) {
           </div>
           <div>
             <span className="mono-label block">DAILY RATE</span>
-            <span className="text-sm text-laser-red font-semibold">
+            <span className="text-sm text-laser-cyan font-semibold">
               ${item.dailyRate}
             </span>
           </div>
@@ -91,7 +91,7 @@ export function RentalCard({ item, index = 0 }: RentalCardProps) {
         </span>
         <a
           href="/contact"
-          className="mono-label text-laser-red hover:text-foreground transition-colors"
+          className="mono-label text-laser-cyan hover:text-foreground transition-colors"
         >
           REQUEST QUOTE &rarr;
         </a>

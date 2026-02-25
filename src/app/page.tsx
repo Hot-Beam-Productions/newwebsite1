@@ -73,12 +73,12 @@ export default function Home() {
         {/* Animated beams */}
         <div className="absolute inset-0 overflow-hidden opacity-20">
           <motion.div
-            className="absolute top-0 left-1/4 w-[2px] h-full bg-gradient-to-b from-transparent via-hotbeam-red to-transparent"
+            className="absolute top-0 left-1/4 w-[2px] h-full bg-gradient-to-b from-transparent via-laser-cyan to-transparent"
             animate={{ y: ["-100%", "100%"] }}
             transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
           />
           <motion.div
-            className="absolute top-0 left-1/2 w-[1px] h-full bg-gradient-to-b from-transparent via-hotbeam-orange to-transparent"
+            className="absolute top-0 left-1/2 w-[1px] h-full bg-gradient-to-b from-transparent via-laser-cyan-dim to-transparent"
             animate={{ y: ["-100%", "100%"] }}
             transition={{
               duration: 3,
@@ -88,7 +88,7 @@ export default function Home() {
             }}
           />
           <motion.div
-            className="absolute top-0 left-3/4 w-[2px] h-full bg-gradient-to-b from-transparent via-hotbeam-red to-transparent"
+            className="absolute top-0 left-3/4 w-[2px] h-full bg-gradient-to-b from-transparent via-laser-cyan to-transparent"
             animate={{ y: ["-100%", "100%"] }}
             transition={{
               duration: 5,
@@ -110,7 +110,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-sm font-medium tracking-[0.3em] uppercase text-hotbeam-red mb-6"
+              className="text-sm font-medium tracking-[0.3em] uppercase text-laser-cyan mb-6"
             >
               Denver Event Production
             </motion.p>
@@ -195,14 +195,14 @@ export default function Home() {
               <motion.div
                 key={service.title}
                 variants={itemVariants}
-                className="group relative p-8 rounded-lg bg-surface border border-border hover:border-hotbeam-red/30 transition-all duration-500 scanline-overlay"
+                className="group relative p-8 rounded-lg bg-surface border border-border hover:border-laser-cyan/30 transition-all duration-500 scanline-overlay"
               >
                 {/* Glow effect on hover */}
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-hotbeam-red/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-laser-cyan/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                 <div className="relative z-10">
-                  <div className="w-12 h-12 rounded-lg bg-hotbeam-red/10 flex items-center justify-center mb-6 group-hover:bg-hotbeam-red/20 transition-colors">
-                    <service.icon className="w-6 h-6 text-hotbeam-red" />
+                  <div className="w-12 h-12 rounded-lg bg-laser-cyan/10 flex items-center justify-center mb-6 group-hover:bg-laser-cyan/20 transition-colors">
+                    <service.icon className="w-6 h-6 text-laser-cyan" />
                   </div>
                   <h3 className="font-heading text-2xl tracking-wider uppercase text-foreground mb-3">
                     {service.title}

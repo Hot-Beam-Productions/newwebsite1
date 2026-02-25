@@ -17,7 +17,7 @@ export function SectionHeading({ title, subtitle, label }: SectionHeadingProps) 
       transition={{ duration: 0.3, ease: "easeOut" }}
       className="mb-12"
     >
-      {label && <p className="mono-label text-laser-red mb-2">{label}</p>}
+      {label && <p className="mono-label text-laser-cyan mb-2">{label}</p>}
       <h2 className="font-heading text-5xl md:text-7xl tracking-wide text-foreground">
         {title}
       </h2>

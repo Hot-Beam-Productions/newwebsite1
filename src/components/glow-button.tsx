@@ -25,13 +25,13 @@ export function GlowButton({
 
   const variants = {
     primary: cn(
-      "bg-laser-red text-white border border-laser-red",
-      "hover:bg-laser-red-dim hover:shadow-[0_0_20px_rgba(255,77,77,0.3)]",
+      "bg-laser-cyan text-background border border-laser-cyan",
+      "hover:bg-laser-cyan-dim hover:shadow-[0_0_20px_rgba(0,245,255,0.3)]",
       "active:scale-[0.98]"
     ),
     outline: cn(
-      "border border-laser-red/40 text-laser-red bg-transparent",
-      "hover:bg-laser-red/10 hover:border-laser-red",
+      "border border-laser-cyan/40 text-laser-cyan bg-transparent",
+      "hover:bg-laser-cyan/10 hover:border-laser-cyan",
       "active:scale-[0.98]"
     ),
   };

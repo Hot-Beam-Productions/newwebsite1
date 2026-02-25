@@ -107,7 +107,7 @@ export default function WorkPage() {
             >
               <Link
                 href={`/work/${project.slug.current}`}
-                className="block relative rounded-lg overflow-hidden bg-surface border border-border hover:border-hotbeam-red/30 transition-all duration-500"
+                className="block relative rounded-lg overflow-hidden bg-surface border border-border hover:border-laser-cyan/30 transition-all duration-500"
               >
                 {/* Image placeholder */}
                 <div
@@ -126,8 +126,8 @@ export default function WorkPage() {
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="text-center">
-                        <div className="w-16 h-16 mx-auto rounded-full bg-hotbeam-red/10 flex items-center justify-center mb-3">
-                          <span className="font-heading text-2xl text-hotbeam-red">
+                        <div className="w-16 h-16 mx-auto rounded-full bg-laser-cyan/10 flex items-center justify-center mb-3">
+                          <span className="font-heading text-2xl text-laser-cyan">
                             {project.title[0]}
                           </span>
                         </div>
@@ -146,7 +146,7 @@ export default function WorkPage() {
 
                 {/* Info */}
                 <div className="p-5">
-                  <h3 className="font-heading text-xl tracking-wider uppercase text-foreground group-hover:text-hotbeam-red transition-colors">
+                  <h3 className="font-heading text-xl tracking-wider uppercase text-foreground group-hover:text-laser-cyan transition-colors">
                     {project.title}
                   </h3>
                   {project.client && (

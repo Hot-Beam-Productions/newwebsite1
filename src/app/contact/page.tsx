@@ -28,7 +28,7 @@ const gearOptions = [
 ];
 
 const inputStyles =
-  "w-full px-4 py-3 rounded bg-surface border border-border text-foreground placeholder:text-muted/60 text-sm focus:outline-none focus:border-hotbeam-red/40 transition-colors";
+  "w-full px-4 py-3 rounded bg-surface border border-border text-foreground placeholder:text-muted/60 text-sm focus:outline-none focus:border-laser-cyan/40 transition-colors";
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -70,18 +70,18 @@ export default function ContactPage() {
                   href="mailto:info@hotbeamproductions.com"
                   className="flex items-center gap-3 text-muted hover:text-foreground transition-colors"
                 >
-                  <Mail className="w-5 h-5 text-hotbeam-red" />
+                  <Mail className="w-5 h-5 text-laser-cyan" />
                   <span className="text-sm">info@hotbeamproductions.com</span>
                 </a>
                 <a
                   href="tel:+13035551234"
                   className="flex items-center gap-3 text-muted hover:text-foreground transition-colors"
                 >
-                  <Phone className="w-5 h-5 text-hotbeam-red" />
+                  <Phone className="w-5 h-5 text-laser-cyan" />
                   <span className="text-sm">(303) 555-1234</span>
                 </a>
                 <div className="flex items-center gap-3 text-muted">
-                  <MapPin className="w-5 h-5 text-hotbeam-red" />
+                  <MapPin className="w-5 h-5 text-laser-cyan" />
                   <span className="text-sm">Denver, Colorado</span>
                 </div>
               </div>
@@ -247,7 +247,7 @@ export default function ContactPage() {
                           type="checkbox"
                           value={gear}
                           {...register("gearNeeds")}
-                          className="rounded border-border bg-surface text-hotbeam-red focus:ring-hotbeam-red/40"
+                          className="rounded border-border bg-surface text-laser-cyan focus:ring-laser-cyan/40"
                         />
                         {gear}
                       </label>

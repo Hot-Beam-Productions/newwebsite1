@@ -79,8 +79,8 @@ export default function AboutPage() {
             {/* Placeholder for team photo */}
             <div className="aspect-[4/3] rounded-lg bg-surface border border-border flex items-center justify-center">
               <div className="text-center">
-                <div className="w-20 h-20 mx-auto rounded-full bg-hotbeam-red/10 flex items-center justify-center mb-4">
-                  <Users className="w-10 h-10 text-hotbeam-red" />
+                <div className="w-20 h-20 mx-auto rounded-full bg-laser-cyan/10 flex items-center justify-center mb-4">
+                  <Users className="w-10 h-10 text-laser-cyan" />
                 </div>
                 <p className="text-muted text-sm">Team photo</p>
                 <p className="text-xs text-muted/60 mt-1">
@@ -90,7 +90,7 @@ export default function AboutPage() {
             </div>
 
             {/* Decorative element */}
-            <div className="absolute -bottom-4 -right-4 w-full h-full border border-hotbeam-red/20 rounded-lg -z-10" />
+            <div className="absolute -bottom-4 -right-4 w-full h-full border border-laser-cyan/20 rounded-lg -z-10" />
           </motion.div>
         </div>
 
@@ -108,7 +108,7 @@ export default function AboutPage() {
               variants={itemVariants}
               className="text-center p-8 rounded-lg bg-surface border border-border"
             >
-              <stat.icon className="w-6 h-6 text-hotbeam-red mx-auto mb-4" />
+              <stat.icon className="w-6 h-6 text-laser-cyan mx-auto mb-4" />
               <p className="font-heading text-4xl font-bold gradient-text">
                 {stat.value}
               </p>
@@ -155,7 +155,7 @@ export default function AboutPage() {
               <motion.div
                 key={value.title}
                 variants={itemVariants}
-                className="p-8 rounded-lg bg-surface border border-border hover:border-hotbeam-red/30 transition-all duration-500"
+                className="p-8 rounded-lg bg-surface border border-border hover:border-laser-cyan/30 transition-all duration-500"
               >
                 <h4 className="font-heading text-xl tracking-wider uppercase text-foreground mb-3">
                   {value.title}
