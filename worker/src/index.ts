@@ -1,5 +1,5 @@
 import { EmailMessage } from "cloudflare:email";
-import { createMimeMessage } from "mimetext";
+import { createMimeMessage, Mailbox } from "mimetext";
 import { z } from "zod";
 
 const ContactSchema = z.object({
@@ -112,7 +112,9 @@ export default {
       const msg = createMimeMessage();
       msg.setSender({ name: "Hot Beam Website", addr: FROM_ADDRESS });
       msg.setRecipient(TO_ADDRESS);
-      msg.setHeader("Reply-To", email);
+      // Mailbox type "To" is used here only to satisfy the type constraint;
+      // the actual header name is controlled by the first arg to setHeader.
+      msg.setHeader("Reply-To", new Mailbox({ addr: email }, { type: "To" }) as unknown as string);
       msg.setSubject(`Quote Request from ${name}${eventType ? ` — ${eventType}` : ""}`);
       msg.addMessage({ contentType: "text/html", data: html });
 
