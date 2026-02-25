@@ -1,28 +1,37 @@
 import type { Metadata } from "next";
+import { JetBrains_Mono, Manrope, Sora } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { brand, home, seo } from "@/lib/site-data";
+
+const sora = Sora({
+  subsets: ["latin"],
+  variable: "--font-sora",
+  weight: ["600", "700", "800"],
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+  weight: ["400", "500", "600", "700"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains",
+  weight: ["400", "500", "600", "700"],
+});
 
 export const metadata: Metadata = {
   title: {
-    default:
-      "Hot Beam Productions | Denver Event Production — Audio, Lasers, Lighting, Video",
-    template: "%s | Hot Beam Productions",
+    default: seo.defaultTitle,
+    template: seo.titleTemplate,
   },
-  description:
-    "Denver-based live event production company. Touring-grade audio, intelligent lighting, LED walls, FDA-registered laser systems, and SFX. Front Range and nationwide.",
-  keywords: [
-    "event production Denver",
-    "laser show Colorado",
-    "live event production",
-    "audio visual Denver",
-    "stage lighting rental",
-    "CO2 cryo jet rental",
-    "LED wall rental Denver",
-    "concert production Colorado",
-  ],
+  description: seo.description,
+  keywords: seo.keywords,
   openGraph: {
-    siteName: "Hot Beam Productions",
+    siteName: brand.name,
     locale: "en_US",
     type: "website",
   },
@@ -31,12 +40,11 @@ export const metadata: Metadata = {
 const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  name: "Hot Beam Productions",
-  url: "https://hotbeamproductions.com",
-  telephone: "+13035551234",
-  email: "info@hotbeamproductions.com",
-  description:
-    "Full-service live event production company based in Denver, Colorado. Audio, lighting, video, laser systems, and special effects for concerts, festivals, corporate events, and private shows.",
+  name: brand.name,
+  url: brand.url,
+  telephone: brand.phoneHref,
+  email: brand.email,
+  description: seo.description,
   address: {
     "@type": "PostalAddress",
     addressLocality: "Denver",
@@ -55,38 +63,10 @@ const localBusinessSchema = {
   hasOfferCatalog: {
     "@type": "OfferCatalog",
     name: "Event Production Services",
-    itemListElement: [
-      {
-        "@type": "Offer",
-        itemOffered: { "@type": "Service", name: "Audio Production" },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "Lighting Design & Programming",
-        },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: { "@type": "Service", name: "LED Video Walls" },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: { "@type": "Service", name: "Laser Show Production" },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: "Special Effects — CO2, Haze, Confetti",
-        },
-      },
-      {
-        "@type": "Offer",
-        itemOffered: { "@type": "Service", name: "Gear Rental" },
-      },
-    ],
+    itemListElement: home.services.items.map((item) => ({
+      "@type": "Offer",
+      itemOffered: { "@type": "Service", name: item.title },
+    })),
   },
 };
 
@@ -94,7 +74,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <script
           type="application/ld+json"
@@ -103,7 +83,9 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased bg-background text-foreground font-mono">
+      <body
+        className={`${sora.variable} ${manrope.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground`}
+      >
         <Navbar />
         <main id="main-content" className="min-h-screen">
           {children}

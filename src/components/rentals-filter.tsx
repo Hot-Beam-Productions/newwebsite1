@@ -1,101 +1,88 @@
 "use client";
 
-import { useState } from "react";
+import { type ComponentType, useMemo, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import {
-  Lightbulb,
-  Volume2,
-  Monitor,
-  Sparkles,
-  Zap,
-  Wrench,
-  Search,
-} from "lucide-react";
+import { Lightbulb, Monitor, Search, Sparkles, Volume2, Wrench, Zap } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { GlowButton } from "@/components/glow-button";
+import { MediaPlaceholder } from "@/components/media-placeholder";
+import { type RentalItem } from "@/lib/site-data";
 
-type RentalItem = {
-  id: string;
-  slug: string;
-  name: string;
-  category: string;
-  brand: string;
-  dailyRate: number | null;
-  description: string;
-  specs: string[];
-  imageUrl: string;
-  available: boolean;
+const iconByCategory: Record<string, ComponentType<{ className?: string }>> = {
+  all: Wrench,
+  lighting: Lightbulb,
+  audio: Volume2,
+  video: Monitor,
+  lasers: Zap,
+  sfx: Sparkles,
 };
 
-const categories = [
-  { value: "all", label: "All Gear", icon: Wrench },
-  { value: "lighting", label: "Lighting", icon: Lightbulb },
-  { value: "audio", label: "Audio", icon: Volume2 },
-  { value: "video", label: "Video", icon: Monitor },
-  { value: "lasers", label: "Lasers", icon: Zap },
-  { value: "sfx", label: "SFX", icon: Sparkles },
-];
+interface RentalsFilterProps {
+  items: RentalItem[];
+  categories: Array<{ value: string; label: string }>;
+  footerNote: string;
+}
 
-export function RentalsFilter({ items }: { items: RentalItem[] }) {
+export function RentalsFilter({ items, categories, footerNote }: RentalsFilterProps) {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const prefersReduced = useReducedMotion();
 
-  const filtered = items.filter((item) => {
-    const matchesCategory =
-      activeCategory === "all" || item.category === activeCategory;
-    const matchesSearch =
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.brand.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const filtered = useMemo(() => {
+    return items.filter((item) => {
+      const matchesCategory = activeCategory === "all" || item.category === activeCategory;
+      const needle = searchQuery.trim().toLowerCase();
+      const matchesSearch =
+        needle.length === 0 ||
+        item.name.toLowerCase().includes(needle) ||
+        item.brand.toLowerCase().includes(needle) ||
+        item.specs.some((spec) => spec.toLowerCase().includes(needle));
+
+      return matchesCategory && matchesSearch;
+    });
+  }, [activeCategory, items, searchQuery]);
 
   return (
     <>
-      {/* Filters */}
-      <div className="flex flex-col lg:flex-row gap-6 mb-12">
-        <div
-          className="flex flex-wrap gap-2"
-          role="group"
-          aria-label="Filter by category"
-        >
-          {categories.map((cat) => (
-            <button
-              key={cat.value}
-              onClick={() => setActiveCategory(cat.value)}
-              onKeyDown={(e) =>
-                e.key === "Enter" && setActiveCategory(cat.value)
-              }
-              aria-pressed={activeCategory === cat.value}
-              className={`flex items-center gap-2 px-4 py-2 rounded text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan ${
-                activeCategory === cat.value
-                  ? "bg-laser-cyan/20 text-laser-cyan border border-laser-cyan/40"
-                  : "bg-surface border border-border text-muted hover:text-foreground hover:border-white/20"
-              }`}
-            >
-              <cat.icon className="w-4 h-4" aria-hidden="true" />
-              {cat.label}
-            </button>
-          ))}
+      <div className="mb-10 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Inventory categories">
+          {categories.map((category) => {
+            const CategoryIcon = iconByCategory[category.value] ?? Wrench;
+            const selected = activeCategory === category.value;
+
+            return (
+              <button
+                key={category.value}
+                type="button"
+                onClick={() => setActiveCategory(category.value)}
+                aria-pressed={selected}
+                className={`flex items-center gap-2 border px-3.5 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan ${
+                  selected
+                    ? "border-laser-cyan/50 bg-laser-cyan/12 text-laser-cyan"
+                    : "border-border bg-surface text-muted hover:text-foreground"
+                }`}
+              >
+                <CategoryIcon className="h-4 w-4" aria-hidden="true" />
+                {category.label}
+              </button>
+            );
+          })}
         </div>
 
-        <div className="relative lg:ml-auto">
-          <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted"
-            aria-hidden="true"
-          />
+        <div className="relative w-full lg:w-72">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
           <input
             type="search"
-            placeholder="Search gear..."
+            placeholder="Search inventory"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            aria-label="Search rental inventory"
-            className="w-full lg:w-64 pl-10 pr-4 py-2 rounded bg-surface border border-border text-foreground placeholder:text-muted text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/40 transition-colors"
+            onChange={(event) => setSearchQuery(event.target.value)}
+            className="w-full border border-border bg-surface py-2 pl-10 pr-4 text-sm text-foreground placeholder:text-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/50"
+            aria-label="Search inventory"
           />
         </div>
       </div>
 
-      {/* Grid */}
       <AnimatePresence mode="wait">
         <motion.div
           key={activeCategory + searchQuery}
@@ -103,49 +90,42 @@ export function RentalsFilter({ items }: { items: RentalItem[] }) {
           animate={{ opacity: 1 }}
           exit={prefersReduced ? undefined : { opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         >
-          {filtered.map((item, i) => (
-            <motion.div
+          {filtered.map((item, index) => (
+            <motion.article
               key={item.id}
               initial={prefersReduced ? false : { opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.3,
-                delay: prefersReduced ? 0 : i * 0.04,
-              }}
-              className="group bg-surface border border-border rounded-lg overflow-hidden hover:border-laser-cyan/30 transition-all duration-500"
+              transition={{ duration: 0.24, delay: prefersReduced ? 0 : index * 0.04 }}
+              className="group overflow-hidden border border-border bg-surface transition-all duration-300 hover:border-laser-cyan/40"
             >
-              {/* Image placeholder */}
-              <div className="relative h-48 bg-surface-light flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-12 h-12 mx-auto rounded-full bg-laser-cyan/10 flex items-center justify-center mb-2">
-                    <span className="font-heading text-lg text-laser-cyan">
-                      {item.name[0]}
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted mono-label">{item.category}</p>
-                </div>
+              <div className="relative h-48 w-full overflow-hidden bg-surface-light">
+                {item.imageUrl && !item.imageUrl.includes("pub-XXXX") ? (
+                  <Image
+                    src={item.imageUrl}
+                    alt={item.name}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                ) : (
+                  <MediaPlaceholder label="Inventory image" aspect="video" className="!aspect-auto h-full" />
+                )}
               </div>
 
-              {/* Info */}
-              <div className="p-5">
-                <h3 className="font-heading text-lg tracking-wider uppercase text-foreground leading-tight">
+              <div className="space-y-3 p-5">
+                <p className="mono-label !text-muted-light">{item.brand}</p>
+                <h3 className="font-heading text-2xl leading-tight tracking-tight text-foreground">
                   {item.name}
                 </h3>
-                {item.brand && (
-                  <p className="text-xs text-muted mt-1">{item.brand}</p>
-                )}
-                <p className="text-sm text-muted mt-3 line-clamp-2">
-                  {item.description}
-                </p>
+                <p className="text-sm leading-relaxed text-muted">{item.description}</p>
 
                 {item.specs.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-3">
+                  <div className="flex flex-wrap gap-1 pt-1">
                     {item.specs.slice(0, 3).map((spec) => (
                       <span
                         key={spec}
-                        className="text-[10px] px-2 py-0.5 rounded bg-white/5 text-muted"
+                        className="border border-border bg-surface-light px-2 py-1 text-[10px] uppercase tracking-wide text-muted-light"
                       >
                         {spec}
                       </span>
@@ -153,46 +133,44 @@ export function RentalsFilter({ items }: { items: RentalItem[] }) {
                   </div>
                 )}
 
-                <div className="mt-4 pt-4 border-t border-border flex items-center justify-between">
+                <div className="flex items-end justify-between border-t border-border pt-4">
                   {item.dailyRate ? (
-                    <span className="text-lg font-bold gradient-text">
-                      ${item.dailyRate}
-                      <span className="text-xs text-muted font-normal">/day</span>
-                    </span>
+                    <div>
+                      <p className="font-heading text-3xl leading-none text-laser-cyan">
+                        ${item.dailyRate}
+                      </p>
+                      <p className="text-xs text-muted-light">per day</p>
+                    </div>
                   ) : (
-                    <span className="text-sm text-muted">Contact for pricing</span>
+                    <p className="text-sm text-muted">Contact for pricing</p>
                   )}
+
                   <Link
                     href={`/rentals/${item.id}`}
-                    className="mono-label !text-laser-cyan border border-laser-cyan/30 px-3 py-1 rounded hover:bg-laser-cyan/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan"
-                    aria-label={`View details for ${item.name}`}
+                    className="mono-label rounded-sm border border-laser-cyan/35 px-3 py-1.5 !text-laser-cyan transition-colors hover:bg-laser-cyan/12"
                   >
                     Details
                   </Link>
                 </div>
               </div>
-            </motion.div>
+            </motion.article>
           ))}
         </motion.div>
       </AnimatePresence>
 
       {filtered.length === 0 && (
-        <div className="text-center py-20">
-          <p className="text-muted text-lg">
-            No gear found matching your criteria.
-          </p>
+        <div className="border border-border bg-surface py-14 text-center">
+          <p className="text-muted">No inventory matched your filters.</p>
         </div>
       )}
 
-      {/* CTA */}
-      <div className="mt-16 text-center">
-        <p className="text-muted mb-4">
-          Our public inventory is a fraction of what we carry. Deep stock
-          available on request.
-        </p>
-        <GlowButton href="/contact" variant="primary">
-          Request Custom Quote
-        </GlowButton>
+      <div className="mt-16 border border-border bg-surface px-8 py-10 text-center">
+        <p className="mx-auto max-w-2xl text-sm leading-relaxed text-muted">{footerNote}</p>
+        <div className="mt-6">
+          <GlowButton href="/contact" variant="primary">
+            Request Inventory Sheet
+          </GlowButton>
+        </div>
       </div>
     </>
   );

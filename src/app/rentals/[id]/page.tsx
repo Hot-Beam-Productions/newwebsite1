@@ -2,57 +2,54 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, CheckCircle, XCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, CircleAlert } from "lucide-react";
 import { GlowButton } from "@/components/glow-button";
 import { MediaPlaceholder } from "@/components/media-placeholder";
-import rentals from "@/data/rentals.json";
+import { getRentalItem, rentals } from "@/lib/site-data";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
 export async function generateStaticParams() {
-  return rentals.map((r) => ({ id: r.id }));
+  return rentals.items.map((item) => ({ id: item.id }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const item = rentals.find((r) => r.id === id);
+  const item = getRentalItem(id);
+
   if (!item) return { title: "Not Found" };
+
   return {
-    title: `${item.name} Rental | Hot Beam Productions`,
+    title: `${item.name} Rental`,
     description: item.description,
     openGraph: {
-      title: `${item.name} — ${item.brand}`,
+      title: `${item.name} | ${item.brand}`,
       description: item.description,
-      images:
-        item.imageUrl && !item.imageUrl.includes("pub-XXXX")
-          ? [{ url: item.imageUrl }]
-          : [],
+      images: item.imageUrl && !item.imageUrl.includes("pub-XXXX") ? [{ url: item.imageUrl }] : [],
     },
   };
 }
 
 export default async function RentalDetailPage({ params }: Props) {
   const { id } = await params;
-  const item = rentals.find((r) => r.id === id);
+  const item = getRentalItem(id);
   if (!item) notFound();
 
   return (
-    <div className="pt-32 pb-24 px-6">
-      <div className="max-w-5xl mx-auto">
-        {/* Back */}
+    <div className="px-6 pb-24 pt-28 md:pt-32">
+      <div className="mx-auto max-w-5xl">
         <Link
           href="/rentals"
-          className="inline-flex items-center gap-2 mono-label !text-muted hover:!text-laser-cyan transition-colors mb-10"
+          className="mono-label mb-10 inline-flex items-center gap-2 !text-muted transition-colors hover:!text-laser-cyan"
         >
-          <ArrowLeft className="w-3 h-3" />
-          All Inventory
+          <ArrowLeft className="h-3 w-3" />
+          Back to inventory
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Image */}
-          <div className="rounded-lg overflow-hidden">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+          <div className="overflow-hidden border border-border bg-surface">
             {item.imageUrl && !item.imageUrl.includes("pub-XXXX") ? (
               <div className="relative aspect-square w-full">
                 <Image
@@ -64,65 +61,60 @@ export default async function RentalDetailPage({ params }: Props) {
                 />
               </div>
             ) : (
-              <MediaPlaceholder label="Product photo / 3D render" aspect="square" />
+              <MediaPlaceholder label="Inventory image" aspect="square" />
             )}
           </div>
 
-          {/* Info */}
-          <div>
-            <p className="mono-label text-laser-cyan mb-2">{item.brand}</p>
-            <h1 className="font-heading text-5xl tracking-wide text-foreground leading-tight mb-4">
+          <article>
+            <p className="mono-label !text-laser-cyan">{item.brand}</p>
+            <h1 className="mt-2 font-heading text-5xl leading-[0.95] tracking-tight text-foreground md:text-6xl">
               {item.name}
             </h1>
-            <p className="text-muted text-sm leading-relaxed mb-6">{item.description}</p>
+            <p className="mt-4 text-base leading-relaxed text-muted">{item.description}</p>
 
-            {/* Availability */}
-            <div className="flex items-center gap-2 mb-6">
+            <div className="mt-6 flex items-center gap-2 text-sm">
               {item.available ? (
                 <>
-                  <CheckCircle className="w-4 h-4 text-green-400" />
-                  <span className="mono-label !text-green-400">Available for Rent</span>
+                  <CheckCircle2 className="h-4 w-4 text-emerald-300" aria-hidden="true" />
+                  <span className="mono-label !text-emerald-300">Available for current dates</span>
                 </>
               ) : (
                 <>
-                  <XCircle className="w-4 h-4 text-muted" />
-                  <span className="mono-label !text-muted">Check Availability</span>
+                  <CircleAlert className="h-4 w-4 text-amber-200" aria-hidden="true" />
+                  <span className="mono-label !text-amber-200">Check availability</span>
                 </>
               )}
             </div>
 
-            {/* Specs */}
-            {item.specs && item.specs.length > 0 && (
-              <div className="mb-6">
-                <p className="mono-label !text-foreground mb-3">Key Specs</p>
-                <div className="space-y-2">
+            {item.specs.length > 0 && (
+              <section className="mt-7 border border-border bg-surface p-5">
+                <p className="mono-label mb-3 !text-foreground">Key Specs</p>
+                <ul className="space-y-2">
                   {item.specs.map((spec) => (
-                    <div key={spec} className="flex items-center gap-3">
-                      <div className="w-1 h-1 rounded-full bg-laser-cyan" />
-                      <span className="text-xs text-muted">{spec}</span>
-                    </div>
+                    <li key={spec} className="flex items-start gap-2 text-sm text-muted-light">
+                      <span className="mt-2 inline-block h-1.5 w-1.5 rounded-full bg-laser-cyan" />
+                      <span>{spec}</span>
+                    </li>
                   ))}
-                </div>
-              </div>
+                </ul>
+              </section>
             )}
 
-            {/* Rate + CTA */}
-            <div className="border-t border-border pt-6 mt-6">
+            <div className="mt-7 border-t border-border pt-6">
               {item.dailyRate ? (
-                <div className="flex items-baseline gap-1 mb-4">
-                  <span className="font-heading text-5xl gradient-text">
-                    ${item.dailyRate}
-                  </span>
-                  <span className="text-muted text-sm">/ day</span>
+                <div className="mb-5">
+                  <p className="font-heading text-6xl leading-none text-laser-cyan">${item.dailyRate}</p>
+                  <p className="text-sm text-muted">daily rate</p>
                 </div>
               ) : (
-                <p className="text-sm text-muted mb-4">Contact us for pricing</p>
+                <p className="mb-5 text-sm text-muted">Pricing available on request</p>
               )}
+
               <GlowButton href="/contact" variant="primary">
-                Inquire About This Piece
+                Inquire About This Unit
               </GlowButton>
             </div>
-          </div>
+          </article>
         </div>
       </div>
     </div>

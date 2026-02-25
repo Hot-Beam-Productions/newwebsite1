@@ -1,207 +1,218 @@
 import Image from "next/image";
+import Link from "next/link";
 import {
-  Volume2,
+  ArrowRight,
   Lightbulb,
   Monitor,
-  Zap,
   Sparkles,
-  ArrowRight,
+  Volume2,
+  Zap,
 } from "lucide-react";
 import { GlowButton } from "@/components/glow-button";
 import { SectionHeading } from "@/components/section-heading";
 import { HeroBeams } from "@/components/hero-animations";
 import { InstagramFeed } from "@/components/instagram-feed";
-import { PreShowSequence } from "@/components/pre-show-sequence";
+import { MediaPlaceholder } from "@/components/media-placeholder";
+import { brand, home, work } from "@/lib/site-data";
 
-const services = [
-  {
-    icon: Volume2,
-    title: "Audio",
-    description:
-      "d&b audiotechnik and L-Acoustics line arrays. From a 300-person general session to a 10,000-capacity festival main stage, we size and tune the system to the room — not the rental invoice.",
-  },
-  {
-    icon: Lightbulb,
-    title: "Lighting",
-    description:
-      "grandMA3 programming, MAC Ultra fixtures, and Robe moving heads. Full touring rigs and corporate one-offs. Patch to blackout, we handle the full technical workflow.",
-  },
-  {
-    icon: Monitor,
-    title: "Video",
-    description:
-      "ROE LED walls, Barco processing, and Resolume media servers. Whether it's a 40-tile stage backdrop or a 3-screen corporate confidence system, we engineer the signal chain.",
-  },
-  {
-    icon: Zap,
-    title: "Lasers",
-    description:
-      "FDA-registered Class IIIb and IV systems. Kvant Spectrum RGBW projectors, ILDA time-code sync, and custom beam choreography. We hold the variance, we run the show.",
-  },
-  {
-    icon: Sparkles,
-    title: "SFX",
-    description:
-      "CryoFX CO2 cannons, MDG haze, confetti, and flame effects. We integrate SFX into the lighting and audio cue stack so the drops hit on time, every time.",
-  },
-];
+const iconMap = {
+  volume: Volume2,
+  lightbulb: Lightbulb,
+  monitor: Monitor,
+  zap: Zap,
+  sparkles: Sparkles,
+};
 
-// Lasers is the featured service; the rest go in the secondary stack
-const lasersService = services.find((s) => s.title === "Lasers")!;
-const secondaryServices = services.filter((s) => s.title !== "Lasers");
+const featuredService = home.services.items.find(
+  (service) => service.id === home.services.featuredServiceId
+);
+
+const secondaryServices = home.services.items.filter(
+  (service) => service.id !== home.services.featuredServiceId
+);
+
+const featuredProjects = work.projects.filter((project) => project.featured).slice(0, 3);
 
 export default function Home() {
   return (
     <>
-      <PreShowSequence />
-
-      {/* Hero */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-clip pt-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-background" />
+      <section className="relative flex min-h-screen items-center justify-center overflow-clip px-6 pb-20 pt-28">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(46,99,255,0.22),transparent_44%),radial-gradient(circle_at_80%_80%,rgba(208,164,88,0.16),transparent_36%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background" />
         <HeroBeams />
 
-        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
-          <p className="text-sm font-medium tracking-[0.3em] uppercase text-laser-cyan mb-6">
-            Denver, CO — Live Event Production
-          </p>
+        <div className="relative z-10 mx-auto w-full max-w-5xl text-center">
+          <p className="mono-label mb-8 !text-laser-cyan">{home.hero.eyebrow}</p>
 
-          <div className="overflow-hidden">
-            <Image
-              src="/logo.png"
-              alt="Hot Beam Productions"
-              width={600}
-              height={164}
-              className="w-[400px] sm:w-[500px] md:w-[600px] h-auto mx-auto drop-shadow-[0_0_40px_rgba(0,245,255,0.2)]"
-              priority
-            />
-          </div>
-
-          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl tracking-wider uppercase text-foreground/80 mt-2">
-            Audio · Lighting · Lasers · Video · SFX
-          </h2>
-
-          <p className="mt-8 text-muted text-base max-w-2xl mx-auto leading-relaxed">
-            We build production rigs for touring acts, festivals, corporate events, and private
-            shows. Tier-1 gear, experienced crew, honest quotes. Based in Denver — deployed
-            everywhere.
-          </p>
-
-          <div className="mt-10 flex gap-4 justify-center flex-wrap">
-            <GlowButton href="/work" variant="primary">
-              See Our Work
-              <ArrowRight className="inline ml-2 w-4 h-4" aria-hidden="true" />
-            </GlowButton>
-            <GlowButton href="/contact" variant="outline">
-              Get a Quote
-            </GlowButton>
-          </div>
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
-      </section>
-
-      {/* Services */}
-      <section className="py-24 px-6" aria-labelledby="services-heading">
-        <div className="max-w-7xl mx-auto">
-          <SectionHeading
-            label="Capabilities"
-            title="What We Do"
-            subtitle="Full-service production with the technical depth to execute at any scale. We own our gear, we employ our crew, and we show up ready to work."
+          <Image
+            src={brand.heroLogo}
+            alt={brand.name}
+            width={620}
+            height={168}
+            className="mx-auto h-auto w-[430px] max-w-full drop-shadow-[0_0_34px_rgba(46,99,255,0.26)] md:w-[620px]"
+            priority
           />
 
-          {/* SERVICES GRID — brutalist lattice */}
-          <div
-            id="services-heading"
-            className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-border mt-12"
-          >
-            {/* FEATURED: Lasers — 2/3 width */}
-            <div className="lg:col-span-2 bg-background p-10 md:p-14 relative overflow-hidden">
-              {/* Ghost section number */}
-              <span
-                className="section-number absolute -right-6 -top-8 select-none"
-                aria-hidden="true"
-              >
-                01
-              </span>
-              {/* Icon */}
-              <div className="w-12 h-12 bg-laser-cyan/10 flex items-center justify-center mb-6">
-                <lasersService.icon
-                  className="w-6 h-6 text-laser-cyan"
-                  aria-hidden="true"
-                />
-              </div>
-              {/* Service name */}
-              <h3 className="type-section text-foreground mt-4 mb-4">
-                {lasersService.title}
-              </h3>
-              {/* Description */}
-              <p className="type-body-light text-muted max-w-lg mb-8">
-                {lasersService.description}
-              </p>
-              {/* Gear specs as mono-label list */}
-              <div className="space-y-1">
-                <p className="type-label-bold text-laser-amber mb-2">
-                  KEY INVENTORY
-                </p>
-                <p className="mono-label text-muted">
-                  Kvant Spectrum Series / ILDA Sync / 40kW Output
-                </p>
-                <p className="mono-label text-muted">
-                  FDA Registered / DMX512 + ArtNet Control
-                </p>
-              </div>
-            </div>
+          <h1 className="sr-only">{brand.name}</h1>
 
-            {/* SECONDARY SERVICES STACK — 1/3 width */}
-            <div className="bg-background divide-y divide-border">
-              {secondaryServices.map((service, index) => (
-                <div
-                  key={service.title}
-                  className="relative p-6 overflow-hidden group hover:bg-surface transition-colors duration-300"
-                >
-                  <span
-                    className="section-number absolute -right-4 -top-6 select-none"
-                    aria-hidden="true"
-                  >
-                    0{index + 2}
-                  </span>
-                  {/* Icon */}
-                  <div className="w-8 h-8 bg-laser-cyan/10 flex items-center justify-center mb-2 group-hover:bg-laser-cyan/20 transition-colors">
-                    <service.icon
-                      className="w-4 h-4 text-laser-cyan"
-                      aria-hidden="true"
-                    />
-                  </div>
-                  <h3 className="font-display font-bold text-2xl uppercase text-foreground mt-2 mb-2">
-                    {service.title}
-                  </h3>
-                  <p className="type-body-light text-muted text-sm">
-                    {service.description}
-                  </p>
-                </div>
-              ))}
-            </div>
+          <p className="mt-6 font-heading text-xl tracking-[0.2em] text-foreground/82 uppercase md:text-2xl">
+            {home.hero.departmentLine}
+          </p>
+
+          <p className="mx-auto mt-7 max-w-3xl text-base leading-relaxed text-muted md:text-lg">
+            {home.hero.description}
+          </p>
+
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+            <GlowButton href={home.hero.primaryCta.href} variant="primary">
+              {home.hero.primaryCta.label}
+              <ArrowRight className="ml-2 inline h-4 w-4" aria-hidden="true" />
+            </GlowButton>
+            <GlowButton href={home.hero.secondaryCta.href} variant="outline">
+              {home.hero.secondaryCta.label}
+            </GlowButton>
+          </div>
+
+          <div className="mx-auto mt-14 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
+            {home.results.map((item) => (
+              <div key={item.label} className="border border-border bg-surface px-5 py-4 text-left">
+                <p className="font-heading text-3xl leading-none text-foreground">{item.value}</p>
+                <p className="mt-2 text-xs uppercase tracking-[0.14em] text-muted-light">{item.label}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Instagram Feed */}
+      <section className="px-6 py-24" aria-labelledby="services-heading">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading
+            label={home.services.label}
+            title={home.services.title}
+            subtitle={home.services.subtitle}
+          />
+
+          {featuredService && (
+            <div id="services-heading" className="mt-10 grid grid-cols-1 gap-px bg-border lg:grid-cols-3">
+              <article className="relative overflow-hidden bg-background p-10 lg:col-span-2 lg:p-14">
+                <span className="section-number absolute -right-6 -top-10" aria-hidden="true">
+                  01
+                </span>
+                <div className="w-fit border border-laser-cyan/40 bg-laser-cyan/10 px-3 py-1">
+                  <p className="mono-label !text-laser-cyan">Featured Discipline</p>
+                </div>
+
+                <h3 className="mt-5 font-heading text-5xl tracking-tight text-foreground md:text-6xl">
+                  {featuredService.title}
+                </h3>
+                <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted">
+                  {featuredService.description}
+                </p>
+
+                <div className="mt-8 space-y-2">
+                  {featuredService.highlights.map((highlight) => (
+                    <p key={highlight} className="mono-label !text-muted-light">
+                      {highlight}
+                    </p>
+                  ))}
+                </div>
+              </article>
+
+              <div className="divide-y divide-border bg-background">
+                {secondaryServices.map((service, index) => {
+                  const ServiceIcon = iconMap[service.icon];
+
+                  return (
+                    <article
+                      key={service.id}
+                      className="group relative overflow-hidden px-6 py-6 transition-colors hover:bg-surface"
+                    >
+                      <span className="section-number absolute -right-4 -top-6" aria-hidden="true">
+                        0{index + 2}
+                      </span>
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-9 w-9 items-center justify-center border border-laser-cyan/30 bg-laser-cyan/10 transition-colors group-hover:bg-laser-cyan/20">
+                          <ServiceIcon className="h-4 w-4 text-laser-cyan" aria-hidden="true" />
+                        </div>
+                        <h3 className="font-heading text-2xl tracking-tight text-foreground">
+                          {service.title}
+                        </h3>
+                      </div>
+                      <p className="mt-3 text-sm leading-relaxed text-muted">
+                        {service.description}
+                      </p>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="px-6 pb-24" aria-labelledby="featured-work-heading">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 flex items-end justify-between gap-6">
+            <div>
+              <p className="mono-label mb-3 !text-laser-cyan">Featured Work</p>
+              <h2 id="featured-work-heading" className="font-heading text-4xl tracking-tight md:text-5xl">
+                Recent Deployments
+              </h2>
+            </div>
+            <Link
+              href="/work"
+              className="mono-label hidden !text-muted-light transition-colors hover:!text-laser-cyan sm:inline-flex"
+            >
+              View full portfolio
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {featuredProjects.map((project) => (
+              <Link
+                key={project.id}
+                href={`/work/${project.slug}`}
+                className="group overflow-hidden border border-border bg-surface transition-all duration-300 hover:border-laser-cyan/45"
+              >
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-light">
+                  {project.mainImageUrl && !project.mainImageUrl.includes("pub-XXXX") ? (
+                    <Image
+                      src={project.mainImageUrl}
+                      alt={project.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  ) : (
+                    <MediaPlaceholder label="Project media" aspect="video" className="!aspect-auto h-full" />
+                  )}
+                </div>
+                <div className="space-y-2 p-5">
+                  <p className="mono-label !text-muted-light">{project.client}</p>
+                  <h3 className="font-heading text-2xl tracking-tight text-foreground transition-colors group-hover:text-laser-cyan">
+                    {project.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-muted">{project.description}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <InstagramFeed />
 
-      {/* CTA */}
-      <section className="py-24 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-heading text-5xl md:text-6xl font-bold tracking-wider uppercase gradient-text">
-            Your Rider. Our Rig.
+      <section className="px-6 pb-28 pt-10">
+        <div className="mx-auto max-w-4xl border border-border bg-surface px-8 py-12 text-center md:px-12 md:py-16">
+          <h2 className="font-heading text-4xl tracking-tight text-foreground md:text-5xl">
+            {home.closingCta.title}
           </h2>
-          <p className="mt-6 text-muted text-base max-w-xl mx-auto leading-relaxed">
-            Send us the event specs and we&apos;ll build a quote from the ground up — no canned
-            packages, no hidden labor charges.
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted">
+            {home.closingCta.description}
           </p>
-          <div className="mt-10">
-            <GlowButton href="/contact" variant="primary">
-              Start Your Project
-              <ArrowRight className="inline ml-2 w-4 h-4" aria-hidden="true" />
+          <div className="mt-9">
+            <GlowButton href={home.closingCta.button.href} variant="primary">
+              {home.closingCta.button.label}
+              <ArrowRight className="ml-2 inline h-4 w-4" aria-hidden="true" />
             </GlowButton>
           </div>
         </div>

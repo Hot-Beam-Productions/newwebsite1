@@ -1,84 +1,80 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { SectionHeading } from "@/components/section-heading";
 import { MediaPlaceholder } from "@/components/media-placeholder";
-import portfolio from "@/data/portfolio.json";
+import { SectionHeading } from "@/components/section-heading";
+import { work } from "@/lib/site-data";
 
 export const metadata: Metadata = {
-  title: "Our Work | Hot Beam Productions",
+  title: "Work",
   description:
-    "Event production portfolio — lasers, lighting, audio, video, and SFX. Red Rocks, corporate galas, outdoor festivals, and product launches across Colorado and the US.",
+    "Selected live event productions by Hot Beam Productions, including amphitheater, festival, and corporate technical environments.",
 };
 
-const serviceColors: Record<string, string> = {
-  audio: "bg-blue-500/15 text-blue-400",
-  lighting: "bg-yellow-500/15 text-yellow-400",
-  video: "bg-purple-500/15 text-purple-400",
-  lasers: "bg-laser-cyan/15 text-laser-cyan",
-  sfx: "bg-green-500/15 text-green-400",
+const serviceStyles: Record<string, string> = {
+  audio: "border-blue-400/30 bg-blue-400/10 text-blue-200",
+  lighting: "border-amber-400/30 bg-amber-400/10 text-amber-200",
+  video: "border-violet-400/30 bg-violet-400/10 text-violet-200",
+  lasers: "border-laser-cyan/35 bg-laser-cyan/10 text-laser-cyan",
+  sfx: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
 };
 
 export default function WorkPage() {
   return (
-    <div className="pt-32 pb-24 px-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="px-6 pb-24 pt-28 md:pt-32">
+      <div className="mx-auto max-w-7xl">
         <SectionHeading
-          label="Portfolio"
-          title="Our Work"
-          subtitle="Selected productions across Colorado and nationally. Every project started with a rider and ended with a run-of-show."
+          label={work.heading.label}
+          title={work.heading.title}
+          subtitle={work.heading.subtitle}
         />
 
-        <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-          {portfolio.map((project, index) => (
-            <div key={project.id} className="break-inside-avoid group">
+        <div className="columns-1 gap-6 space-y-6 md:columns-2 lg:columns-3">
+          {work.projects.map((project, index) => (
+            <div key={project.id} className="break-inside-avoid">
               <Link
                 href={`/work/${project.slug}`}
-                className="block relative rounded-lg overflow-hidden bg-surface border border-border hover:border-laser-cyan/30 transition-all duration-500"
-                aria-label={`View ${project.title} project details`}
+                className="group block overflow-hidden border border-border bg-surface transition-all duration-300 hover:border-laser-cyan/45"
+                aria-label={`Open project details for ${project.title}`}
               >
-                {/* Image */}
                 <div
-                  className="relative w-full bg-surface-light overflow-hidden"
-                  style={{ height: `${250 + (index % 3) * 80}px` }}
+                  className="relative w-full overflow-hidden bg-surface-light"
+                  style={{ height: `${260 + (index % 3) * 70}px` }}
                 >
                   {project.mainImageUrl && !project.mainImageUrl.includes("pub-XXXX") ? (
                     <Image
                       src={project.mainImageUrl}
                       alt={project.title}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   ) : (
                     <MediaPlaceholder
-                      label="Stage photo / 3D render"
+                      label="Project media"
                       aspect="video"
                       className="!aspect-auto h-full"
                     />
                   )}
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <ArrowUpRight
-                      className="absolute top-4 right-4 w-5 h-5 text-white"
-                      aria-hidden="true"
-                    />
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <ArrowUpRight className="absolute right-4 top-4 h-5 w-5 text-white" aria-hidden="true" />
                   </div>
                 </div>
 
-                {/* Info */}
-                <div className="p-5">
-                  <h3 className="font-heading text-xl tracking-wider uppercase text-foreground group-hover:text-laser-cyan transition-colors">
+                <div className="space-y-3 p-5">
+                  <p className="mono-label !text-muted-light">
+                    {project.client} · {project.location}
+                  </p>
+                  <h3 className="font-heading text-2xl tracking-tight text-foreground transition-colors group-hover:text-laser-cyan">
                     {project.title}
                   </h3>
-                  {project.client && (
-                    <p className="text-sm text-muted mt-1">{project.client}</p>
-                  )}
-                  <div className="flex flex-wrap gap-2 mt-3">
+                  <p className="text-sm leading-relaxed text-muted">{project.description}</p>
+                  <div className="flex flex-wrap gap-2 pt-1">
                     {project.services.map((service) => (
                       <span
                         key={service}
-                        className={`text-xs px-2 py-1 rounded capitalize ${serviceColors[service] ?? "bg-white/10 text-white/60"}`}
+                        className={`rounded border px-2 py-1 text-[11px] capitalize tracking-wide ${serviceStyles[service] ?? "border-border bg-surface-light text-muted"}`}
                       >
                         {service}
                       </span>

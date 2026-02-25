@@ -1,24 +1,24 @@
 import type { Metadata } from "next";
-import { SectionHeading } from "@/components/section-heading";
 import { RentalsFilter } from "@/components/rentals-filter";
-import rentals from "@/data/rentals.json";
+import { SectionHeading } from "@/components/section-heading";
+import { rentals } from "@/lib/site-data";
 
 export const metadata: Metadata = {
-  title: "Gear Rental Inventory | Hot Beam Productions",
+  title: "Inventory",
   description:
-    "Professional event production equipment for rent. Lasers, line arrays, LED walls, moving lights, SFX. Show-ready inventory, maintained to touring spec.",
+    "Browse show-ready inventory from Hot Beam Productions including lighting, audio, video, laser, and effects systems.",
 };
 
 export default function RentalsPage() {
   return (
-    <div className="pt-32 pb-24 px-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="px-6 pb-24 pt-28 md:pt-32">
+      <div className="mx-auto max-w-7xl">
         <SectionHeading
-          label="Inventory"
-          title="Gear Rentals"
-          subtitle="Touring-spec equipment. Every unit is maintained, tested, and show-ready. Prices are day rates — multi-day and package pricing available on request."
+          label={rentals.heading.label}
+          title={rentals.heading.title}
+          subtitle={rentals.heading.subtitle}
         />
-        <RentalsFilter items={rentals} />
+        <RentalsFilter items={rentals.items} categories={rentals.categories} footerNote={rentals.footerNote} />
       </div>
     </div>
   );

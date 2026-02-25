@@ -1,86 +1,67 @@
 import type { Metadata } from "next";
-import { Mail, Phone, MapPin } from "lucide-react";
-import { SectionHeading } from "@/components/section-heading";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { ContactForm } from "@/components/contact-form";
+import { SectionHeading } from "@/components/section-heading";
+import { brand, contact } from "@/lib/site-data";
 
 export const metadata: Metadata = {
-  title: "Get a Quote | Hot Beam Productions",
+  title: "Contact",
   description:
-    "Request a production quote for audio, lighting, video, lasers, or SFX. Denver-based, deployed nationwide. Response within one business day.",
+    "Request a live event production proposal from Hot Beam Productions. Share your show requirements and receive a scoped response within one business day.",
 };
 
 export default function ContactPage() {
   return (
-    <div className="pt-32 pb-24 px-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="px-6 pb-24 pt-28 md:pt-32">
+      <div className="mx-auto max-w-7xl">
         <SectionHeading
-          label="Contact"
-          title="Get a Quote"
-          subtitle="Send us your event specs. We read riders, respond to technical questions, and quote from real gear lists — not generic packages."
+          label={contact.heading.label}
+          title={contact.heading.title}
+          subtitle={contact.heading.subtitle}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-          {/* Sidebar */}
-          <div className="space-y-8">
+        <div className="grid grid-cols-1 gap-14 lg:grid-cols-3">
+          <aside className="space-y-8">
             <div>
-              <h3 className="font-heading text-2xl tracking-wider uppercase text-foreground mb-6">
-                Direct Contact
+              <h3 className="font-heading text-2xl tracking-tight text-foreground">
+                {contact.directContactTitle}
               </h3>
-              <div className="space-y-4">
+              <div className="mt-5 space-y-4">
                 <a
-                  href="mailto:info@hotbeamproductions.com"
-                  className="flex items-center gap-3 text-muted hover:text-foreground transition-colors"
+                  href={`mailto:${brand.email}`}
+                  className="flex items-center gap-3 text-muted transition-colors hover:text-foreground"
                 >
-                  <Mail
-                    className="w-5 h-5 text-laser-cyan flex-shrink-0"
-                    aria-hidden="true"
-                  />
-                  <span className="text-sm">info@hotbeamproductions.com</span>
+                  <Mail className="h-4 w-4 text-laser-cyan" aria-hidden="true" />
+                  <span className="text-sm">{brand.email}</span>
                 </a>
                 <a
-                  href="tel:+13035551234"
-                  className="flex items-center gap-3 text-muted hover:text-foreground transition-colors"
+                  href={`tel:${brand.phoneHref}`}
+                  className="flex items-center gap-3 text-muted transition-colors hover:text-foreground"
                 >
-                  <Phone
-                    className="w-5 h-5 text-laser-cyan flex-shrink-0"
-                    aria-hidden="true"
-                  />
-                  <span className="text-sm">(303) 555-1234</span>
+                  <Phone className="h-4 w-4 text-laser-cyan" aria-hidden="true" />
+                  <span className="text-sm">{brand.phoneDisplay}</span>
                 </a>
-                <div className="flex items-center gap-3 text-muted">
-                  <MapPin
-                    className="w-5 h-5 text-laser-cyan flex-shrink-0"
-                    aria-hidden="true"
-                  />
-                  <span className="text-sm">Denver, Colorado</span>
-                </div>
+                <p className="flex items-center gap-3 text-sm text-muted">
+                  <MapPin className="h-4 w-4 text-laser-cyan" aria-hidden="true" />
+                  {brand.location}
+                </p>
               </div>
             </div>
 
-            <div className="p-6 rounded-lg bg-surface border border-border">
-              <h4 className="font-heading text-lg tracking-wider uppercase text-foreground mb-3">
-                Response Time
-              </h4>
-              <p className="text-sm text-muted leading-relaxed">
-                One business day for quote requests. Same day for urgent
-                inquiries — call us directly.
-              </p>
-            </div>
+            {contact.cards.map((card) => (
+              <div key={card.title} className="border border-border bg-surface p-6">
+                <h4 className="font-heading text-lg tracking-tight text-foreground">
+                  {card.title}
+                </h4>
+                <p className="mt-3 text-sm leading-relaxed text-muted">{card.body}</p>
+              </div>
+            ))}
+          </aside>
 
-            <div className="p-6 rounded-lg bg-surface border border-border">
-              <h4 className="font-heading text-lg tracking-wider uppercase text-foreground mb-3">
-                Service Area
-              </h4>
-              <p className="text-sm text-muted leading-relaxed">
-                Based in Denver. We work the entire Front Range regularly and
-                travel nationally for the right shows. Ask about touring rates.
-              </p>
-            </div>
-          </div>
-
-          {/* Form */}
           <div className="lg:col-span-2">
-            <ContactForm />
+            <div className="border border-border bg-surface p-6 sm:p-8">
+              <ContactForm />
+            </div>
           </div>
         </div>
       </div>

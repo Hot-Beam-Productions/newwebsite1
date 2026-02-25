@@ -1,113 +1,131 @@
-# Hot Beam Productions — Website
+# Hot Beam Productions Website
 
-Denver-based event production company website built with Next.js and Sanity CMS.
+High-end event production website built with Next.js App Router and a local JSON content model.
 
-## Tech Stack
+## Stack
 
-- **Framework:** Next.js 14+ (App Router)
-- **Styling:** Tailwind CSS v4
-- **Animation:** Framer Motion
-- **CMS:** Sanity.io (headless)
-- **Icons:** Lucide React
-- **Forms:** React Hook Form
+- Next.js 16 (App Router)
+- TypeScript
+- Tailwind CSS v4
+- Framer Motion
+- Cloudflare Turnstile
+- Cloudflare Worker contact endpoint (`worker/`)
 
-## Getting Started
+## Content Architecture
 
-### 1. Install dependencies
+All site content is centralized in:
+
+- `src/data/data.json`
+
+This file contains:
+
+- Brand metadata and navigation
+- Home page copy and service blocks
+- Portfolio projects
+- Team and company copy
+- Rental inventory
+- Contact page and form options
+
+Typed accessors live in:
+
+- `src/lib/site-data.ts`
+
+## Local Development
+
+1. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 2. Set up Sanity CMS
+2. Configure environment
 
-1. Go to [sanity.io/manage](https://www.sanity.io/manage) and create a new project
-2. Copy your **Project ID**
-3. Open `.env.local` and replace `your_project_id_here` with your actual Project ID:
+Create/update `.env.local`:
 
+```env
+NEXT_PUBLIC_CONTACT_ENDPOINT=https://hotbeam-contact.<your-subdomain>.workers.dev
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=your_turnstile_site_key
+NEXT_PUBLIC_R2_DOMAIN=pub-xxxx.r2.dev
+# Optional
+# INSTAGRAM_ACCESS_TOKEN=...
 ```
-NEXT_PUBLIC_SANITY_PROJECT_ID=abc123xyz
-NEXT_PUBLIC_SANITY_DATASET=production
-NEXT_PUBLIC_SANITY_API_VERSION=2024-01-01
-```
 
-4. In your Sanity project settings, add `http://localhost:3000` to the CORS origins
-
-### 3. Run the development server
+3. Start dev server
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the site.
+4. Open:
 
-### 4. Open the Admin Dashboard
+- `http://localhost:3000`
 
-Navigate to [http://localhost:3000/studio](http://localhost:3000/studio) to access the Sanity Studio admin panel. From here you can:
+## Contact Form (Free Cloudflare + Optional Google)
 
-- **Upload project photos** — Go to "Project" and create entries with images, descriptions, and service tags
-- **Manage rental inventory** — Go to "Rental Item" to add/edit gear with pricing, specs, and categories
-- **Edit home page content** — Go to "Home Page" to change the hero text, upload a background video, etc.
+The form posts to the Cloudflare Worker in `worker/src/index.ts`.
 
-## Project Structure
+### Cloudflare setup
 
-```
-src/
-├── app/
-│   ├── page.tsx          # Home page
-│   ├── layout.tsx        # Root layout (Navbar + Footer)
-│   ├── globals.css       # Design system & custom CSS
-│   ├── work/             # Portfolio page
-│   ├── rentals/          # Gear rental catalog
-│   ├── about/            # About page
-│   ├── contact/          # Quote request form
-│   └── studio/           # Embedded Sanity Studio (admin)
-├── components/
-│   ├── navbar.tsx         # Sticky glassmorphism navbar
-│   ├── footer.tsx         # Site footer
-│   ├── glow-button.tsx    # Button with glow hover effect
-│   └── section-heading.tsx # Animated section headers
-└── lib/
-    └── utils.ts           # cn() utility (clsx + tailwind-merge)
+1. Enable Email Routing for your domain in Cloudflare.
+2. Verify your destination inbox.
+3. Deploy the worker:
 
-sanity/
-├── schemas/
-│   ├── project.ts        # Portfolio project schema
-│   ├── rental-item.ts    # Rental inventory schema
-│   ├── home-page.ts      # Home page content schema
-│   └── index.ts          # Schema exports
-├── lib/
-│   ├── client.ts         # Sanity client
-│   ├── image.ts          # Image URL builder
-│   └── queries.ts        # GROQ queries
-└── env.ts                # Environment variables
+```bash
+cd worker
+npm install
+npx wrangler secret put TURNSTILE_SECRET_KEY
+npx wrangler deploy
 ```
 
-## Content Management (For the Client)
+4. Set Worker variables (in `worker/wrangler.toml` or dashboard):
 
-### Adding a Portfolio Project
+- `ALLOWED_ORIGINS`
+- `CONTACT_TO_ADDRESS`
+- Optional: `GOOGLE_APPS_SCRIPT_URL`
 
-1. Go to `/studio` in your browser
-2. Click "Project" in the sidebar
-3. Click the "+" button to create a new project
-4. Fill in: Title, Main Image, Gallery photos, Client Name, Service Tags, Description
-5. Click "Publish"
+### Optional Google Sheets logging (free)
 
-### Adding Rental Equipment
+If you want each lead logged to a Google Sheet:
 
-1. Go to `/studio`
-2. Click "Rental Item"
-3. Click "+" to add a new item
-4. Fill in: Name, Category, Image, Daily Rate, Brand, Specs, Description
-5. Click "Publish"
+1. Create a Google Sheet.
+2. Open Apps Script and deploy as Web App (`Anyone with link`).
+3. Use this script body:
 
-### Editing the Home Page
+```javascript
+function doPost(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Leads') || SpreadsheetApp.getActiveSpreadsheet().insertSheet('Leads');
+  const data = JSON.parse(e.postData.contents || '{}');
+  sheet.appendRow([
+    new Date(),
+    data.name || '',
+    data.email || '',
+    data.phone || '',
+    data.eventDate || '',
+    data.venue || '',
+    data.eventType || '',
+    (data.gearNeeds || []).join(', '),
+    data.message || '',
+    data.ipAddress || ''
+  ]);
+  return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);
+}
+```
 
-1. Go to `/studio`
-2. Click "Home Page"
-3. Edit the hero headline, subheadline, or upload a new background video
-4. Click "Publish"
+4. Copy the Web App URL and set it as Worker secret/var:
 
-## Deployment
+```bash
+npx wrangler secret put GOOGLE_APPS_SCRIPT_URL
+```
 
-Deploy on [Vercel](https://vercel.com) — add the same environment variables from `.env.local` to your Vercel project settings.
+## Production Build
+
+```bash
+npm run lint
+npm run build
+```
+
+## Deploy
+
+- Frontend: deploy on Vercel or Cloudflare Pages.
+- Contact backend: deploy `worker/` with Wrangler.
+- Update `NEXT_PUBLIC_CONTACT_ENDPOINT` in your production environment to the deployed Worker URL.

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Instagram } from "lucide-react";
 import { SectionHeading } from "@/components/section-heading";
+import { brand } from "@/lib/site-data";
 
 interface InstagramPost {
   id: string;
@@ -10,7 +11,6 @@ interface InstagramPost {
   media_url: string;
   thumbnail_url?: string;
   permalink: string;
-  timestamp: string;
 }
 
 async function getInstagramPosts(): Promise<InstagramPost[]> {
@@ -18,14 +18,14 @@ async function getInstagramPosts(): Promise<InstagramPost[]> {
   if (!token) return [];
 
   try {
-    const res = await fetch(
-      `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&limit=9&access_token=${token}`,
+    const response = await fetch(
+      `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&limit=9&access_token=${token}`,
       { next: { revalidate: 3600 } }
     );
 
-    if (!res.ok) return [];
+    if (!response.ok) return [];
 
-    const data = await res.json();
+    const data = (await response.json()) as { data?: InstagramPost[] };
     return data.data ?? [];
   } catch {
     return [];
@@ -34,24 +34,20 @@ async function getInstagramPosts(): Promise<InstagramPost[]> {
 
 export async function InstagramFeed() {
   const posts = await getInstagramPosts();
-
   if (posts.length === 0) return null;
 
   return (
-    <section className="py-24 px-6">
-      <div className="max-w-7xl mx-auto">
+    <section className="px-6 py-24">
+      <div className="mx-auto max-w-7xl">
         <SectionHeading
-          label="Instagram"
-          title="@hotbeamproductions"
-          subtitle="Behind the scenes, on the road, and in the rig. Follow along."
+          label="Live Feed"
+          title={brand.instagramHandle}
+          subtitle="On-site moments, rig builds, and show-night snapshots from current deployments."
         />
 
         <div className="grid grid-cols-3 gap-1 md:gap-2">
           {posts.map((post) => {
-            const imageUrl =
-              post.media_type === "VIDEO"
-                ? post.thumbnail_url
-                : post.media_url;
+            const imageUrl = post.media_type === "VIDEO" ? post.thumbnail_url : post.media_url;
             if (!imageUrl) return null;
 
             return (
@@ -60,33 +56,18 @@ export async function InstagramFeed() {
                 href={post.permalink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative aspect-square overflow-hidden bg-surface"
-                aria-label={
-                  post.caption
-                    ? post.caption.slice(0, 80)
-                    : "View on Instagram"
-                }
+                className="group relative aspect-square overflow-hidden border border-border bg-surface"
+                aria-label={post.caption ? post.caption.slice(0, 80) : "Open Instagram post"}
               >
                 <Image
                   src={imageUrl}
-                  alt={
-                    post.caption
-                      ? post.caption.slice(0, 100)
-                      : "Instagram post"
-                  }
+                  alt={post.caption ? post.caption.slice(0, 100) : "Instagram post"}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 768px) 33vw, (max-width: 1280px) 25vw, 400px"
+                  sizes="(max-width: 768px) 33vw, (max-width: 1280px) 25vw, 380px"
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-all duration-300 flex items-center justify-center p-4">
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center">
-                    <Instagram className="w-6 h-6 text-laser-cyan mx-auto mb-2" />
-                    {post.caption && (
-                      <p className="text-white text-xs leading-relaxed line-clamp-4">
-                        {post.caption}
-                      </p>
-                    )}
-                  </div>
+                <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/55">
+                  <Instagram className="h-6 w-6 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </div>
               </Link>
             );
@@ -95,13 +76,13 @@ export async function InstagramFeed() {
 
         <div className="mt-8 text-center">
           <Link
-            href="https://www.instagram.com/hotbeamproductions/"
+            href={brand.instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-laser-cyan hover:text-laser-cyan/70 transition-colors text-sm tracking-wider uppercase font-mono"
+            className="mono-label inline-flex items-center gap-2 !text-laser-cyan transition-colors hover:!text-laser-cyan-dim"
           >
-            <Instagram className="w-4 h-4" />
-            Follow on Instagram
+            <Instagram className="h-4 w-4" />
+            Follow updates
           </Link>
         </div>
       </div>

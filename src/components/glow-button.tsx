@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface GlowButtonProps {
   href?: string;
@@ -10,6 +10,7 @@ interface GlowButtonProps {
   className?: string;
   type?: "button" | "submit";
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 export function GlowButton({
@@ -19,35 +20,40 @@ export function GlowButton({
   className,
   type = "button",
   onClick,
+  disabled,
 }: GlowButtonProps) {
   const baseStyles =
-    "relative inline-flex items-center justify-center px-6 py-2.5 text-xs font-mono font-medium tracking-wider uppercase transition-all duration-150";
+    "inline-flex items-center justify-center rounded-sm border px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
   const variants = {
     primary: cn(
-      "bg-laser-cyan text-background border border-laser-cyan",
-      "hover:bg-laser-cyan-dim hover:shadow-[0_0_20px_rgba(0,245,255,0.3)]",
-      "active:scale-[0.98]"
+      "border-laser-cyan bg-laser-cyan text-background",
+      "hover:translate-y-[-1px] hover:bg-laser-cyan-dim hover:shadow-[0_0_22px_rgba(46,99,255,0.35)]",
+      "active:translate-y-0"
     ),
     outline: cn(
-      "border border-laser-cyan/40 text-laser-cyan bg-transparent",
-      "hover:bg-laser-cyan/10 hover:border-laser-cyan",
-      "active:scale-[0.98]"
+      "border-laser-cyan/55 bg-transparent text-laser-cyan",
+      "hover:border-laser-cyan hover:bg-laser-cyan/12 hover:text-laser-cyan"
     ),
   };
 
-  const classes = cn(baseStyles, variants[variant], className);
+  const classes = cn(
+    baseStyles,
+    variants[variant],
+    disabled && "cursor-not-allowed opacity-55",
+    className
+  );
 
   if (href) {
     return (
-      <Link href={href} className={classes}>
+      <Link href={href} className={classes} aria-disabled={disabled}>
         {children}
       </Link>
     );
   }
 
   return (
-    <button type={type} onClick={onClick} className={classes}>
+    <button type={type} onClick={onClick} className={classes} disabled={disabled}>
       {children}
     </button>
   );

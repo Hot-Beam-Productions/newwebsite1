@@ -1,61 +1,94 @@
 "use client";
 
 import { Turnstile } from "@marsidev/react-turnstile";
-import { useState } from "react";
-import { Send, CheckCircle, AlertCircle } from "lucide-react";
+import { useMemo, useState } from "react";
+import { AlertCircle, CheckCircle2, Send } from "lucide-react";
 import { GlowButton } from "@/components/glow-button";
+import { contact } from "@/lib/site-data";
 
 const inputStyles =
-  "w-full px-4 py-3 rounded bg-surface border border-border text-foreground placeholder:text-muted/60 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/40 transition-colors";
+  "w-full border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted/65 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/45";
 
-const gearOptions = [
-  "Audio / PA System",
-  "Lighting Design",
-  "Video / LED Walls",
-  "Lasers",
-  "SFX (Cryo, Haze, Confetti)",
-  "Full Production Package",
-];
+interface ContactResponse {
+  success: boolean;
+  error?: string;
+}
 
 export function ContactForm() {
   const [pending, setPending] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | undefined>();
   const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  const endpoint = useMemo(() => {
+    return process.env.NEXT_PUBLIC_CONTACT_ENDPOINT ?? process.env.NEXT_PUBLIC_WORKER_URL;
+  }, []);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     setPending(true);
     setError(undefined);
 
-    const formData = new FormData(e.currentTarget);
+    if (!endpoint) {
+      setError("Contact endpoint is not configured.");
+      setPending(false);
+      return;
+    }
 
-    const body = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      phone: formData.get("phone") || undefined,
-      eventDate: formData.get("eventDate") || undefined,
-      venue: formData.get("venue") || undefined,
-      eventType: formData.get("eventType") || undefined,
-      gearNeeds: formData.getAll("gearNeeds") as string[],
-      message: formData.get("message"),
+    if (!turnstileSiteKey) {
+      setError("Turnstile site key is not configured.");
+      setPending(false);
+      return;
+    }
+
+    if (!turnstileToken) {
+      setError("Please complete bot verification before sending your request.");
+      setPending(false);
+      return;
+    }
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    // Honeypot field for low-effort bot submissions.
+    if (String(formData.get("companyWebsite") ?? "").trim().length > 0) {
+      setPending(false);
+      setSuccess(true);
+      return;
+    }
+
+    const payload = {
+      name: String(formData.get("name") ?? "").trim(),
+      email: String(formData.get("email") ?? "").trim(),
+      phone: String(formData.get("phone") ?? "").trim() || undefined,
+      eventDate: String(formData.get("eventDate") ?? "").trim() || undefined,
+      venue: String(formData.get("venue") ?? "").trim() || undefined,
+      eventType: String(formData.get("eventType") ?? "").trim() || undefined,
+      gearNeeds: formData.getAll("gearNeeds").map((value) => String(value)),
+      message: String(formData.get("message") ?? "").trim(),
       turnstileToken,
     };
 
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_WORKER_URL!, {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify(payload),
       });
-      const data = (await res.json()) as { success: boolean; error?: string };
-      if (data.success) {
+
+      const responseData = (await response.json()) as ContactResponse;
+
+      if (response.ok && responseData.success) {
         setSuccess(true);
-      } else {
-        setError(data.error ?? "Something went wrong. Please try again.");
+        form.reset();
+        return;
       }
+
+      setError(responseData.error ?? "Unable to submit request. Please try again.");
     } catch {
-      setError("Network error. Please try again.");
+      setError("Network error while sending your request. Please try again.");
     } finally {
       setPending(false);
     }
@@ -63,48 +96,42 @@ export function ContactForm() {
 
   if (success) {
     return (
-      <div className="text-center py-20" role="status">
-        <CheckCircle
-          className="w-16 h-16 text-laser-cyan mx-auto mb-6"
-          aria-hidden="true"
-        />
-        <h3 className="font-heading text-3xl tracking-wider uppercase text-foreground mb-4">
-          Message Sent
+      <div className="border border-border bg-surface px-8 py-16 text-center" role="status">
+        <CheckCircle2 className="mx-auto mb-5 h-14 w-14 text-laser-cyan" aria-hidden="true" />
+        <h3 className="font-heading text-3xl tracking-tight text-foreground">
+          {contact.success.title}
         </h3>
-        <p className="text-muted max-w-md mx-auto text-sm">
-          Got it. We&apos;ll review your specs and reply within one business
-          day. For urgent requests, call us directly.
+        <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-muted">
+          {contact.success.message}
         </p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Invisible Turnstile widget */}
-      <Turnstile
-        siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-        onSuccess={setTurnstileToken}
-        options={{ size: "invisible" }}
+    <form onSubmit={handleSubmit} className="space-y-7">
+      <input
+        tabIndex={-1}
+        autoComplete="off"
+        className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden opacity-0"
+        name="companyWebsite"
+        aria-hidden="true"
       />
 
-      {/* Error state */}
       {error && (
         <div
-          className="flex items-center gap-3 p-4 rounded bg-red-950/30 border border-red-900/40 text-red-400 text-sm"
+          className="flex items-start gap-3 border border-red-500/35 bg-red-500/10 px-4 py-3 text-sm text-red-200"
           role="alert"
         >
-          <AlertCircle className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
-          {error}
+          <AlertCircle className="mt-[1px] h-4 w-4 flex-shrink-0" aria-hidden="true" />
+          <span>{error}</span>
         </div>
       )}
 
-      {/* Name & Email */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
-          <label htmlFor="name" className="block text-sm text-muted mb-2">
+          <label htmlFor="name" className="mb-2 block text-sm text-muted-light">
             Name <span aria-hidden="true">*</span>
-            <span className="sr-only">(required)</span>
           </label>
           <input
             id="name"
@@ -112,14 +139,14 @@ export function ContactForm() {
             required
             minLength={2}
             className={inputStyles}
-            placeholder="Your name"
+            placeholder="Your full name"
             autoComplete="name"
           />
         </div>
+
         <div>
-          <label htmlFor="email" className="block text-sm text-muted mb-2">
+          <label htmlFor="email" className="mb-2 block text-sm text-muted-light">
             Email <span aria-hidden="true">*</span>
-            <span className="sr-only">(required)</span>
           </label>
           <input
             id="email"
@@ -133,10 +160,9 @@ export function ContactForm() {
         </div>
       </div>
 
-      {/* Phone & Event Date */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
-          <label htmlFor="phone" className="block text-sm text-muted mb-2">
+          <label htmlFor="phone" className="mb-2 block text-sm text-muted-light">
             Phone
           </label>
           <input
@@ -148,99 +174,100 @@ export function ContactForm() {
             autoComplete="tel"
           />
         </div>
+
         <div>
-          <label htmlFor="eventDate" className="block text-sm text-muted mb-2">
+          <label htmlFor="eventDate" className="mb-2 block text-sm text-muted-light">
             Event Date
           </label>
-          <input
-            id="eventDate"
-            name="eventDate"
-            type="date"
-            className={inputStyles}
-          />
+          <input id="eventDate" name="eventDate" type="date" className={inputStyles} />
         </div>
       </div>
 
-      {/* Venue & Event Type */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
-          <label htmlFor="venue" className="block text-sm text-muted mb-2">
-            Venue
+          <label htmlFor="venue" className="mb-2 block text-sm text-muted-light">
+            Venue / City
           </label>
           <input
             id="venue"
             name="venue"
             className={inputStyles}
-            placeholder="Venue name or address"
+            placeholder="Venue name and city"
           />
         </div>
+
         <div>
-          <label
-            htmlFor="eventType"
-            className="block text-sm text-muted mb-2"
-          >
+          <label htmlFor="eventType" className="mb-2 block text-sm text-muted-light">
             Event Type
           </label>
-          <select id="eventType" name="eventType" className={inputStyles}>
-            <option value="">Select type...</option>
-            <option value="Concert / Festival">Concert / Festival</option>
-            <option value="Corporate Event">Corporate Event</option>
-            <option value="Conference">Conference</option>
-            <option value="Wedding">Wedding</option>
-            <option value="Private Event">Private Event</option>
-            <option value="Other">Other</option>
+          <select id="eventType" name="eventType" className={inputStyles} defaultValue="">
+            <option value="">Select event type</option>
+            {contact.eventTypes.map((eventType) => (
+              <option key={eventType} value={eventType}>
+                {eventType}
+              </option>
+            ))}
           </select>
         </div>
       </div>
 
-      {/* Gear Needs */}
       <fieldset>
-        <legend className="block text-sm text-muted mb-3">
-          What do you need?
-        </legend>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {gearOptions.map((gear) => (
+        <legend className="mb-3 text-sm text-muted-light">Production Needs</legend>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {contact.serviceNeeds.map((need) => (
             <label
-              key={gear}
-              className="flex items-center gap-2 text-sm text-muted cursor-pointer hover:text-foreground transition-colors"
+              key={need}
+              className="flex cursor-pointer items-center gap-2 border border-border bg-surface-light px-3 py-2 text-sm text-muted transition-colors hover:text-foreground"
             >
               <input
                 type="checkbox"
                 name="gearNeeds"
-                value={gear}
-                className="rounded border-border bg-surface text-laser-cyan focus:ring-laser-cyan/40 focus-visible:ring-2"
+                value={need}
+                className="h-4 w-4 border-border bg-surface text-laser-cyan"
               />
-              {gear}
+              {need}
             </label>
           ))}
         </div>
       </fieldset>
 
-      {/* Message */}
       <div>
-        <label htmlFor="message" className="block text-sm text-muted mb-2">
-          Tell us about your event <span aria-hidden="true">*</span>
-          <span className="sr-only">(required)</span>
+        <label htmlFor="message" className="mb-2 block text-sm text-muted-light">
+          Project Brief <span aria-hidden="true">*</span>
         </label>
         <textarea
           id="message"
           name="message"
-          rows={5}
+          rows={6}
           required
           minLength={10}
           className={inputStyles}
-          placeholder="Describe your event, expected attendance, technical requirements, or share your rider..."
+          placeholder="Share scope, run-of-show requirements, attendance, and any technical constraints."
         />
       </div>
 
-      <GlowButton
-        type="submit"
-        variant="primary"
-        className={pending ? "opacity-60 cursor-wait" : ""}
-      >
-        <Send className="w-4 h-4 mr-2 inline" aria-hidden="true" />
-        {pending ? "Sending..." : "Send Quote Request"}
-      </GlowButton>
+      <div className="flex flex-col gap-4">
+        <div>
+          {turnstileSiteKey ? (
+            <Turnstile
+              siteKey={turnstileSiteKey}
+              onSuccess={setTurnstileToken}
+              onExpire={() => setTurnstileToken("")}
+              options={{ theme: "dark", size: "flexible" }}
+            />
+          ) : (
+            <p className="text-xs text-red-200">
+              Turnstile is not configured. Add `NEXT_PUBLIC_TURNSTILE_SITE_KEY` to enable form
+              submissions.
+            </p>
+          )}
+        </div>
+
+        <GlowButton type="submit" variant="primary" disabled={pending}>
+          <Send className="mr-2 inline h-4 w-4" aria-hidden="true" />
+          {pending ? "Sending..." : contact.submitLabel}
+        </GlowButton>
+      </div>
     </form>
   );
 }

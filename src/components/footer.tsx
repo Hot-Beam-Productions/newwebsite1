@@ -1,71 +1,71 @@
 import Link from "next/link";
 import Image from "next/image";
+import { brand, footer, navigation } from "@/lib/site-data";
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-[#030303]">
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          {/* Brand */}
+    <footer className="border-t border-border bg-background">
+      <div className="mx-auto max-w-7xl px-6 py-14">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
             <Image
-              src="/logo.png"
-              alt="Hot Beam Productions"
-              width={160}
-              height={44}
+              src={brand.heroLogo}
+              alt={brand.name}
+              width={170}
+              height={46}
               className="h-8 w-auto"
             />
-            <p className="mt-4 text-muted text-xs max-w-sm leading-relaxed">
-              High-power lasers, touring-grade audio, lighting, and video
-              production. We load in, we build the show, we make it hit. Based
-              in Colorado, deployed nationwide.
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-muted">
+              {footer.description}
             </p>
+            <div className="mt-5 space-y-1 text-xs text-muted-light">
+              <p>{brand.location}</p>
+              <a href={`mailto:${brand.email}`} className="hover:text-foreground transition-colors">
+                {brand.email}
+              </a>
+              <a href={`tel:${brand.phoneHref}`} className="block hover:text-foreground transition-colors">
+                {brand.phoneDisplay}
+              </a>
+            </div>
           </div>
 
-          {/* Links */}
           <div>
-            <h4 className="mono-label !text-foreground mb-4">Navigate</h4>
+            <h4 className="mono-label mb-4 !text-foreground">Navigation</h4>
             <ul className="space-y-2">
-              {[
-                { label: "Work", href: "/work" },
-                { label: "Inventory", href: "/rentals" },
-                { label: "About", href: "/about" },
-                { label: "Contact", href: "/contact" },
-              ].map((item) => (
-                <li key={item.label}>
-                  <Link
-                    href={item.href}
-                    className="text-xs text-muted hover:text-laser-cyan transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
+              {navigation
+                .filter((item) => item.href !== "/")
+                .map((item) => (
+                  <li key={item.href}>
+                    <Link href={item.href} className="text-sm text-muted hover:text-foreground transition-colors">
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </div>
 
-          {/* Departments */}
           <div>
-            <h4 className="mono-label !text-foreground mb-4">Departments</h4>
-            <ul className="space-y-2 text-xs text-muted">
-              <li>Lasers</li>
-              <li>Lighting</li>
-              <li>Audio</li>
-              <li>Video / LED</li>
-              <li>SFX</li>
-              <li>Gear Rentals</li>
+            <h4 className="mono-label mb-4 !text-foreground">Departments</h4>
+            <ul className="space-y-2 text-sm text-muted">
+              {footer.departments.map((department) => (
+                <li key={department}>{department}</li>
+              ))}
             </ul>
           </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-[10px] text-muted tracking-wider uppercase">
-            &copy; {new Date().getFullYear()} Hot Beam Productions. All rights
-            reserved.
+        <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-border pt-6 md:flex-row md:items-center">
+          <p className="mono-label text-[10px] !text-muted">
+            &copy; {new Date().getFullYear()} {brand.name}. All rights reserved.
           </p>
-          <p className="text-[10px] text-muted tracking-wider uppercase">
-            Colorado, USA
-          </p>
+          <a
+            href={brand.instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mono-label text-[10px] !text-muted transition-colors hover:!text-laser-cyan"
+          >
+            {brand.instagramHandle}
+          </a>
         </div>
       </div>
     </footer>

@@ -5,22 +5,32 @@ import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { GlowButton } from "@/components/glow-button";
 import { MediaPlaceholder } from "@/components/media-placeholder";
-import portfolio from "@/data/portfolio.json";
+import { getWorkProject, work } from "@/lib/site-data";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
+const serviceStyles: Record<string, string> = {
+  audio: "border-blue-400/30 bg-blue-400/10 text-blue-200",
+  lighting: "border-amber-400/30 bg-amber-400/10 text-amber-200",
+  video: "border-violet-400/30 bg-violet-400/10 text-violet-200",
+  lasers: "border-laser-cyan/35 bg-laser-cyan/10 text-laser-cyan",
+  sfx: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
+};
+
 export async function generateStaticParams() {
-  return portfolio.map((p) => ({ slug: p.slug }));
+  return work.projects.map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const project = portfolio.find((p) => p.slug === slug);
+  const project = getWorkProject(slug);
+
   if (!project) return { title: "Not Found" };
+
   return {
-    title: `${project.title} | Hot Beam Productions`,
+    title: project.title,
     description: project.description,
     openGraph: {
       title: project.title,
@@ -30,59 +40,48 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-const serviceColors: Record<string, string> = {
-  audio: "bg-blue-500/15 text-blue-400 border-blue-500/20",
-  lighting: "bg-yellow-500/15 text-yellow-400 border-yellow-500/20",
-  video: "bg-purple-500/15 text-purple-400 border-purple-500/20",
-  lasers: "bg-laser-cyan/15 text-laser-cyan border-laser-cyan/20",
-  sfx: "bg-green-500/15 text-green-400 border-green-500/20",
-};
-
 export default async function WorkProjectPage({ params }: Props) {
   const { slug } = await params;
-  const project = portfolio.find((p) => p.slug === slug);
+  const project = getWorkProject(slug);
   if (!project) notFound();
 
   return (
-    <div className="pt-32 pb-24 px-6">
-      <div className="max-w-5xl mx-auto">
-        {/* Back */}
+    <div className="px-6 pb-24 pt-28 md:pt-32">
+      <div className="mx-auto max-w-5xl">
         <Link
           href="/work"
-          className="inline-flex items-center gap-2 mono-label !text-muted hover:!text-laser-cyan transition-colors mb-10"
+          className="mono-label mb-10 inline-flex items-center gap-2 !text-muted transition-colors hover:!text-laser-cyan"
         >
-          <ArrowLeft className="w-3 h-3" />
-          All Work
+          <ArrowLeft className="h-3 w-3" />
+          Back to work
         </Link>
 
-        {/* Header */}
-        <div className="mb-8">
-          <p className="mono-label text-laser-cyan mb-3">{project.client}</p>
-          <h1 className="font-heading text-6xl md:text-8xl tracking-wide text-foreground leading-none">
+        <header className="mb-10 space-y-4">
+          <p className="mono-label !text-muted-light">
+            {project.client} · {project.location}
+          </p>
+          <h1 className="font-heading text-5xl leading-[0.95] tracking-tight text-foreground md:text-7xl">
             {project.title}
           </h1>
-          <div className="flex flex-wrap gap-2 mt-6">
-            {project.services.map((s) => (
+          <div className="flex flex-wrap gap-2 pt-1">
+            {project.services.map((service) => (
               <span
-                key={s}
-                className={`text-xs px-3 py-1 rounded border ${serviceColors[s] ?? "bg-white/10 text-white/60 border-white/10"}`}
+                key={service}
+                className={`rounded border px-3 py-1 text-xs capitalize tracking-wide ${serviceStyles[service] ?? "border-border bg-surface-light text-muted"}`}
               >
-                {s}
+                {service}
               </span>
             ))}
-            {project.eventDate && (
-              <span className="text-xs px-3 py-1 rounded border border-border text-muted">
-                {new Date(project.eventDate).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                })}
-              </span>
-            )}
+            <span className="rounded border border-border bg-surface-light px-3 py-1 text-xs text-muted-light">
+              {new Date(project.eventDate).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+              })}
+            </span>
           </div>
-        </div>
+        </header>
 
-        {/* Hero image */}
-        <div className="rounded-lg overflow-hidden mb-12">
+        <div className="mb-12 overflow-hidden border border-border bg-surface">
           {project.mainImageUrl && !project.mainImageUrl.includes("pub-XXXX") ? (
             <div className="relative aspect-video w-full">
               <Image
@@ -94,78 +93,76 @@ export default async function WorkProjectPage({ params }: Props) {
               />
             </div>
           ) : (
-            <MediaPlaceholder label="Hero photo / Stage render" aspect="video" />
+            <MediaPlaceholder label="Hero image" aspect="video" />
           )}
         </div>
 
-        {/* Body copy */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16">
-          <div className="lg:col-span-2 space-y-4 text-muted leading-relaxed text-sm">
+        <div className="mb-16 grid grid-cols-1 gap-10 lg:grid-cols-3">
+          <article className="space-y-4 text-base leading-relaxed text-muted lg:col-span-2">
             <p>{project.longDescription}</p>
-          </div>
-          <div className="space-y-6">
-            <div className="p-5 rounded-lg bg-surface border border-border">
-              <p className="mono-label !text-foreground mb-3">Event Details</p>
-              <dl className="space-y-2 text-xs text-muted">
-                <div className="flex justify-between">
-                  <dt>Client</dt>
-                  <dd className="text-foreground">{project.client}</dd>
-                </div>
-                {project.eventDate && (
-                  <div className="flex justify-between">
-                    <dt>Date</dt>
-                    <dd className="text-foreground">
-                      {new Date(project.eventDate).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </dd>
-                  </div>
-                )}
-                <div className="flex justify-between">
-                  <dt>Departments</dt>
-                  <dd className="text-foreground capitalize">
-                    {project.services.join(", ")}
-                  </dd>
-                </div>
-              </dl>
-            </div>
-          </div>
+          </article>
+
+          <aside className="h-fit border border-border bg-surface p-6">
+            <p className="mono-label mb-4 !text-foreground">Project Snapshot</p>
+            <dl className="space-y-3 text-sm text-muted-light">
+              <div className="flex items-center justify-between gap-4">
+                <dt>Client</dt>
+                <dd className="text-right text-foreground">{project.client}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <dt>Location</dt>
+                <dd className="text-right text-foreground">{project.location}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <dt>Date</dt>
+                <dd className="text-right text-foreground">
+                  {new Date(project.eventDate).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </dd>
+              </div>
+              <div className="flex items-start justify-between gap-4">
+                <dt>Scope</dt>
+                <dd className="text-right capitalize text-foreground">
+                  {project.services.join(", ")}
+                </dd>
+              </div>
+            </dl>
+          </aside>
         </div>
 
-        {/* Gallery */}
-        {project.gallery && project.gallery.length > 0 && (
-          <div className="mb-16">
-            <p className="mono-label !text-foreground mb-6">Gallery</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {project.gallery.map((url, i) => (
-                <div key={i} className="rounded-lg overflow-hidden">
+        {project.gallery.length > 0 && (
+          <section className="mb-16">
+            <p className="mono-label mb-5 !text-foreground">Gallery</p>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              {project.gallery.map((url, index) => (
+                <div key={url} className="overflow-hidden border border-border bg-surface">
                   {!url.includes("pub-XXXX") ? (
                     <div className="relative aspect-video w-full">
-                      <Image src={url} alt={`${project.title} ${i + 1}`} fill className="object-cover" />
+                      <Image src={url} alt={`${project.title} image ${index + 1}`} fill className="object-cover" />
                     </div>
                   ) : (
-                    <MediaPlaceholder label="Gallery photo / BTS rigging" aspect="video" />
+                    <MediaPlaceholder label="Gallery image" aspect="video" />
                   )}
                 </div>
               ))}
             </div>
-          </div>
+          </section>
         )}
 
-        {/* CTA */}
-        <div className="border-t border-border pt-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="flex flex-col items-start justify-between gap-5 border-t border-border pt-12 md:flex-row md:items-center">
           <div>
-            <h3 className="font-heading text-3xl tracking-wider text-foreground">
-              Book This Package
-            </h3>
-            <p className="text-muted text-sm mt-1">
-              Tell us your event specs. We&apos;ll tell you what&apos;s possible.
+            <h2 className="font-heading text-3xl tracking-tight text-foreground md:text-4xl">
+              Planning something similar?
+            </h2>
+            <p className="mt-2 text-sm text-muted">
+              Share your scope and we will shape the right technical approach.
             </p>
           </div>
           <GlowButton href="/contact" variant="primary">
-            Request a Quote
+            Request a Proposal
           </GlowButton>
         </div>
       </div>
