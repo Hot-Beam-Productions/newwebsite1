@@ -86,11 +86,14 @@ export interface SiteData {
   home: {
     hero: {
       eyebrow: string;
+      headline: string;
+      subheadline: string;
       departmentLine: string;
       description: string;
       primaryCta: Cta;
       secondaryCta: Cta;
     };
+    trustSignals: string[];
     services: {
       label: string;
       title: string;
@@ -171,6 +174,7 @@ export interface SiteData {
       message: string;
     };
     submitLabel: string;
+    complianceBadges: string[];
   };
   footer: {
     description: string;

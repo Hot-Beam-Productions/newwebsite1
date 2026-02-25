@@ -52,13 +52,13 @@ export function Navbar() {
             href="/contact"
             className="mono-label rounded-sm border border-laser-cyan/50 px-4 py-2 !text-laser-cyan transition-all hover:bg-laser-cyan/12"
           >
-            Start Project
+            Check Date Availability
           </Link>
         </div>
 
         <button
           onClick={() => setMobileOpen((state) => !state)}
-          className="text-foreground md:hidden"
+          className="flex h-11 w-11 items-center justify-center text-foreground md:hidden"
           aria-label="Toggle menu"
           aria-expanded={mobileOpen}
         >

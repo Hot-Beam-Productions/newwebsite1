@@ -53,7 +53,13 @@ export default function Home() {
             priority
           />
 
-          <h1 className="sr-only">{brand.name}</h1>
+          <h1 className="mx-auto mt-6 max-w-4xl font-heading text-4xl leading-tight tracking-tight text-foreground md:text-6xl">
+            {home.hero.headline}
+          </h1>
+
+          <p className="mx-auto mt-5 max-w-3xl text-base leading-relaxed text-muted-light md:text-lg">
+            {home.hero.subheadline}
+          </p>
 
           <p className="mt-6 font-heading text-xl tracking-[0.2em] text-foreground/82 uppercase md:text-2xl">
             {home.hero.departmentLine}
@@ -81,6 +87,16 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="px-6 pb-16" aria-label="Trust signals">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-3 border border-border bg-surface p-4 md:grid-cols-2 lg:grid-cols-4">
+          {home.trustSignals.map((signal) => (
+            <p key={signal} className="mono-label !text-muted-light">
+              {signal}
+            </p>
+          ))}
         </div>
       </section>
 

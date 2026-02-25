@@ -40,27 +40,29 @@
     "titleTemplate": "%s | Hot Beam Productions",
     "description": "Denver-based live event production partner for concerts, brand activations, and corporate stages. Audio, lighting, lasers, video, and special effects designed and executed by one accountable team.",
     "keywords": [
-      "denver event production company",
-      "live event technical production",
-      "concert lighting and laser design",
-      "corporate stage production denver",
-      "audio video staging colorado",
-      "special effects production services"
+      "colorado av production company",
+      "denver concert lighting and laser production",
+      "tour-grade event production colorado",
+      "rider compliant audio visual services",
+      "festival and nightclub production boulder denver",
+      "corporate event technical direction colorado"
     ]
   },
   "home": {
     "hero": {
-      "eyebrow": "Denver, Colorado | Live Event Production",
-      "departmentLine": "Audio · Lighting · Lasers · Video · SFX",
-      "description": "We design and run technical production for concerts, festivals, and corporate events. One team handles the project from prep to show call.",
+      "eyebrow": "Colorado | Tour-Grade Live Event Production",
+      "departmentLine": "Audio \u00b7 Lighting \u00b7 Lasers \u00b7 Video \u00b7 SFX",
+      "description": "One accountable production partner from pre-pro to show call, built for high-stakes events where execution cannot fail.",
       "primaryCta": {
-        "label": "View Recent Work",
-        "href": "/work"
+        "label": "Check Date Availability",
+        "href": "/contact"
       },
       "secondaryCta": {
-        "label": "Request a Proposal",
-        "href": "/contact"
-      }
+        "label": "View Recent Deployments",
+        "href": "/work"
+      },
+      "headline": "Tour-Grade AV Production & Precision Laser Engineering",
+      "subheadline": "Rider-compliant audio, LED video, lighting, and FDA-approved laser operations for Colorado venues, festivals, and touring artists."
     },
     "services": {
       "label": "Capabilities",
@@ -140,13 +142,19 @@
       }
     ],
     "closingCta": {
-      "title": "Your Creative Direction. Our Technical Delivery.",
-      "description": "Send the brief, rider, or rough concept. We will return a clear production plan and quote.",
+      "title": "Do Not Compromise Your Production Value",
+      "description": "Send your date, venue, and technical brief. We will return a scoped plan with staffing, gear, and risk controls.",
       "button": {
-        "label": "Start a Project",
+        "label": "Check Date Availability",
         "href": "/contact"
       }
-    }
+    },
+    "trustSignals": [
+      "Featured: Fox Theater Boulder Boiler Room Production",
+      "FDA variance-compliant laser operations",
+      "Venue, promoter, and touring-rider workflows",
+      "Colorado-based crew with nationwide deployment"
+    ]
   },
   "work": {
     "heading": {
@@ -336,14 +344,14 @@
       {
         "id": "daniel",
         "name": "Daniel Mankin",
-        "role": "Co-Founder · Technical Director",
+        "role": "Co-Founder \u00b7 Technical Director",
         "bio": "Daniel leads system architecture, laser operations, and show programming. He is FDA LSO certified.",
         "imageUrl": "https://pub-XXXX.r2.dev/team/daniel.jpg"
       },
       {
         "id": "beau",
         "name": "Beau",
-        "role": "Co-Founder · Production Manager",
+        "role": "Co-Founder \u00b7 Production Manager",
         "bio": "Beau leads logistics, crew operations, and site execution. He keeps schedules, vendors, and staffing aligned from prep through strike.",
         "imageUrl": "https://pub-XXXX.r2.dev/team/beau.jpg"
       }
@@ -424,7 +432,7 @@
           "CMY + CTO",
           "Dual Gobo Wheels",
           "Framing Shutters",
-          "8-51° Zoom"
+          "8-51\u00b0 Zoom"
         ],
         "imageUrl": "https://pub-XXXX.r2.dev/rentals/martin-mac-viper.jpg",
         "available": true
@@ -440,7 +448,7 @@
         "specs": [
           "3-Way Passive",
           "141 dB SPL Max",
-          "120° H / 10° V",
+          "120\u00b0 H / 10\u00b0 V",
           "27 kg"
         ],
         "imageUrl": "https://pub-XXXX.r2.dev/rentals/db-v12.jpg",
@@ -508,7 +516,7 @@
         "specs": [
           "RGBW LED",
           "Moving Head",
-          "8-60° Zoom",
+          "8-60\u00b0 Zoom",
           "IP20"
         ],
         "imageUrl": "https://pub-XXXX.r2.dev/rentals/rogue-r3.jpg",
@@ -621,7 +629,12 @@
       "title": "Request Received",
       "message": "Your brief has been received. We will follow up within one business day."
     },
-    "submitLabel": "Send Proposal Request"
+    "submitLabel": "Send Proposal Request",
+    "complianceBadges": [
+      "FDA laser safety and variance workflow",
+      "Certificate of Insurance available on request",
+      "Documented safety and site coordination process"
+    ]
   },
   "footer": {
     "description": "Live event production for concerts, brand activations, and corporate stages. Clear plans, reliable execution.",
