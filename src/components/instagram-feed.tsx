@@ -34,7 +34,6 @@ async function getInstagramPosts(): Promise<InstagramPost[]> {
 
 export async function InstagramFeed() {
   const posts = await getInstagramPosts();
-  if (posts.length === 0) return null;
 
   return (
     <section className="px-6 py-24">
@@ -45,34 +44,44 @@ export async function InstagramFeed() {
           subtitle="On-site moments, rig builds, and show-night snapshots from current deployments."
         />
 
-        <div className="grid grid-cols-3 gap-1 md:gap-2">
-          {posts.map((post) => {
-            const imageUrl = post.media_type === "VIDEO" ? post.thumbnail_url : post.media_url;
-            if (!imageUrl) return null;
+        {posts.length > 0 ? (
+          <div className="grid grid-cols-3 gap-1 md:gap-2">
+            {posts.map((post) => {
+              const imageUrl = post.media_type === "VIDEO" ? post.thumbnail_url : post.media_url;
+              if (!imageUrl) return null;
 
-            return (
-              <Link
-                key={post.id}
-                href={post.permalink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative aspect-square overflow-hidden border border-border bg-surface"
-                aria-label={post.caption ? post.caption.slice(0, 80) : "Open Instagram post"}
-              >
-                <Image
-                  src={imageUrl}
-                  alt={post.caption ? post.caption.slice(0, 100) : "Instagram post"}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 768px) 33vw, (max-width: 1280px) 25vw, 380px"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/55">
-                  <Instagram className="h-6 w-6 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+              return (
+                <Link
+                  key={post.id}
+                  href={post.permalink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative aspect-square overflow-hidden border border-border bg-surface"
+                  aria-label={post.caption ? post.caption.slice(0, 80) : "Open Instagram post"}
+                >
+                  <Image
+                    src={imageUrl}
+                    alt={post.caption ? post.caption.slice(0, 100) : "Instagram post"}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 768px) 33vw, (max-width: 1280px) 25vw, 380px"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/55">
+                    <Instagram className="h-6 w-6 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="border border-border bg-surface p-8 text-center md:p-10">
+            <Instagram className="mx-auto h-8 w-8 text-laser-cyan" aria-hidden="true" />
+            <p className="mt-4 text-sm text-muted">Instagram posts are loading from our profile.</p>
+            <p className="mt-2 text-sm text-muted-light">
+              Tap below to view the latest content directly on Instagram.
+            </p>
+          </div>
+        )}
 
         <div className="mt-8 text-center">
           <Link
