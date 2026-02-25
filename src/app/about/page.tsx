@@ -1,161 +1,163 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { SectionHeading } from "@/components/section-heading";
-import { GlowButton } from "@/components/glow-button";
+import type { Metadata } from "next";
 import { ArrowRight, Zap, Users, Award, MapPin } from "lucide-react";
+import { GlowButton } from "@/components/glow-button";
+import { SectionHeading } from "@/components/section-heading";
+import { MediaPlaceholder } from "@/components/media-placeholder";
+import teamData from "@/data/team.json";
+
+export const metadata: Metadata = {
+  title: "About | Hot Beam Productions",
+  description:
+    "Denver-based live event production company. Co-founded by Daniel Mankin and Beau. Full-service audio, lighting, video, lasers, and SFX. Front Range and nationwide.",
+};
 
 const stats = [
   { label: "Events Produced", value: "500+", icon: Zap },
-  { label: "Team Members", value: "25+", icon: Users },
-  { label: "Years in Denver", value: "10+", icon: MapPin },
-  { label: "Awards", value: "12", icon: Award },
+  { label: "Team Members", value: "15+", icon: Users },
+  { label: "Years Operating", value: "10+", icon: MapPin },
+  { label: "States Deployed", value: "12+", icon: Award },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5 },
-  },
-};
-
 export default function AboutPage() {
+  const { partners, crew } = teamData;
+
   return (
     <div className="pt-32 pb-24 px-6">
       <div className="max-w-7xl mx-auto">
         <SectionHeading
+          label="The Company"
           title="About Us"
-          subtitle="The story behind Denver's most creative event production company."
+          subtitle="Two co-founders. Fifteen years of combined stage experience. One production company that moves at the speed of the industry."
         />
 
-        {/* Story */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h3 className="font-heading text-3xl tracking-wider uppercase text-foreground mb-6">
-              Built by Creatives, for Creatives
-            </h3>
-            <div className="space-y-4 text-muted leading-relaxed">
-              <p>
-                Hot Beam Productions was founded by Daniel and Beau with a
-                simple belief: event production should be an art form, not just
-                a service. Based in Denver, Colorado, we started with a passion
-                for light, sound, and the transformative power of live
-                experiences.
-              </p>
-              <p>
-                What began as two friends running laser shows at local venues
-                has grown into a full-service production company trusted by
-                major brands, festivals, and private clients across the Front
-                Range and beyond.
-              </p>
-              <p>
-                We&apos;re not the biggest production company — and that&apos;s
-                our advantage. We move fast, think creatively, and treat every
-                event like it&apos;s our own. Where the industry giants deliver
-                standard packages, we deliver custom experiences.
-              </p>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative"
-          >
-            {/* Placeholder for team photo */}
-            <div className="aspect-[4/3] rounded-lg bg-surface border border-border flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-20 h-20 mx-auto rounded-full bg-laser-cyan/10 flex items-center justify-center mb-4">
-                  <Users className="w-10 h-10 text-laser-cyan" />
+        {/* Partners — 50/50 layout */}
+        <section className="mb-24" aria-labelledby="partners-heading">
+          <p id="partners-heading" className="mono-label text-laser-cyan mb-8">
+            Founders
+          </p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {partners.map((partner) => (
+              <div
+                key={partner.id}
+                className="p-8 rounded-lg bg-surface border border-border hover:border-laser-cyan/20 transition-colors"
+              >
+                <div className="flex items-start gap-6">
+                  <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-light">
+                    {partner.imageUrl && !partner.imageUrl.includes("pub-XXXX") ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={partner.imageUrl}
+                        alt={partner.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <MediaPlaceholder
+                        label="Headshot"
+                        aspect="square"
+                        className="!aspect-auto !h-full"
+                      />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-2xl tracking-wider text-foreground">
+                      {partner.name}
+                    </h3>
+                    <p className="mono-label text-laser-cyan mt-1">{partner.role}</p>
+                    <p className="text-sm text-muted mt-4 leading-relaxed">
+                      {partner.bio}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-muted text-sm">Team photo</p>
-                <p className="text-xs text-muted/60 mt-1">
-                  Upload via Sanity Studio
-                </p>
               </div>
-            </div>
+            ))}
+          </div>
+        </section>
 
-            {/* Decorative element */}
-            <div className="absolute -bottom-4 -right-4 w-full h-full border border-laser-cyan/20 rounded-lg -z-10" />
-          </motion.div>
-        </div>
+        {/* Story */}
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
+          <div>
+            <h3 className="font-heading text-4xl tracking-wider uppercase text-foreground mb-6">
+              Built for the Show Floor
+            </h3>
+            <div className="space-y-4 text-muted leading-relaxed text-sm">
+              <p>
+                Hot Beam started because we were tired of watching under-spec&apos;d gear show
+                up to high-stakes gigs. We built our inventory around the fixtures we actually
+                wanted to run — MAC Vipers, Kvant lasers, d&b line arrays — and we maintain
+                it ourselves.
+              </p>
+              <p>
+                We operate as a tight crew. No layers between the client and the people
+                actually running the show. Daniel advances the technical rider. Beau runs
+                logistics and crew. Both of us are on-site, every time, until load-out is
+                complete.
+              </p>
+              <p>
+                Our clients are TDs and event planners who&apos;ve been burned before by
+                production companies that oversell and under-deliver. We quote
+                conservatively, communicate early, and solve problems before the first truck
+                rolls.
+              </p>
+            </div>
+          </div>
+          <div className="relative">
+            <MediaPlaceholder
+              label="Team / BTS photography"
+              aspect="portrait"
+              className="rounded-lg"
+            />
+            <div className="absolute -bottom-4 -right-4 w-full h-full border border-laser-cyan/15 rounded-lg -z-10" />
+          </div>
+        </section>
 
         {/* Stats */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
+        <section
           className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-24"
+          aria-label="Company statistics"
         >
           {stats.map((stat) => (
-            <motion.div
+            <div
               key={stat.label}
-              variants={itemVariants}
               className="text-center p-8 rounded-lg bg-surface border border-border"
             >
-              <stat.icon className="w-6 h-6 text-laser-cyan mx-auto mb-4" />
+              <stat.icon
+                className="w-6 h-6 text-laser-cyan mx-auto mb-4"
+                aria-hidden="true"
+              />
               <p className="font-heading text-4xl font-bold gradient-text">
                 {stat.value}
               </p>
               <p className="text-sm text-muted mt-2">{stat.label}</p>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </section>
 
         {/* Values */}
-        <div className="mb-24">
-          <motion.h3
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="font-heading text-4xl tracking-wider uppercase gradient-text mb-10"
-          >
+        <section className="mb-24">
+          <h3 className="font-heading text-4xl tracking-wider uppercase gradient-text mb-10">
             Why Hot Beam?
-          </motion.h3>
-
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
-          >
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                title: "Creative Edge",
+                title: "Technical Depth",
                 description:
-                  "We don't just set up gear — we design experiences. Every event gets a custom creative concept tailored to your vision.",
+                  "We can read a rider, spec a system, and program a show. We don't hand off technical decisions to vendors — we own them.",
               },
               {
-                title: "High-Tech Arsenal",
+                title: "Tier 1 Inventory",
                 description:
-                  "From 20W lasers to the latest LED walls, our inventory is built for impact. We invest in the gear others rent out.",
+                  "MAC Vipers. d&b line arrays. Kvant lasers. grandMA3 consoles. We bought the gear that touring riders call for and we keep it in working condition.",
               },
               {
-                title: "Agile & Reliable",
+                title: "Small Crew Advantage",
                 description:
-                  "We move at the speed of your deadlines. Small team, big output. No corporate red tape — just results.",
+                  "Fast decisions, direct communication, no account managers between you and the people doing the work. We move when you need to move.",
               },
             ].map((value) => (
-              <motion.div
+              <div
                 key={value.title}
-                variants={itemVariants}
-                className="p-8 rounded-lg bg-surface border border-border hover:border-laser-cyan/30 transition-all duration-500"
+                className="p-8 rounded-lg bg-surface border border-border hover:border-laser-cyan/30 transition-all duration-500 scanline-overlay"
               >
                 <h4 className="font-heading text-xl tracking-wider uppercase text-foreground mb-3">
                   {value.title}
@@ -163,30 +165,56 @@ export default function AboutPage() {
                 <p className="text-muted text-sm leading-relaxed">
                   {value.description}
                 </p>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
-        </div>
+          </div>
+        </section>
+
+        {/* Crew */}
+        {crew.length > 0 && (
+          <section className="mb-24">
+            <p className="mono-label text-laser-cyan mb-6">Crew</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {crew.map((member) => (
+                <div key={member.id} className="text-center">
+                  <div className="w-16 h-16 mx-auto rounded-full overflow-hidden bg-surface-light mb-3">
+                    {member.imageUrl && !member.imageUrl.includes("pub-XXXX") ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={member.imageUrl}
+                        alt={member.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <MediaPlaceholder
+                        label=""
+                        aspect="square"
+                        className="!aspect-auto !h-full"
+                      />
+                    )}
+                  </div>
+                  <p className="text-sm text-foreground">{member.name}</p>
+                  <p className="mono-label mt-1">{member.role}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center"
-        >
+        <div className="text-center">
           <h3 className="font-heading text-4xl tracking-wider uppercase text-foreground mb-4">
-            Let&apos;s Create Something Together
+            Let&apos;s Run a Show Together
           </h3>
-          <p className="text-muted mb-8 max-w-lg mx-auto">
-            Tell us about your next event and we&apos;ll show you what&apos;s
-            possible.
+          <p className="text-muted mb-8 max-w-lg mx-auto text-sm">
+            Send us your rider, your venue specs, and your timeline. We&apos;ll come back
+            with a real quote from the people who&apos;ll be on-site.
           </p>
           <GlowButton href="/contact" variant="primary">
             Start a Conversation
-            <ArrowRight className="inline ml-2 w-4 h-4" />
+            <ArrowRight className="inline ml-2 w-4 h-4" aria-hidden="true" />
           </GlowButton>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
