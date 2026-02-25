@@ -104,6 +104,12 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased bg-background text-foreground font-mono">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100000] focus:rounded focus:bg-background focus:px-4 focus:py-2 focus:text-laser-cyan focus:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/50"
+        >
+          Skip to main content
+        </a>
         <Navbar />
         <main id="main-content" className="min-h-screen">
           {children}

@@ -23,6 +23,9 @@ export function ContactForm() {
   const [error, setError] = useState<string | undefined>();
   const [turnstileToken, setTurnstileToken] = useState("");
 
+  const workerUrl = process.env.NEXT_PUBLIC_WORKER_URL;
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setPending(true);
@@ -43,7 +46,13 @@ export function ContactForm() {
     };
 
     try {
-      const res = await fetch(process.env.NEXT_PUBLIC_WORKER_URL!, {
+      if (!workerUrl) {
+        setError("Form is temporarily unavailable. Please call or email us directly.");
+        setPending(false);
+        return;
+      }
+
+      const res = await fetch(workerUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -82,13 +91,25 @@ export function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Invisible Turnstile widget */}
-      <Turnstile
-        siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-        onSuccess={setTurnstileToken}
-        options={{ size: "invisible" }}
-      />
+      {turnstileSiteKey && (
+        <Turnstile
+          siteKey={turnstileSiteKey}
+          onSuccess={setTurnstileToken}
+          options={{ size: "invisible" }}
+        />
+      )}
 
       {/* Error state */}
+      {!turnstileSiteKey && (
+        <div
+          className="flex items-center gap-3 p-4 rounded bg-red-950/30 border border-red-900/40 text-red-400 text-sm"
+          role="alert"
+        >
+          <AlertCircle className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+          Spam protection is not configured. Please contact us by phone or email.
+        </div>
+      )}
+
       {error && (
         <div
           className="flex items-center gap-3 p-4 rounded bg-red-950/30 border border-red-900/40 text-red-400 text-sm"
@@ -236,6 +257,7 @@ export function ContactForm() {
       <GlowButton
         type="submit"
         variant="primary"
+        disabled={pending || !turnstileSiteKey || !workerUrl}
         className={pending ? "opacity-60 cursor-wait" : ""}
       >
         <Send className="w-4 h-4 mr-2 inline" aria-hidden="true" />

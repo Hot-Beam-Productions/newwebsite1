@@ -28,7 +28,7 @@ const ALLOWED_ORIGINS = [
 const FROM_ADDRESS = "contact@hotbeamproductions.com";
 const TO_ADDRESS = "contact@hotbeamproductions.com";
 
-export default {
+const workerHandler = {
   async fetch(request: Request, env: Env): Promise<Response> {
     const origin = request.headers.get("Origin") ?? "";
 
@@ -131,6 +131,8 @@ export default {
     return corsResponse({ success: true }, 200, origin);
   },
 };
+
+export default workerHandler;
 
 function corsResponse(body: unknown, status: number, origin: string): Response {
   return new Response(body === null ? null : JSON.stringify(body), {

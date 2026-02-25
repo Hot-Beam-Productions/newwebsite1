@@ -30,8 +30,9 @@ export function PreShowSequence() {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // Only show on first visit
+    // Only show on first visit and respect reduced motion preferences
     if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     try {
       if (localStorage.getItem(STORAGE_KEY)) return;
     } catch {

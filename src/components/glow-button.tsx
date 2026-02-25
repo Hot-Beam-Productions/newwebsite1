@@ -10,6 +10,7 @@ interface GlowButtonProps {
   className?: string;
   type?: "button" | "submit";
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 export function GlowButton({
@@ -19,6 +20,7 @@ export function GlowButton({
   className,
   type = "button",
   onClick,
+  disabled = false,
 }: GlowButtonProps) {
   const baseStyles =
     "relative inline-flex items-center justify-center px-6 py-2.5 text-xs font-mono font-medium tracking-wider uppercase transition-all duration-150";
@@ -36,18 +38,23 @@ export function GlowButton({
     ),
   };
 
-  const classes = cn(baseStyles, variants[variant], className);
+  const classes = cn(
+    baseStyles,
+    variants[variant],
+    disabled && "pointer-events-none opacity-60",
+    className
+  );
 
   if (href) {
     return (
-      <Link href={href} className={classes}>
+      <Link href={href} className={classes} aria-disabled={disabled}>
         {children}
       </Link>
     );
   }
 
   return (
-    <button type={type} onClick={onClick} className={classes}>
+    <button type={type} onClick={onClick} disabled={disabled} className={classes}>
       {children}
     </button>
   );

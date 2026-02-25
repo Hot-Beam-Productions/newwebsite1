@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
@@ -16,6 +17,7 @@ const navLinks = [
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050505]/95 backdrop-blur-sm border-b border-border">
@@ -39,6 +41,7 @@ export function Navbar() {
               key={link.href}
               href={link.href}
               className="mono-label !text-muted-light hover:!text-laser-cyan transition-colors duration-150"
+              aria-current={pathname === link.href ? "page" : undefined}
             >
               {link.label}
             </Link>
@@ -56,6 +59,8 @@ export function Navbar() {
           onClick={() => setMobileOpen(!mobileOpen)}
           className="md:hidden text-foreground"
           aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-nav"
         >
           {mobileOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -70,6 +75,7 @@ export function Navbar() {
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.15 }}
             className="md:hidden bg-[#050505] border-b border-border"
+            id="mobile-nav"
           >
             <div className="px-6 py-4 flex flex-col gap-3">
               {navLinks.map((link) => (
@@ -78,6 +84,7 @@ export function Navbar() {
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
                   className="mono-label !text-sm !text-muted-light hover:!text-laser-cyan transition-colors"
+                  aria-current={pathname === link.href ? "page" : undefined}
                 >
                   {link.label}
                 </Link>
