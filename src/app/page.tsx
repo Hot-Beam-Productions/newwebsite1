@@ -11,6 +11,7 @@ import { GlowButton } from "@/components/glow-button";
 import { SectionHeading } from "@/components/section-heading";
 import { HeroBeams } from "@/components/hero-animations";
 import { InstagramFeed } from "@/components/instagram-feed";
+import { PreShowSequence } from "@/components/pre-show-sequence";
 
 const services = [
   {
@@ -45,9 +46,15 @@ const services = [
   },
 ];
 
+// Lasers is the featured service; the rest go in the secondary stack
+const lasersService = services.find((s) => s.title === "Lasers")!;
+const secondaryServices = services.filter((s) => s.title !== "Lasers");
+
 export default function Home() {
   return (
     <>
+      <PreShowSequence />
+
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-clip pt-20">
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-background" />
@@ -102,32 +109,78 @@ export default function Home() {
             subtitle="Full-service production with the technical depth to execute at any scale. We own our gear, we employ our crew, and we show up ready to work."
           />
 
+          {/* SERVICES GRID — brutalist lattice */}
           <div
             id="services-heading"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-border mt-12"
           >
-            {services.map((service) => (
-              <div
-                key={service.title}
-                className="group relative p-8 rounded-lg bg-surface border border-border hover:border-laser-cyan/30 transition-all duration-500 scanline-overlay"
+            {/* FEATURED: Lasers — 2/3 width */}
+            <div className="lg:col-span-2 bg-background p-10 md:p-14 relative overflow-hidden">
+              {/* Ghost section number */}
+              <span
+                className="section-number absolute -right-6 -top-8 select-none"
+                aria-hidden="true"
               >
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-laser-cyan/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative z-10">
-                  <div className="w-12 h-12 rounded-lg bg-laser-cyan/10 flex items-center justify-center mb-6 group-hover:bg-laser-cyan/20 transition-colors">
+                01
+              </span>
+              {/* Icon */}
+              <div className="w-12 h-12 bg-laser-cyan/10 flex items-center justify-center mb-6">
+                <lasersService.icon
+                  className="w-6 h-6 text-laser-cyan"
+                  aria-hidden="true"
+                />
+              </div>
+              {/* Service name */}
+              <h3 className="type-section text-foreground mt-4 mb-4">
+                {lasersService.title}
+              </h3>
+              {/* Description */}
+              <p className="type-body-light text-muted max-w-lg mb-8">
+                {lasersService.description}
+              </p>
+              {/* Gear specs as mono-label list */}
+              <div className="space-y-1">
+                <p className="type-label-bold text-laser-amber mb-2">
+                  KEY INVENTORY
+                </p>
+                <p className="mono-label text-muted">
+                  Kvant Spectrum Series / ILDA Sync / 40kW Output
+                </p>
+                <p className="mono-label text-muted">
+                  FDA Registered / DMX512 + ArtNet Control
+                </p>
+              </div>
+            </div>
+
+            {/* SECONDARY SERVICES STACK — 1/3 width */}
+            <div className="bg-background divide-y divide-border">
+              {secondaryServices.map((service, index) => (
+                <div
+                  key={service.title}
+                  className="relative p-6 overflow-hidden group hover:bg-surface transition-colors duration-300"
+                >
+                  <span
+                    className="section-number absolute -right-4 -top-6 select-none"
+                    aria-hidden="true"
+                  >
+                    0{index + 2}
+                  </span>
+                  {/* Icon */}
+                  <div className="w-8 h-8 bg-laser-cyan/10 flex items-center justify-center mb-2 group-hover:bg-laser-cyan/20 transition-colors">
                     <service.icon
-                      className="w-6 h-6 text-laser-cyan"
+                      className="w-4 h-4 text-laser-cyan"
                       aria-hidden="true"
                     />
                   </div>
-                  <h3 className="font-heading text-2xl tracking-wider uppercase text-foreground mb-3">
+                  <h3 className="font-display font-bold text-2xl uppercase text-foreground mt-2 mb-2">
                     {service.title}
                   </h3>
-                  <p className="text-muted text-sm leading-relaxed">
+                  <p className="type-body-light text-muted text-sm">
                     {service.description}
                   </p>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>

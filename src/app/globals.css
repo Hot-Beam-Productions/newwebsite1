@@ -1,20 +1,26 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Bebas+Neue&family=Archivo+Black&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;300;400;500;700&family=Big+Shoulders+Display:ital,opsz,wght@0,6..20,100..900;1,6..20,100..900&display=swap");
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #050505;
-  --color-foreground: #e8e8e8;
-  --color-laser-cyan: #00F5FF;
-  --color-laser-cyan-dim: #00C4CC;
-  --color-surface: #0a0a0a;
-  --color-surface-light: #111111;
-  --color-border: #1a1a1a;
-  --color-border-bright: #2a2a2a;
-  --color-muted: #666666;
-  --color-muted-light: #999999;
-  --font-heading: "Bebas Neue", "Archivo Black", sans-serif;
-  --font-mono: "IBM Plex Mono", monospace;
-  --font-body: "IBM Plex Mono", monospace;
+  /* Color system — oklch perceptually uniform space */
+  --color-background:      oklch(5% 0 0);
+  --color-foreground:      oklch(92% 0 0);
+  --color-laser-cyan:      oklch(92% 0.18 196);
+  --color-laser-cyan-dim:  oklch(78% 0.15 196);
+  --color-laser-amber:     oklch(82% 0.16 60);
+  --color-laser-amber-dim: oklch(68% 0.13 60);
+  --color-surface:         oklch(8% 0 0);
+  --color-surface-light:   oklch(10% 0 0);
+  --color-border:          oklch(14% 0 0);
+  --color-border-bright:   oklch(20% 0 0);
+  --color-muted:           oklch(45% 0 0);
+  --color-muted-light:     oklch(62% 0 0);
+
+  /* Typography */
+  --font-display: "Big Shoulders Display", sans-serif;
+  --font-heading: "Big Shoulders Display", sans-serif;
+  --font-mono:    "IBM Plex Mono", monospace;
+  --font-body:    "IBM Plex Mono", monospace;
 }
 
 html {
@@ -46,13 +52,16 @@ body {
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #050505; }
-::-webkit-scrollbar-thumb { background: #222; border-radius: 0; }
-::-webkit-scrollbar-thumb:hover { background: #00F5FF; }
+::-webkit-scrollbar-track { background: var(--color-background); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-laser-cyan); }
 
-/* Glow text */
+/* Glow text — cyan */
 .text-glow {
-  text-shadow: 0 0 10px rgba(0, 245, 255, 0.6), 0 0 30px rgba(0, 245, 255, 0.3);
+  text-shadow:
+    0 0 8px oklch(92% 0.18 196 / 0.7),
+    0 0 25px oklch(92% 0.18 196 / 0.35),
+    0 0 60px oklch(92% 0.18 196 / 0.15);
 }
 
 /* Monospaced label */
@@ -79,7 +88,11 @@ body {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #00F5FF 0%, #00C4CC 100%);
+  background: linear-gradient(
+    135deg,
+    oklch(92% 0.18 196) 0%,
+    oklch(78% 0.15 196) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -98,8 +111,8 @@ body {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0, 245, 255, 0.02) 2px,
-    rgba(0, 245, 255, 0.02) 4px
+    oklch(92% 0.18 196 / 0.02) 2px,
+    oklch(92% 0.18 196 / 0.02) 4px
   );
   pointer-events: none;
   opacity: 0;
@@ -109,6 +122,162 @@ body {
 
 /* Selection */
 ::selection {
-  background: rgba(0, 245, 255, 0.2);
-  color: #fff;
+  background: oklch(92% 0.18 196 / 0.2);
+  color: oklch(92% 0 0);
+}
+
+/* === TYPOGRAPHY UTILITIES === */
+
+/* Primary display: Big Shoulders at 900, fluid */
+.type-display {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(4rem, 15vw, 14rem);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+/* Section headings: Big Shoulders at 800, fluid */
+.type-section {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 6vw, 5rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+/* Descriptive body: IBM Plex at featherweight */
+.type-body-light {
+  font-family: var(--font-mono);
+  font-weight: 100;
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  line-height: 1.7;
+}
+
+/* Technical labels: IBM Plex at bold */
+.type-label-bold {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* Oversized amber stat/number callout */
+.number-callout {
+  font-family: var(--font-display);
+  font-weight: 900;
+  color: var(--color-laser-amber);
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+}
+
+/* Amber glow for stat callouts */
+.text-glow-amber {
+  text-shadow:
+    0 0 8px oklch(82% 0.16 60 / 0.7),
+    0 0 25px oklch(82% 0.16 60 / 0.35);
+}
+
+/* Oversized ghost section number (decorative) */
+.section-number {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(6rem, 20vw, 18rem);
+  line-height: 0.8;
+  color: var(--color-border);
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.04em;
+}
+
+/* Technical rider section header (contact form grouping) */
+.rider-section {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-laser-amber);
+  border-bottom: 1px solid var(--color-laser-amber);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Left-bleed negative margin for hero breakout */
+.bleed-left {
+  margin-left: calc(-1 * clamp(1rem, 4vw, 4rem));
+}
+
+/* === PORTFOLIO CARD HOVER EFFECT (preview monitor) === */
+
+.preview-monitor {
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-monitor img {
+  /* transition set inside prefers-reduced-motion query below */
+}
+
+.preview-monitor::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    oklch(92% 0.18 196 / 0.025) 3px,
+    oklch(92% 0.18 196 / 0.025) 4px
+  );
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+}
+
+.preview-monitor::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    oklch(92% 0.18 196 / 0.04) 50%,
+    transparent 100%
+  );
+  background-size: 100% 200%;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+}
+
+.preview-monitor:hover::before,
+.preview-monitor:hover::after {
+  opacity: 1;
+}
+
+.preview-monitor:hover img {
+  filter: brightness(1.08) saturate(1.2);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .preview-monitor::before,
+  .preview-monitor::after {
+    transition: opacity 0.25s ease;
+  }
+  .preview-monitor img {
+    transition: filter 0.25s ease;
+  }
+  .preview-monitor::after {
+    animation: monitor-sweep 3s linear infinite;
+  }
+}
+
+@keyframes monitor-sweep {
+  0%   { background-position: 0 -100%; }
+  100% { background-position: 0 200%; }
 }
