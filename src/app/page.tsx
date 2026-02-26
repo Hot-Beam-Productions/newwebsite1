@@ -13,7 +13,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { HeroBeams } from "@/components/hero-animations";
 import { InstagramFeed } from "@/components/instagram-feed";
 import { MediaPlaceholder } from "@/components/media-placeholder";
-import { brand, home, work } from "@/lib/site-data";
+import { home, work } from "@/lib/site-data";
 
 const iconMap = {
   volume: Volume2,
@@ -44,14 +44,17 @@ export default function Home() {
         <div className="relative z-10 mx-auto w-full max-w-5xl text-center">
           <p className="mono-label mb-8 !text-laser-cyan">{home.hero.eyebrow}</p>
 
-          <Image
-            src={brand.heroLogo}
-            alt={brand.name}
-            width={620}
-            height={168}
-            className="mx-auto h-auto w-[430px] max-w-full drop-shadow-[0_0_34px_rgba(46,99,255,0.26)] md:w-[620px]"
-            priority
-          />
+          <video
+            className="mx-auto aspect-video w-full max-w-4xl border border-border bg-surface object-cover shadow-[0_0_34px_rgba(46,99,255,0.2)]"
+            autoPlay
+            loop
+            muted
+            playsInline
+            controls
+          >
+            <source src="/sae%20proppa%20odd%20mob%202.mov" type="video/quicktime" />
+            Your browser does not support the video tag.
+          </video>
 
           <h1 className="mx-auto mt-6 max-w-4xl font-heading text-4xl leading-tight tracking-tight text-foreground md:text-6xl">
             {home.hero.headline}
