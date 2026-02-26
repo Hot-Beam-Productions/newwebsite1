@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { brand, home, seo } from "@/lib/site-data";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -91,6 +92,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <SpeedInsights />
       </body>
     </html>
   );
