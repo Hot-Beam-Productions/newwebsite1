@@ -1,7 +1,7 @@
 import rawData from "@/data/data.json";
 
-export type ServiceCategory = "audio" | "lighting" | "video" | "lasers" | "sfx";
-export type ServiceIcon = "volume" | "lightbulb" | "monitor" | "zap" | "sparkles";
+export type ServiceCategory = "lighting" | "video" | "lasers" | "sfx";
+export type ServiceIcon = "lightbulb" | "monitor" | "zap" | "sparkles";
 
 export interface NavLink {
   href: string;
