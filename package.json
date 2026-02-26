@@ -15,7 +15,6 @@
   "dependencies": {
     "@marsidev/react-turnstile": "^1.4.2",
     "@opennextjs/cloudflare": "^1.17.1",
-    "@vercel/analytics": "^1.6.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.3",
     "lucide-react": "^0.575.0",
