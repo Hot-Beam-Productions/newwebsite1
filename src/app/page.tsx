@@ -1,35 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Lightbulb,
-  Monitor,
-  Sparkles,
-  Volume2,
-  Zap,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { GlowButton } from "@/components/glow-button";
 import { SectionHeading } from "@/components/section-heading";
 import { HeroBeams } from "@/components/hero-animations";
 import { InstagramFeed } from "@/components/instagram-feed";
 import { MediaPlaceholder } from "@/components/media-placeholder";
+import { ServicesAccordion } from "@/components/services-accordion";
 import { home, work } from "@/lib/site-data";
-
-const iconMap = {
-  volume: Volume2,
-  lightbulb: Lightbulb,
-  monitor: Monitor,
-  zap: Zap,
-  sparkles: Sparkles,
-};
-
-const featuredService = home.services.items.find(
-  (service) => service.id === home.services.featuredServiceId
-);
-
-const secondaryServices = home.services.items.filter(
-  (service) => service.id !== home.services.featuredServiceId
-);
 
 const featuredProjects = work.projects.filter((project) => project.featured).slice(0, 3);
 
@@ -116,61 +94,10 @@ export default function Home() {
             subtitle={home.services.subtitle}
           />
 
-          {featuredService && (
-            <div id="services-heading" className="mt-10 grid grid-cols-1 gap-px bg-border lg:grid-cols-3">
-              <article className="relative overflow-hidden bg-background p-10 lg:col-span-2 lg:p-14">
-                <span className="section-number absolute -right-6 -top-10" aria-hidden="true">
-                  01
-                </span>
-                <div className="w-fit border border-laser-cyan/40 bg-laser-cyan/10 px-3 py-1">
-                  <p className="mono-label !text-laser-cyan">Featured Discipline</p>
-                </div>
-
-                <h3 className="mt-5 font-heading text-5xl tracking-tight text-foreground md:text-6xl">
-                  {featuredService.title}
-                </h3>
-                <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted">
-                  {featuredService.description}
-                </p>
-
-                <div className="mt-8 space-y-2">
-                  {featuredService.highlights.map((highlight) => (
-                    <p key={highlight} className="mono-label !text-muted-light">
-                      {highlight}
-                    </p>
-                  ))}
-                </div>
-              </article>
-
-              <div className="divide-y divide-border bg-background">
-                {secondaryServices.map((service, index) => {
-                  const ServiceIcon = iconMap[service.icon];
-
-                  return (
-                    <article
-                      key={service.id}
-                      className="group relative overflow-hidden px-6 py-6 transition-colors hover:bg-surface"
-                    >
-                      <span className="section-number absolute -right-4 -top-6" aria-hidden="true">
-                        0{index + 2}
-                      </span>
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center border border-laser-cyan/30 bg-laser-cyan/10 transition-colors group-hover:bg-laser-cyan/20">
-                          <ServiceIcon className="h-4 w-4 text-laser-cyan" aria-hidden="true" />
-                        </div>
-                        <h3 className="font-heading text-2xl tracking-tight text-foreground">
-                          {service.title}
-                        </h3>
-                      </div>
-                      <p className="mt-3 text-sm leading-relaxed text-muted">
-                        {service.description}
-                      </p>
-                    </article>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          <ServicesAccordion
+            items={home.services.items}
+            defaultOpenId={home.services.featuredServiceId}
+          />
         </div>
       </section>
 

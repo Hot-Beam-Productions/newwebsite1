@@ -9,11 +9,11 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
             <Image
-              src={brand.heroLogo}
+              src="/logo-icon.png"
               alt={brand.name}
-              width={170}
-              height={46}
-              className="h-8 w-auto"
+              width={48}
+              height={41}
+              className="h-10 w-auto"
             />
             <p className="mt-4 max-w-md text-sm leading-relaxed text-muted">
               {footer.description}

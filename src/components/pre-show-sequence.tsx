@@ -11,7 +11,6 @@ const SEQUENCE_LINES: [string, string][] = [
   ["HOT BEAM PRODUCTIONS", "text-laser-cyan"],
   ["SYSTEMS INITIALIZE...", ""],
   ["──────────────────────────", "text-border-bright"],
-  ["AUDIO            ✓ ONLINE", "text-laser-amber"],
   ["LIGHTING         ✓ ONLINE", "text-laser-amber"],
   ["LASERS           ✓ ONLINE", "text-laser-amber"],
   ["VIDEO            ✓ ONLINE", "text-laser-amber"],

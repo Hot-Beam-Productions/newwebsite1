@@ -24,11 +24,11 @@ export function Navbar() {
       <div className="relative mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-6">
         <Link href="/" className="flex items-center" aria-label={brand.name}>
           <Image
-            src={brand.heroLogo}
+            src="/logo-icon.png"
             alt={brand.name}
-            width={170}
-            height={46}
-            className="h-8 w-auto"
+            width={48}
+            height={41}
+            className="h-11 w-auto"
             priority
           />
         </Link>

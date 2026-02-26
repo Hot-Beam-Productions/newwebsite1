@@ -38,12 +38,11 @@
   "seo": {
     "defaultTitle": "Hot Beam Productions | Denver Live Event Production",
     "titleTemplate": "%s | Hot Beam Productions",
-    "description": "Denver-based live event production partner for concerts, brand activations, and corporate stages. Audio, lighting, lasers, video, and special effects designed and executed by one accountable team.",
+    "description": "Denver-based live event production partner for concerts, brand activations, and corporate stages. Lighting, lasers, video, and special effects designed and executed by one accountable team.",
     "keywords": [
       "colorado av production company",
       "denver concert lighting and laser production",
       "tour-grade event production colorado",
-      "rider compliant audio visual services",
       "festival and nightclub production boulder denver",
       "corporate event technical direction colorado"
     ]
@@ -51,7 +50,7 @@
   "home": {
     "hero": {
       "eyebrow": "Colorado | Tour-Grade Live Event Production",
-      "departmentLine": "Audio \u00b7 Lighting \u00b7 Lasers \u00b7 Video \u00b7 SFX",
+      "departmentLine": "Lighting \u00b7 Lasers \u00b7 Video \u00b7 SFX",
       "description": "One accountable production partner from pre-pro to show call, built for high-stakes events where execution cannot fail.",
       "primaryCta": {
         "label": "Check Date Availability",
@@ -61,8 +60,8 @@
         "label": "View Recent Deployments",
         "href": "/work"
       },
-      "headline": "Tour-Grade AV Production & Precision Laser Engineering",
-      "subheadline": "Rider-compliant audio, LED video, lighting, and FDA-approved laser operations for Colorado venues, festivals, and touring artists."
+      "headline": "Tour-Grade Visual Production & Precision Laser Engineering",
+      "subheadline": "LED video, lighting, and FDA-approved laser operations for Colorado venues, festivals, and touring artists."
     },
     "services": {
       "label": "Capabilities",
@@ -70,17 +69,6 @@
       "subtitle": "Specialists in each department plan it, build it, and run it on show day.",
       "featuredServiceId": "lasers",
       "items": [
-        {
-          "id": "audio",
-          "icon": "volume",
-          "title": "Audio",
-          "description": "System design, deployment, and tuning for clear speech and strong musical impact.",
-          "highlights": [
-            "d&b and L-Acoustics ecosystems",
-            "FOH + monitor workflows",
-            "Prediction, rigging, and optimization"
-          ]
-        },
         {
           "id": "lighting",
           "icon": "lightbulb",
@@ -118,7 +106,7 @@
           "id": "sfx",
           "icon": "sparkles",
           "title": "SFX",
-          "description": "CO2, haze, confetti, and atmospherics timed to lighting and audio cues.",
+          "description": "CO2, haze, confetti, and atmospherics timed to lighting cues.",
           "highlights": [
             "Cryo and haze deployment",
             "Cue-synced effect timing",
@@ -193,12 +181,11 @@
         "location": "Denver, CO",
         "eventDate": "2024-04-22",
         "services": [
-          "audio",
           "video",
           "lighting"
         ],
-        "description": "General session production for 1,200 attendees with LED keynote canvas, distributed PA, and confidence system routing.",
-        "longDescription": "The venue had no turnkey infrastructure for a broadcast-grade keynote. We built the room from zero with a flown line-array solution, a 384-tile LED wall, and redundant signal paths for media and confidence feeds. The production supported executive presentations, panel transitions, and live content roll-ins with zero switch failures.",
+        "description": "General session production for 1,200 attendees with LED keynote canvas and confidence system routing.",
+        "longDescription": "The venue had no turnkey infrastructure for a broadcast-grade keynote. We built the room from zero with a 384-tile LED wall and redundant signal paths for media and confidence feeds. The production supported executive presentations, panel transitions, and live content roll-ins with zero switch failures.",
         "mainImageUrl": "https://pub-XXXX.r2.dev/portfolio/tech-summit-hero.jpg",
         "gallery": [
           "https://pub-XXXX.r2.dev/portfolio/tech-summit-01.jpg",
@@ -214,7 +201,6 @@
         "location": "Breckenridge, CO",
         "eventDate": "2024-07-04",
         "services": [
-          "audio",
           "lighting",
           "lasers",
           "sfx"
@@ -239,11 +225,10 @@
         "eventDate": "2024-11-09",
         "services": [
           "lighting",
-          "video",
-          "audio"
+          "video"
         ],
         "description": "Architectural lighting and show control for a high-profile executive gala inside a non-standard rigging environment.",
-        "longDescription": "The museum venue imposed strict rigging and preservation constraints. We engineered a custom ground-support system, designed camera-safe lighting scenes around permanent installations, and delivered a balanced mix for speeches, dinner programming, and awards. The client received a cinematic room with full compliance to venue policy.",
+        "longDescription": "The museum venue imposed strict rigging and preservation constraints. We engineered a custom ground-support system, designed camera-safe lighting scenes around permanent installations, and delivered a polished visual environment for speeches, dinner programming, and awards. The client received a cinematic room with full compliance to venue policy.",
         "mainImageUrl": "https://pub-XXXX.r2.dev/portfolio/deloitte-gala-hero.jpg",
         "gallery": [
           "https://pub-XXXX.r2.dev/portfolio/deloitte-gala-01.jpg",
@@ -282,8 +267,7 @@
         "eventDate": "2024-03-14",
         "services": [
           "video",
-          "lighting",
-          "audio"
+          "lighting"
         ],
         "description": "Media launch with projection-mapped reveal architecture and timed scenic movement for the hero announcement.",
         "longDescription": "The reveal concept required physical concealment, projection precision, and single-pass execution. We designed a custom scenic structure, mapped content to curved geometry, and rehearsed full sequence timing over two technical days. The product unveil executed in one live pass for press and investor coverage.",
@@ -360,7 +344,7 @@
       {
         "id": "crew-01",
         "name": "Crew Lead",
-        "role": "A1 / FOH Engineer",
+        "role": "Laser Operator / LSO",
         "imageUrl": "https://pub-XXXX.r2.dev/team/crew-01.jpg"
       },
       {
@@ -401,10 +385,6 @@
         "label": "Lighting"
       },
       {
-        "value": "audio",
-        "label": "Audio"
-      },
-      {
         "value": "video",
         "label": "Video"
       },
@@ -435,23 +415,6 @@
           "8-51\u00b0 Zoom"
         ],
         "imageUrl": "https://pub-XXXX.r2.dev/rentals/martin-mac-viper.jpg",
-        "available": true
-      },
-      {
-        "id": "db-v12-line-array",
-        "slug": "db-v12-line-array",
-        "name": "d&b audiotechnik V12 Line Array",
-        "category": "audio",
-        "brand": "d&b audiotechnik",
-        "dailyRate": 200,
-        "description": "3-way passive array element with high intelligibility and controlled coverage for medium and large audience environments.",
-        "specs": [
-          "3-Way Passive",
-          "141 dB SPL Max",
-          "120\u00b0 H / 10\u00b0 V",
-          "27 kg"
-        ],
-        "imageUrl": "https://pub-XXXX.r2.dev/rentals/db-v12.jpg",
         "available": true
       },
       {
@@ -520,23 +483,6 @@
           "IP20"
         ],
         "imageUrl": "https://pub-XXXX.r2.dev/rentals/rogue-r3.jpg",
-        "available": true
-      },
-      {
-        "id": "shure-axient-digital",
-        "slug": "shure-axient-digital",
-        "name": "Shure Axient Digital",
-        "category": "audio",
-        "brand": "Shure",
-        "dailyRate": 125,
-        "description": "Premium digital wireless platform with remote frequency control and robust RF stability.",
-        "specs": [
-          "Digital RF",
-          "Quadversity RX",
-          "184 MHz Tuning",
-          "ShowLink"
-        ],
-        "imageUrl": "https://pub-XXXX.r2.dev/rentals/shure-axient.jpg",
         "available": true
       },
       {
@@ -618,7 +564,6 @@
       "Other"
     ],
     "serviceNeeds": [
-      "Audio System Design",
       "Lighting Design & Programming",
       "LED / Video Systems",
       "Laser Production",
@@ -639,7 +584,6 @@
   "footer": {
     "description": "Live event production for concerts, brand activations, and corporate stages. Clear plans, reliable execution.",
     "departments": [
-      "Audio",
       "Lighting",
       "Video",
       "Lasers",

@@ -101,15 +101,6 @@ export default async function RentalDetailPage({ params }: Props) {
             )}
 
             <div className="mt-7 border-t border-border pt-6">
-              {item.dailyRate ? (
-                <div className="mb-5">
-                  <p className="font-heading text-6xl leading-none text-laser-cyan">${item.dailyRate}</p>
-                  <p className="text-sm text-muted">daily rate</p>
-                </div>
-              ) : (
-                <p className="mb-5 text-sm text-muted">Pricing available on request</p>
-              )}
-
               <GlowButton href="/contact" variant="primary">
                 Inquire About This Unit
               </GlowButton>

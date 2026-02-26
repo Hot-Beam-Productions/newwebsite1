@@ -2,7 +2,7 @@
 
 import { type ComponentType, useMemo, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Lightbulb, Monitor, Search, Sparkles, Volume2, Wrench, Zap } from "lucide-react";
+import { Lightbulb, Monitor, Search, Sparkles, Wrench, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { GlowButton } from "@/components/glow-button";
@@ -12,7 +12,6 @@ import { type RentalItem } from "@/lib/site-data";
 const iconByCategory: Record<string, ComponentType<{ className?: string }>> = {
   all: Wrench,
   lighting: Lightbulb,
-  audio: Volume2,
   video: Monitor,
   lasers: Zap,
   sfx: Sparkles,
@@ -133,18 +132,7 @@ export function RentalsFilter({ items, categories, footerNote }: RentalsFilterPr
                   </div>
                 )}
 
-                <div className="flex items-end justify-between border-t border-border pt-4">
-                  {item.dailyRate ? (
-                    <div>
-                      <p className="font-heading text-3xl leading-none text-laser-cyan">
-                        ${item.dailyRate}
-                      </p>
-                      <p className="text-xs text-muted-light">per day</p>
-                    </div>
-                  ) : (
-                    <p className="text-sm text-muted">Contact for pricing</p>
-                  )}
-
+                <div className="border-t border-border pt-4">
                   <Link
                     href={`/rentals/${item.id}`}
                     className="mono-label rounded-sm border border-laser-cyan/35 px-3 py-1.5 !text-laser-cyan transition-colors hover:bg-laser-cyan/12"
