@@ -44,16 +44,8 @@ export default function Home() {
         <div className="relative z-10 mx-auto w-full max-w-5xl text-center">
           <p className="mono-label mb-8 !text-laser-cyan">{home.hero.eyebrow}</p>
 
-          <h1 className="mx-auto mt-6 max-w-4xl font-heading text-4xl leading-tight tracking-tight text-foreground md:text-6xl">
-            {home.hero.headline}
-          </h1>
-
-          <p className="mx-auto mt-5 max-w-3xl text-base leading-relaxed text-muted-light md:text-lg">
-            {home.hero.subheadline}
-          </p>
-
           <div className="relative mx-auto mt-8 aspect-video w-full max-w-4xl overflow-hidden border border-border/80 bg-surface">
-            <video className="h-full w-full object-cover opacity-25" autoPlay loop muted playsInline>
+            <video className="h-full w-full object-cover opacity-35" autoPlay loop muted playsInline>
               <source src="/sae%20proppa%20odd%20mob%202.mov" type="video/quicktime" />
               Your browser does not support the video tag.
             </video>
@@ -68,6 +60,14 @@ export default function Home() {
               />
             </div>
           </div>
+
+          <h1 className="mx-auto mt-6 max-w-4xl font-heading text-4xl leading-tight tracking-tight text-foreground md:text-6xl">
+            {home.hero.headline}
+          </h1>
+
+          <p className="mx-auto mt-5 max-w-3xl text-base leading-relaxed text-muted-light md:text-lg">
+            {home.hero.subheadline}
+          </p>
 
           <p className="mt-6 font-heading text-xl tracking-[0.2em] text-foreground/82 uppercase md:text-2xl">
             {home.hero.departmentLine}
