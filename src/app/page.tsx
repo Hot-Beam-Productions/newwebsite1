@@ -37,26 +37,6 @@ export default function Home() {
   return (
     <>
       <section className="relative flex min-h-screen items-center justify-center overflow-clip px-6 pb-20 pt-28">
-        <video
-          className="absolute inset-0 h-full w-full object-cover opacity-35"
-          autoPlay
-          loop
-          muted
-          playsInline
-        >
-          <source src="/sae%20proppa%20odd%20mob%202.mov" type="video/quicktime" />
-          Your browser does not support the video tag.
-        </video>
-        <div className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center">
-          <Image
-            src="/logo.png"
-            alt=""
-            width={440}
-            height={440}
-            className="h-auto w-[clamp(12rem,30vw,27.5rem)] opacity-70"
-            priority
-          />
-        </div>
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(46,99,255,0.22),transparent_44%),radial-gradient(circle_at_80%_80%,rgba(208,164,88,0.16),transparent_36%)]" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background" />
         <HeroBeams />
@@ -71,6 +51,23 @@ export default function Home() {
           <p className="mx-auto mt-5 max-w-3xl text-base leading-relaxed text-muted-light md:text-lg">
             {home.hero.subheadline}
           </p>
+
+          <div className="relative mx-auto mt-8 aspect-video w-full max-w-4xl overflow-hidden border border-border/80 bg-surface">
+            <video className="h-full w-full object-cover opacity-25" autoPlay loop muted playsInline>
+              <source src="/sae%20proppa%20odd%20mob%202.mov" type="video/quicktime" />
+              Your browser does not support the video tag.
+            </video>
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <Image
+                src="/logo.png"
+                alt=""
+                width={320}
+                height={320}
+                className="h-auto w-[clamp(9rem,20vw,20rem)] opacity-70"
+                priority
+              />
+            </div>
+          </div>
 
           <p className="mt-6 font-heading text-xl tracking-[0.2em] text-foreground/82 uppercase md:text-2xl">
             {home.hero.departmentLine}
