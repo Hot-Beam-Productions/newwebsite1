@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { DEFAULT_NAVIGATION } from "@/lib/default-navigation";
 import type { BrandData, NavLink } from "@/lib/types";
 
 function isActive(pathname: string, href: string) {
@@ -23,6 +24,7 @@ interface NavbarProps {
 export function Navbar({ brand, navigation }: NavbarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navItems = navigation.length > 0 ? navigation : DEFAULT_NAVIGATION;
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/80 bg-background/90 backdrop-blur-xl">
@@ -40,7 +42,7 @@ export function Navbar({ brand, navigation }: NavbarProps) {
         </Link>
 
         <div className="hidden items-center gap-7 md:flex">
-          {navigation.map((link) => (
+          {navItems.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -83,7 +85,7 @@ export function Navbar({ brand, navigation }: NavbarProps) {
           >
             <div className="px-6 py-4">
               <div className="flex flex-col gap-3">
-                {navigation.map((link) => (
+                {navItems.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}

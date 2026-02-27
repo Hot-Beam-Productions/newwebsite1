@@ -167,7 +167,16 @@ async function loadBrandData(): Promise<BrandData> {
 
 async function loadNavigationData(): Promise<NavLink[]> {
   const navigationDoc = await getSiteDoc<{ links?: NavLink[] }>("navigation");
-  return parseOrNull(navigationSchema.safeParse({ links: navigationDoc?.links ?? [] }))?.links ?? fallbackSiteData.navigation;
+  if (!navigationDoc || !Array.isArray(navigationDoc.links)) {
+    return fallbackSiteData.navigation;
+  }
+
+  const parsed = parseOrNull(navigationSchema.safeParse({ links: navigationDoc.links }))?.links;
+  if (!parsed || parsed.length === 0) {
+    return fallbackSiteData.navigation;
+  }
+
+  return parsed;
 }
 
 async function loadSeoData(): Promise<SeoData> {

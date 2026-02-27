@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { BrandData, FooterData, NavLink } from "@/lib/types";
 import { toSafeExternalUrl } from "@/lib/utils";
+import { DEFAULT_NAVIGATION } from "@/lib/default-navigation";
 
 interface FooterProps {
   brand: BrandData;
@@ -11,6 +12,7 @@ interface FooterProps {
 
 export function Footer({ brand, footer, navigation }: FooterProps) {
   const instagramUrl = toSafeExternalUrl(brand.instagramUrl, "https://www.instagram.com/");
+  const navItems = navigation.length > 0 ? navigation : DEFAULT_NAVIGATION;
 
   return (
     <footer className="border-t border-border bg-background">
@@ -41,7 +43,7 @@ export function Footer({ brand, footer, navigation }: FooterProps) {
           <div>
             <h4 className="mono-label mb-4 !text-foreground">Navigation</h4>
             <ul className="space-y-2">
-              {navigation
+              {navItems
                 .filter((item) => item.href !== "/")
                 .map((item) => (
                   <li key={item.href}>
