@@ -88,9 +88,7 @@ async function updateProjects(): Promise<number> {
           ? makePicsumUrl(`${id}-${idx}`, 1200, 800)
           : url,
       );
-      const hasChanges = newGallery.some(
-        (url: string, idx: number) => url !== data.gallery[idx],
-      );
+      const hasChanges = newGallery.some((url, idx) => url !== data.gallery[idx]);
       if (hasChanges) {
         changes.gallery = newGallery;
       }
