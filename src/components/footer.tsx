@@ -61,17 +61,28 @@ export function Footer({ brand, footer, navigation }: FooterProps) {
         </div>
 
         <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-border pt-6 md:flex-row md:items-center">
-          <p className="mono-label !text-muted">
+          <p className="mono-label text-[10px] !text-muted">
             &copy; {new Date().getFullYear()} {brand.name}. All rights reserved.
           </p>
-          <a
-            href={brand.instagramUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mono-label text-[10px] !text-muted transition-colors hover:!text-laser-cyan"
-          >
-            {brand.instagramHandle}
-          </a>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link href="/privacy-policy" className="mono-label text-[10px] !text-muted transition-colors hover:!text-laser-cyan">
+              Privacy Policy
+            </Link>
+            <Link href="/terms-of-use" className="mono-label text-[10px] !text-muted transition-colors hover:!text-laser-cyan">
+              Terms of Use
+            </Link>
+            <Link href="/site-map" className="mono-label text-[10px] !text-muted transition-colors hover:!text-laser-cyan">
+              Site Map
+            </Link>
+            <a
+              href={brand.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mono-label text-[10px] !text-muted transition-colors hover:!text-laser-cyan"
+            >
+              {brand.instagramHandle}
+            </a>
+          </div>
         </div>
       </div>
     </footer>
