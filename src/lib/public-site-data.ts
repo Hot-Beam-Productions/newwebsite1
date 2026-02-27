@@ -1,4 +1,5 @@
 import rawData from "@/data/data.json";
+import { unstable_cache } from "next/cache";
 import type {
   AboutData,
   BrandData,
@@ -112,7 +113,12 @@ function parseOrNull<T>(result: { success: boolean; data?: T }): T | null {
 
 async function fetchFirestoreJson<T>(url: string): Promise<T | null> {
   try {
-    const response = await fetch(url, { cache: "no-store" });
+    const response = await fetch(url, {
+      next: {
+        revalidate: 300,
+        tags: ["public-site-data"],
+      },
+    });
     if (!response.ok) return null;
     return (await response.json()) as T;
   } catch {
@@ -152,7 +158,7 @@ async function getCollectionDocs<T>(collectionName: string): Promise<T[] | null>
   return docs;
 }
 
-export async function getPublicSiteData(): Promise<SiteData> {
+async function loadPublicSiteData(): Promise<SiteData> {
   const [
     brandDoc,
     navigationDoc,
@@ -214,3 +220,8 @@ export async function getPublicSiteData(): Promise<SiteData> {
     },
   };
 }
+
+export const getPublicSiteData = unstable_cache(loadPublicSiteData, ["public-site-data"], {
+  revalidate: 300,
+  tags: ["public-site-data"],
+});

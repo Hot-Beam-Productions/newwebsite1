@@ -5,6 +5,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 export async function revalidatePaths(
   paths: string[]
@@ -12,4 +13,5 @@ export async function revalidatePaths(
   for (const path of paths) {
     revalidatePath(path);
   }
+  revalidateTag("public-site-data", "max");
 }
