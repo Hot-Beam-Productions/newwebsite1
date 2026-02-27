@@ -125,8 +125,25 @@ function uploadWithProgress(
   file: File,
   onProgress: (percent: number) => void
 ): Promise<void> {
+  const corsHint =
+    "Direct upload blocked. Check R2 bucket CORS allows your site origin for PUT/OPTIONS and Content-Type.";
+
+  const extractUploadError = (rawResponse: string): string | null => {
+    if (!rawResponse) return null;
+
+    const codeMatch = rawResponse.match(/<Code>([^<]+)<\/Code>/i);
+    const messageMatch = rawResponse.match(/<Message>([^<]+)<\/Message>/i);
+
+    if (codeMatch?.[1] && messageMatch?.[1]) {
+      return `${codeMatch[1]}: ${messageMatch[1]}`;
+    }
+    if (codeMatch?.[1]) return codeMatch[1];
+    return rawResponse.slice(0, 200).trim() || null;
+  };
+
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
+    xhr.timeout = 120_000;
 
     xhr.upload.onprogress = (event) => {
       if (!event.lengthComputable) return;
@@ -134,7 +151,8 @@ function uploadWithProgress(
       onProgress(Math.max(1, Math.min(percent, 100)));
     };
 
-    xhr.onerror = () => reject(new Error("Video upload failed"));
+    xhr.onerror = () => reject(new Error(corsHint));
+    xhr.ontimeout = () => reject(new Error("Video upload timed out. Try again with a smaller file."));
 
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) {
@@ -142,7 +160,9 @@ function uploadWithProgress(
         resolve();
         return;
       }
-      reject(new Error(`Video upload failed (${xhr.status})`));
+      const uploadError = extractUploadError(xhr.responseText);
+      const suffix = uploadError ? `: ${uploadError}` : "";
+      reject(new Error(`Video upload failed (${xhr.status})${suffix}`));
     };
 
     xhr.open("PUT", uploadUrl);

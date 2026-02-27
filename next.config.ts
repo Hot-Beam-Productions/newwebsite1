@@ -31,6 +31,7 @@ const connectSrc = [
   "https://identitytoolkit.googleapis.com",
   "https://securetoken.googleapis.com",
   "https://www.googleapis.com",
+  "https://*.r2.cloudflarestorage.com",
   ...(r2ImageSource ? [r2ImageSource] : []),
   ...(r2UploadSource ? [r2UploadSource] : []),
   ...(contactOrigin ? [contactOrigin] : []),
