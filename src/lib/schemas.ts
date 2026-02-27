@@ -107,6 +107,8 @@ export const homeSchema = z.object({
     subheadline: z.string(),
     departmentLine: z.string(),
     description: z.string().min(1),
+    videoUrl: z.string().optional(),
+    videoPoster: z.string().optional(),
     primaryCta: ctaSchema,
     secondaryCta: ctaSchema,
   }),

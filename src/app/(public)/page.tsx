@@ -10,13 +10,20 @@ import { getPublicSiteData } from "@/lib/public-site-data";
 export default async function Home() {
   const { home, work, brand } = await getPublicSiteData();
   const featuredProjects = work.projects.filter((project) => project.featured).slice(0, 3);
+  const heroVideoSrc = home.hero.videoUrl || "/sae%20proppa%20odd%20mob%202.mov";
+  const heroVideoType = home.hero.videoUrl
+    ? /\.webm(?:\?|#|$)/i.test(home.hero.videoUrl)
+      ? "video/webm"
+      : "video/mp4"
+    : "video/quicktime";
+  const heroVideoPoster = home.hero.videoPoster || undefined;
 
   return (
     <>
       <section className="relative flex h-screen items-center justify-center overflow-clip">
         <div className="absolute inset-0">
-          <video className="h-full w-full object-cover" autoPlay loop muted playsInline>
-            <source src="/sae%20proppa%20odd%20mob%202.mov" type="video/quicktime" />
+          <video className="h-full w-full object-cover" autoPlay loop muted playsInline poster={heroVideoPoster}>
+            <source src={heroVideoSrc} type={heroVideoType} />
             Your browser does not support the video tag.
           </video>
           <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background" />

@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import sharp from "sharp";
 import { verifyAdminToken } from "@/lib/auth-helpers";
 
 export const runtime = "nodejs";
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
-const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
+const MAX_IMAGE_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_VIDEO_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+const ALLOWED_IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
+const ALLOWED_VIDEO_TYPES = new Set(["video/mp4", "video/webm"]);
 const SAFE_FOLDER_PATTERN = /^[a-z0-9/-]+$/;
 
 interface UploadConfig {
@@ -72,11 +75,25 @@ function getFileExtension(fileName: string, mimeType: string): string {
     "image/png": "png",
     "image/webp": "webp",
     "image/avif": "avif",
+    "video/mp4": "mp4",
+    "video/webm": "webm",
   };
 
   const rawExtension = fileName.split(".").pop()?.toLowerCase() ?? "";
   const safeExtension = /^[a-z0-9]+$/.test(rawExtension) ? rawExtension : "";
   return safeExtension || extensionFromType[mimeType] || "jpg";
+}
+
+function isImageType(mimeType: string): boolean {
+  return ALLOWED_IMAGE_TYPES.has(mimeType);
+}
+
+function isVideoType(mimeType: string): boolean {
+  return ALLOWED_VIDEO_TYPES.has(mimeType);
+}
+
+function getMaxFileSize(mimeType: string): number {
+  return isVideoType(mimeType) ? MAX_VIDEO_FILE_SIZE : MAX_IMAGE_FILE_SIZE;
 }
 
 function isFile(value: FormDataEntryValue | null): value is File {
@@ -119,16 +136,21 @@ export async function POST(request: NextRequest) {
   }
 
   const file = fileField;
-  if (!ALLOWED_TYPES.has(file.type)) {
+  if (!isImageType(file.type) && !isVideoType(file.type)) {
     return NextResponse.json(
-      { error: "File type not allowed. Use JPEG, PNG, WebP, or AVIF." },
+      { error: "File type not allowed. Use JPEG, PNG, WebP, AVIF, MP4, or WebM." },
       { status: 400 }
     );
   }
 
-  if (file.size > MAX_FILE_SIZE) {
+  const maxFileSize = getMaxFileSize(file.type);
+  if (file.size > maxFileSize) {
     return NextResponse.json(
-      { error: "File too large. Maximum size is 10 MB." },
+      {
+        error: isVideoType(file.type)
+          ? "File too large. Maximum video size is 50 MB."
+          : "File too large. Maximum image size is 10 MB.",
+      },
       { status: 400 }
     );
   }
@@ -140,17 +162,36 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid upload folder" }, { status: 400 });
   }
 
-  const extension = getFileExtension(file.name, file.type);
+  const originalType = file.type;
+  const originalSize = file.size;
+
+  let outputBuffer: Buffer;
+  let finalType = originalType;
+  let extension = getFileExtension(file.name, originalType);
+
+  try {
+    const sourceBuffer = Buffer.from(await file.arrayBuffer());
+
+    if (isImageType(originalType)) {
+      outputBuffer = await sharp(sourceBuffer).rotate().webp({ quality: 80 }).toBuffer();
+      finalType = "image/webp";
+      extension = "webp";
+    } else {
+      outputBuffer = sourceBuffer;
+    }
+  } catch {
+    return NextResponse.json({ error: "Failed to process file" }, { status: 500 });
+  }
+
   const key = `${folder}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${extension}`;
 
   try {
-    const buffer = Buffer.from(await file.arrayBuffer());
     await getS3Client(config).send(
       new PutObjectCommand({
         Bucket: config.bucketName,
         Key: key,
-        Body: buffer,
-        ContentType: file.type,
+        Body: outputBuffer,
+        ContentType: finalType,
         CacheControl: "public, max-age=31536000, immutable",
       })
     );
@@ -158,5 +199,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 
-  return NextResponse.json({ url: `https://${config.publicDomain}/${key}` });
+  return NextResponse.json({
+    url: `https://${config.publicDomain}/${key}`,
+    originalType,
+    finalType,
+    originalSize,
+    finalSize: outputBuffer.byteLength,
+  });
 }

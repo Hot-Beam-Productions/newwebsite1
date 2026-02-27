@@ -2,6 +2,7 @@
 
 import { PageEditor } from "@/components/admin/page-editor";
 import { ArrayEditor } from "@/components/admin/array-editor";
+import { MediaUploader } from "@/components/admin/media-uploader";
 import { getHomeAdmin, updateHome } from "./actions";
 import type { HomeData } from "@/lib/types";
 import { updateAtPath } from "@/lib/utils";
@@ -47,6 +48,25 @@ export default function HomeEditorPage() {
               <div>
                 <label className={labelClass}>Description</label>
                 <textarea className={inputClass} rows={3} value={data.hero.description} onChange={(e) => update("hero.description", e.target.value)} />
+              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <MediaUploader
+                  value={data.hero.videoUrl ?? ""}
+                  onChange={(url) => update("hero.videoUrl", url)}
+                  folder="hero"
+                  label="Hero Video (MP4/WebM)"
+                  aspect="fullscreen"
+                  accept="video"
+                  maxSizeMb={50}
+                />
+                <MediaUploader
+                  value={data.hero.videoPoster ?? ""}
+                  onChange={(url) => update("hero.videoPoster", url)}
+                  folder="hero"
+                  label="Hero Poster Image"
+                  aspect="fullscreen"
+                  accept="image"
+                />
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>

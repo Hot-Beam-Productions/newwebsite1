@@ -103,6 +103,8 @@ export interface HomeData {
     subheadline: string;
     departmentLine: string;
     description: string;
+    videoUrl?: string;
+    videoPoster?: string;
     primaryCta: Cta;
     secondaryCta: Cta;
   };

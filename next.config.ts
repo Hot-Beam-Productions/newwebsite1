@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const R2_HOSTNAME = process.env.NEXT_PUBLIC_R2_DOMAIN;
+const R2_ACCOUNT_ID = process.env.R2_ACCOUNT_ID;
 const CONTACT_ENDPOINT = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT ?? process.env.NEXT_PUBLIC_WORKER_URL;
 const NEXT_PUBLIC_FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY ?? process.env.FIREBASE_API_KEY;
 const NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN = process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ?? process.env.FIREBASE_AUTH_DOMAIN;
@@ -21,6 +22,7 @@ function getContactOrigin(endpoint: string | undefined): string | null {
 
 const contactOrigin = getContactOrigin(CONTACT_ENDPOINT);
 const r2ImageSource = R2_HOSTNAME ? `https://${R2_HOSTNAME}` : "";
+const r2UploadSource = R2_ACCOUNT_ID ? `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com` : "";
 const connectSrc = [
   "'self'",
   "https://challenges.cloudflare.com",
@@ -29,6 +31,8 @@ const connectSrc = [
   "https://identitytoolkit.googleapis.com",
   "https://securetoken.googleapis.com",
   "https://www.googleapis.com",
+  ...(r2ImageSource ? [r2ImageSource] : []),
+  ...(r2UploadSource ? [r2UploadSource] : []),
   ...(contactOrigin ? [contactOrigin] : []),
 ].join(" ");
 const imageSources = [
@@ -46,6 +50,7 @@ const ContentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
   `img-src ${imageSources}`,
+  `media-src 'self' ${r2ImageSource || ""}`.trim(),
   `connect-src ${connectSrc}`,
   "frame-src https://challenges.cloudflare.com https://accounts.google.com https://*.firebaseapp.com",
   "object-src 'none'",
