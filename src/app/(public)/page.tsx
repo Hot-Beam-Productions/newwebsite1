@@ -2,11 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { GlowButton } from "@/components/glow-button";
-import { SectionHeading } from "@/components/section-heading";
 import { HeroBeams } from "@/components/hero-animations";
 import { InstagramFeed } from "@/components/instagram-feed";
 import { MediaPlaceholder } from "@/components/media-placeholder";
-import { ServicesAccordion } from "@/components/services-accordion";
 import { getPublicSiteData } from "@/lib/public-site-data";
 
 export default async function Home() {
@@ -89,18 +87,114 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="px-6 py-24" aria-labelledby="services-heading">
+      <section id="capabilities" className="px-6 py-24" aria-labelledby="services-heading">
         <div className="mx-auto max-w-7xl">
-          <SectionHeading
-            label={home.services.label}
-            title={home.services.title}
-            subtitle={home.services.subtitle}
-          />
+          <h2 id="services-heading" className="font-heading text-4xl tracking-tight md:text-5xl">
+            Turnkey Visual Production Services
+          </h2>
 
-          <ServicesAccordion
-            items={home.services.items}
-            defaultOpenId={home.services.featuredServiceId}
-          />
+          <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <article className="border border-border bg-surface p-6">
+              <h3 id="intelligent-lighting" className="font-heading text-3xl tracking-tight text-foreground">
+                Intelligent Lighting
+              </h3>
+              <p className="mt-4 text-sm leading-relaxed text-muted-light">
+                Comprehensive lighting architecture from CAD pre-visualization to live Front-of-House (FOH)
+                operation. Our inventory features IP-rated moving heads, LED wash fixtures, and custom
+                stage rigging. Every rig is programmed to synchronize seamlessly with the performance and is
+                structurally engineered to meet rigorous safety protocols.
+              </p>
+              <ul className="mt-5 list-disc space-y-2 pl-5 text-sm text-muted-light">
+                <li>Avolites Control</li>
+                <li>IP65 Waterproof Housing</li>
+                <li>CAD pre-visualization workflows</li>
+              </ul>
+            </article>
+
+            <article className="border border-border bg-surface p-6">
+              <h3 id="class-iv-lasers" className="font-heading text-3xl tracking-tight text-foreground">
+                Class IV Lasers
+              </h3>
+              <p className="mt-4 text-sm leading-relaxed text-muted-light">
+                Specialized Class IV laser programming and operations utilizing industry-leading Pangolin
+                Beyond software. We design precision aerial beam shows and projection mapping that integrates
+                seamlessly into existing DMX universes. All deployments are fully variance-compliant,
+                ensuring high-impact atmospheric effects that strictly adhere to federal safety regulations.
+              </p>
+              <ul className="mt-5 list-disc space-y-2 pl-5 text-sm text-muted-light">
+                <li>Pangolin Beyond programming</li>
+                <li>Variance-compliant operations</li>
+                <li>DMX universe integration</li>
+              </ul>
+            </article>
+
+            <article className="border border-border bg-surface p-6">
+              <h3 id="led-video-walls" className="font-heading text-3xl tracking-tight text-foreground">
+                LED Video Walls
+              </h3>
+              <p className="mt-4 text-sm leading-relaxed text-muted-light">
+                Scalable LED video wall deployment and media server programming for immersive visual
+                storytelling. From live multi-camera IMAG to custom motion graphics and 3D pre-visualization,
+                we provide flawless visual integration tailored to your venue&apos;s structural limits.
+              </p>
+              <ul className="mt-5 list-disc space-y-2 pl-5 text-sm text-muted-light">
+                <li>Resolume Media Servers</li>
+                <li>Live multi-camera IMAG</li>
+                <li>Venue-constraint deployment planning</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 pb-24" aria-labelledby="event-categories-heading">
+        <div className="mx-auto max-w-7xl">
+          <h2 id="event-categories-heading" className="font-heading text-4xl tracking-tight md:text-5xl">
+            Production Solutions by Event Category
+          </h2>
+          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+            <article className="border border-border bg-surface p-6">
+              <h3 className="font-heading text-2xl tracking-tight text-foreground">Touring Artists</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-light">
+                Providing scalable lighting and visual support that seamlessly integrates with artist riders
+                and existing venue infrastructure.
+              </p>
+            </article>
+            <article className="border border-border bg-surface p-6">
+              <h3 className="font-heading text-2xl tracking-tight text-foreground">Corporate Events</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-light">
+                Discrete, high-reliability visual deployments designed for brand safety, pristine video
+                broadcast, and seamless presentation execution.
+              </p>
+            </article>
+            <article className="border border-border bg-surface p-6">
+              <h3 className="font-heading text-2xl tracking-tight text-foreground">Collegiate Events</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-light">
+                High-capacity festival-grade staging, lasers, and lighting for Greek life and campus
+                organizations requiring turnkey logistics.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 pb-24" aria-labelledby="equipment-inventory-heading">
+        <div className="mx-auto max-w-7xl border border-border bg-surface p-8">
+          <h2 id="equipment-inventory-heading" className="font-heading text-4xl tracking-tight md:text-5xl">
+            Rider-Compliant Equipment Inventory
+          </h2>
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted-light">
+            Precision-maintained and meticulously tested hardware from leading manufacturers for lighting,
+            laser, and video operations.
+          </p>
+          <ul className="mt-6 grid list-disc gap-3 pl-5 text-sm text-muted-light md:grid-cols-2 lg:grid-cols-3">
+            <li>Pangolin Beyond control systems</li>
+            <li>Chauvet Professional moving fixtures</li>
+            <li>Resolume media server packages</li>
+            <li>IP-rated laser projector housings</li>
+            <li>Rider-compliant truss and rigging hardware</li>
+            <li>Touring-ready signal and power distribution</li>
+          </ul>
         </div>
       </section>
 

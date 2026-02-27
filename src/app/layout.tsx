@@ -43,39 +43,62 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const { brand, home, seo } = await getPublicSiteData();
+  const { brand, seo } = await getPublicSiteData();
 
-  const localBusinessSchema = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    name: brand.name,
-    url: brand.url,
-    telephone: brand.phoneHref,
-    email: brand.email,
-    description: seo.description,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Denver",
-      addressRegion: "CO",
-      addressCountry: "US",
-    },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: "39.7392",
-      longitude: "-104.9903",
-    },
-    areaServed: [
-      { "@type": "State", name: "Colorado" },
-      { "@type": "Country", name: "United States" },
-    ],
-    hasOfferCatalog: {
-      "@type": "OfferCatalog",
-      name: "Event Production Services",
-      itemListElement: home.services.items.map((item) => ({
+  const offerCatalog = {
+    "@type": "OfferCatalog",
+    name: "Event Production Services",
+    itemListElement: [
+      {
         "@type": "Offer",
-        itemOffered: { "@type": "Service", name: item.title },
-      })),
-    },
+        itemOffered: { "@type": "Service", name: "Concert Lighting Rental" },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: { "@type": "Service", name: "Class IV Laser Operations" },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: { "@type": "Service", name: "LED Video Wall Deployment" },
+      },
+    ],
+  };
+
+  const schemaGraph = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LocalBusiness",
+        name: brand.name,
+        url: brand.url,
+        telephone: brand.phoneHref,
+        email: brand.email,
+        description: seo.description,
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Denver",
+          addressRegion: "CO",
+          addressCountry: "US",
+        },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: "39.7392",
+          longitude: "-104.9903",
+        },
+        areaServed: [
+          { "@type": "State", name: "Colorado" },
+          { "@type": "Country", name: "United States" },
+        ],
+        hasOfferCatalog: offerCatalog,
+      },
+      {
+        "@type": "Organization",
+        name: brand.name,
+        url: brand.url,
+        email: brand.email,
+        hasOfferCatalog: offerCatalog,
+      },
+    ],
   };
 
   return (
@@ -84,7 +107,7 @@ export default async function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(localBusinessSchema),
+            __html: JSON.stringify(schemaGraph),
           }}
         />
       </head>

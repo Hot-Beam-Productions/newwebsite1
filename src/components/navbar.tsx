@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import type { BrandData, NavLink } from "@/lib/types";
 
 function isActive(pathname: string, href: string) {
+  if (href.startsWith("/#")) return pathname === "/";
   if (href === "/") return pathname === "/";
   return pathname.startsWith(href);
 }
@@ -54,10 +55,10 @@ export function Navbar({ brand, navigation }: NavbarProps) {
             </Link>
           ))}
           <Link
-            href="/contact"
+            href={`mailto:${brand.email}`}
             className="mono-label rounded-sm border border-laser-cyan bg-laser-cyan/10 px-4 py-2 !text-laser-cyan transition-all hover:bg-laser-cyan/20"
           >
-            Get a Quote
+            24/7 Support: {brand.email}
           </Link>
         </div>
 
@@ -97,6 +98,13 @@ export function Navbar({ brand, navigation }: NavbarProps) {
                     {link.label}
                   </Link>
                 ))}
+                <Link
+                  href={`mailto:${brand.email}`}
+                  onClick={() => setMobileOpen(false)}
+                  className="mono-label !text-sm !text-laser-cyan"
+                >
+                  24/7 Support: {brand.email}
+                </Link>
               </div>
             </div>
           </motion.div>

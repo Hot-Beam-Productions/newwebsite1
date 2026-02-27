@@ -15,30 +15,26 @@
   },
   "navigation": [
     {
-      "href": "/",
-      "label": "Home"
-    },
-    {
-      "href": "/work",
-      "label": "Work"
+      "href": "/#capabilities",
+      "label": "Capabilities"
     },
     {
       "href": "/rentals",
       "label": "Inventory"
     },
     {
-      "href": "/about",
-      "label": "Company"
+      "href": "/work",
+      "label": "Case Studies"
     },
     {
       "href": "/contact",
-      "label": "Contact"
+      "label": "Contact Operations"
     }
   ],
   "seo": {
-    "defaultTitle": "Hot Beam Productions | Denver Live Event Production",
+    "defaultTitle": "Hotbeam Productions | Technical Event Lighting, Video & Lasers",
     "titleTemplate": "%s | Hot Beam Productions",
-    "description": "Denver-based live event production partner for concerts, brand activations, and corporate stages. Lighting, lasers, video, and special effects designed and executed by one accountable team.",
+    "description": "Colorado-based production company specializing in intelligent concert lighting, high-resolution video walls, and variance-approved laser operations for tours, corporate events, and live venues.",
     "keywords": [
       "colorado av production company",
       "denver concert lighting and laser production",
@@ -49,19 +45,19 @@
   },
   "home": {
     "hero": {
-      "eyebrow": "Colorado | Tour-Grade Live Event Production",
-      "departmentLine": "Lighting \u00b7 Lasers \u00b7 Video \u00b7 SFX",
-      "description": "One accountable production partner from pre-pro to show call, built for high-stakes events where execution cannot fail.",
+      "eyebrow": "Rider-Compliant Visual Infrastructure",
+      "departmentLine": "Lighting Architecture \u00b7 Class IV Lasers \u00b7 LED Video Walls",
+      "description": "Specialized production partner delivering precision-engineered systems, meticulous maintenance standards, and 24/7 technical support.",
       "primaryCta": {
-        "label": "Check Date Availability",
+        "label": "Request Production Specs",
         "href": "/contact"
       },
       "secondaryCta": {
-        "label": "View Recent Deployments",
-        "href": "/work"
+        "label": "View Equipment Inventory",
+        "href": "/rentals"
       },
-      "headline": "Tour-Grade Visual Production & Precision Laser Engineering",
-      "subheadline": "LED video, lighting, and FDA-approved laser operations for Colorado venues, festivals, and touring artists."
+      "headline": "Technical Event Lighting, Video & Laser Engineering",
+      "subheadline": "Precision-engineered lighting architecture, high-resolution video walls, and variance-approved laser operations. Deploying rider-compliant visual infrastructure for touring artists, corporate activations, and high-capacity events nationwide."
     },
     "services": {
       "label": "Capabilities",
@@ -130,18 +126,18 @@
       }
     ],
     "closingCta": {
-      "title": "Do Not Compromise Your Production Value",
-      "description": "Send your date, venue, and technical brief. We will return a scoped plan with staffing, gear, and risk controls.",
+      "title": "Need a Rider-Compliant Visual Deployment Plan?",
+      "description": "Send your venue specs, schedule, and performance requirements. Our operations team will return a scoped deployment plan with crew, hardware, and risk controls.",
       "button": {
-        "label": "Check Date Availability",
+        "label": "Contact Operations",
         "href": "/contact"
       }
     },
     "trustSignals": [
-      "Featured: Fox Theater Boulder Boiler Room Production",
-      "FDA variance-compliant laser operations",
-      "Venue, promoter, and touring-rider workflows",
-      "Colorado-based crew with nationwide deployment"
+      "24/7 technical support for touring and venue teams",
+      "Variance-approved Class IV laser operations",
+      "Precision-maintained inventory cleaned, tested, and show-ready",
+      "Colorado-based crew supporting nationwide deployments"
     ]
   },
   "work": {
