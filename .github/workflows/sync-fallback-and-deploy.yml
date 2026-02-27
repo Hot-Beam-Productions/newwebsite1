@@ -1,6 +1,8 @@
 name: Sync Fallback JSON and Deploy
 
 on:
+  push:
+    branches: [main]
   schedule:
     # Every 6 hours (UTC)
     - cron: "0 */6 * * *"
@@ -11,11 +13,13 @@ permissions:
 
 concurrency:
   group: sync-fallback-and-deploy
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   sync-and-deploy:
     runs-on: ubuntu-latest
+    # Skip commits made by this workflow (fallback sync commits tagged [skip ci])
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -51,12 +55,14 @@ jobs:
           fi
 
       - name: Sync fallback JSON from Firestore
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         env:
           NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
           NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
         run: npm run sync:fallback-json
 
       - name: Detect fallback changes
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         id: changes
         run: |
           if git diff --quiet -- src/data/data.json; then
@@ -75,7 +81,7 @@ jobs:
           git push
 
       - name: Deploy to Vercel (production)
-        if: steps.changes.outputs.changed == 'true'
+        if: github.event_name == 'push' || steps.changes.outputs.changed == 'true'
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
