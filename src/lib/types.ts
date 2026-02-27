@@ -72,8 +72,6 @@ export interface RentalItem {
   name: string;
   category: ServiceCategory;
   brand: string;
-  dailyRate: number | null;
-  inventoryCount?: number;
   description: string;
   specs: string[];
   frequentlyRentedTogether?: string[];

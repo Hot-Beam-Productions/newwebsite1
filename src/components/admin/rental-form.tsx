@@ -44,8 +44,6 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
     name: initial?.name ?? "",
     category: initial?.category ?? "lighting",
     brand: initial?.brand ?? "",
-    dailyRate: initial?.dailyRate ?? null,
-    inventoryCount: initial?.inventoryCount,
     description: initial?.description ?? "",
     specs: initial?.specs ?? [],
     frequentlyRentedTogether: initial?.frequentlyRentedTogether ?? [],
@@ -59,8 +57,6 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
   const [slug, setSlug] = useState(initial?.slug ?? "");
   const [category, setCategory] = useState<ServiceCategory>(initial?.category ?? "lighting");
   const [brand, setBrand] = useState(initial?.brand ?? "");
-  const [dailyRate, setDailyRate] = useState<string>(initial?.dailyRate?.toString() ?? "");
-  const [inventoryCount, setInventoryCount] = useState<string>(initial?.inventoryCount?.toString() ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
   const [specs, setSpecs] = useState<string[]>(initial?.specs ?? []);
   const [frequentlyRentedTogether, setFrequentlyRentedTogether] = useState<string[]>(initial?.frequentlyRentedTogether ?? []);
@@ -81,8 +77,6 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
       name,
       category,
       brand,
-      dailyRate: dailyRate ? parseFloat(dailyRate) : null,
-      inventoryCount: inventoryCount ? parseInt(inventoryCount, 10) : undefined,
       description,
       specs,
       frequentlyRentedTogether,
@@ -94,12 +88,10 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
       available,
       brand,
       category,
-      dailyRate,
       description,
       frequentlyRentedTogether,
       imageUrl,
       initial?.id,
-      inventoryCount,
       name,
       order,
       slug,
@@ -162,7 +154,7 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <label className={labelClass}>Category</label>
           <select value={category} onChange={(e) => setCategory(e.target.value as ServiceCategory)} className={inputClass}>
@@ -174,14 +166,6 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
         <div>
           <label className={labelClass}>Brand</label>
           <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} required className={inputClass} />
-        </div>
-        <div>
-          <label className={labelClass}>Daily Rate ($)</label>
-          <input type="number" value={dailyRate} onChange={(e) => setDailyRate(e.target.value)} className={inputClass} placeholder="Leave empty for 'on request'" />
-        </div>
-        <div>
-          <label className={labelClass}>Inventory Count</label>
-          <input type="number" min={0} value={inventoryCount} onChange={(e) => setInventoryCount(e.target.value)} className={inputClass} placeholder="Optional" />
         </div>
       </div>
 

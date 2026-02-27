@@ -165,9 +165,6 @@ export default function RentalsListPage() {
                       <p className="truncate font-medium text-foreground">{item.name}</p>
                       <p className="text-xs text-muted">{item.brand}</p>
                       <p className="text-xs text-muted capitalize">{item.category}</p>
-                      <p className="text-xs text-muted">
-                        {item.dailyRate ? `$${item.dailyRate}/day` : "On request"}
-                      </p>
                       <p className={`text-xs ${item.available ? "text-emerald-400" : "text-amber-400"}`}>
                         {item.available ? "Available" : "Unavailable"}
                       </p>
@@ -192,7 +189,6 @@ export default function RentalsListPage() {
                 <tr className="border-b border-border bg-surface text-left text-xs uppercase tracking-wider text-muted">
                   <th className="px-4 py-3">Item</th>
                   <th className="px-4 py-3">Category</th>
-                  <th className="px-4 py-3">Rate</th>
                   <th className="px-4 py-3">Available</th>
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
@@ -218,9 +214,6 @@ export default function RentalsListPage() {
                         </div>
                       </td>
                       <td className="px-4 py-3 text-muted-light capitalize">{item.category}</td>
-                      <td className="px-4 py-3 text-muted-light">
-                        {item.dailyRate ? `$${item.dailyRate}/day` : "On request"}
-                      </td>
                       <td className="px-4 py-3">
                         <span className={`text-xs ${item.available ? "text-emerald-400" : "text-amber-400"}`}>
                           {item.available ? "Available" : "Unavailable"}

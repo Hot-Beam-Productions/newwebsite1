@@ -90,12 +90,6 @@ export default async function RentalDetailPage({ params }: Props) {
               )}
             </div>
 
-            {typeof item.inventoryCount === "number" && (
-              <p className="mt-4 text-sm text-muted-light">
-                <span className="mono-label !text-foreground">Inventory:</span> {item.inventoryCount} units available
-              </p>
-            )}
-
             {item.specs.length > 0 && (
               <section className="mt-7 border border-border bg-surface p-5">
                 <p className="mono-label mb-3 !text-foreground">Key Specs</p>

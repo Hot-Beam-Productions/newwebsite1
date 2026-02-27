@@ -52,8 +52,6 @@ export const rentalSchema = z.object({
   name: z.string().min(1),
   category: serviceCategory,
   brand: z.string().min(1),
-  dailyRate: z.number().nullable(),
-  inventoryCount: z.number().int().min(0).optional(),
   description: z.string().min(1),
   specs: z.array(z.string()),
   frequentlyRentedTogether: z.array(z.string()).optional(),
