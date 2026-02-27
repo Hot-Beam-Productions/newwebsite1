@@ -377,160 +377,570 @@
         "label": "All"
       },
       {
-        "value": "lighting",
-        "label": "Lighting"
-      },
-      {
         "value": "video",
-        "label": "Video"
+        "label": "Visual Display Infrastructure"
       },
       {
         "value": "lasers",
-        "label": "Lasers"
+        "label": "High-Power Laser Systems"
       },
       {
-        "value": "sfx",
-        "label": "SFX"
+        "value": "atmospherics",
+        "label": "Atmospheric Modifiers"
+      },
+      {
+        "value": "audio-dj",
+        "label": "Professional Audio & DJ Hardware"
+      },
+      {
+        "value": "lighting",
+        "label": "Intelligent Wash & Beam Lighting"
+      },
+      {
+        "value": "rigging",
+        "label": "Structural Rigging"
+      },
+      {
+        "value": "staging",
+        "label": "Modular Staging"
+      },
+      {
+        "value": "power",
+        "label": "Power Distribution"
       }
     ],
     "footerNote": "Need a complete list? Request the current inventory sheet and package pricing.",
     "items": [
       {
-        "id": "martin-mac-viper-profile",
-        "slug": "martin-mac-viper-profile",
-        "name": "Martin MAC Viper Profile",
-        "category": "lighting",
-        "brand": "Martin",
-        "dailyRate": 150,
-        "description": "1000W profile fixture with framing shutters and dual gobo wheels. A proven workhorse for touring and one-off stage designs.",
-        "specs": [
-          "1000W",
-          "CMY + CTO",
-          "Dual Gobo Wheels",
-          "Framing Shutters",
-          "8-51\u00b0 Zoom"
-        ],
-        "imageUrl": "https://pub-XXXX.r2.dev/rentals/martin-mac-viper.jpg",
-        "available": true
-      },
-      {
-        "id": "roe-cb5-led-panel",
-        "slug": "roe-cb5-led-panel",
-        "name": "ROE Visual CB5 LED Panel",
+        "id": "premium-led-video-wall-system-2-8mm-vx400",
+        "slug": "premium-led-video-wall-system-2-8mm-vx400",
+        "name": "6.5 x 9.8ft Premium LED Video Wall System (2.8mm) with Novastar VX400",
         "category": "video",
-        "brand": "ROE Visual",
-        "dailyRate": 120,
-        "description": "5.77mm tile for indoor LED walls, scenic canvases, and modular display builds.",
+        "brand": "Hot Beam Productions",
+        "dailyRate": 1200,
+        "inventoryCount": 1,
+        "description": "Transform your stage architecture with our broadcast-ready 6.5 x 9.8ft LED Video Wall package. Featuring a high-density 2.8mm pixel pitch and a staggering 3840Hz refresh rate, this 24-panel modular system guarantees absolutely flicker-free performance on camera and stunning visual clarity for live audiences. To ensure flawless operation, this package includes the industry-standard Novastar VX400 all-in-one controller. With a 2.9 million pixel loading capacity, four Gigabit Ethernet outputs, and SuperView III stepless scaling, the VX400 provides seamless video processing, allowing you to map, crop, and scale your visual content effortlessly.",
         "specs": [
-          "5.77mm Pitch",
-          "500x500mm",
-          "5000 nits",
-          "3840Hz Refresh"
+          "Panel Pixel Pitch: 2.8mm",
+          "Diode Type / Density: SMD1515 / 123,904 pixels per sqm",
+          "Refresh Rate: 3840Hz (Broadcast Standard)",
+          "VX400 Loading Capacity: 2.9 Million Pixels",
+          "VX400 Video Inputs: 2x HDMI 1.3, 2x DVI, 1x 3G-SDI",
+          "VX400 Data Outputs: 4x Gigabit Ethernet, 2x Fiber OPT"
         ],
-        "imageUrl": "https://pub-XXXX.r2.dev/rentals/roe-cb5.jpg",
-        "available": true
+        "frequentlyRentedTogether": [
+          "3m-f34-aluminum-square-truss",
+          "heavy-duty-truss-lift-crank-stand",
+          "3x3ft-heavy-duty-f34-base-plate"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/premium-led-video-wall-system-2-8mm-vx400.jpg",
+        "available": true,
+        "order": 0
       },
       {
-        "id": "kvant-spectrum-20",
-        "slug": "kvant-spectrum-20",
-        "name": "Kvant Spectrum 20",
+        "id": "able-archer-20w-rgb-laser-projector-fb4-integrated",
+        "slug": "able-archer-20w-rgb-laser-projector-fb4-integrated",
+        "name": "Able Archer 20W RGB Laser Projector (FB4 Integrated)",
         "category": "lasers",
-        "brand": "Kvant",
+        "brand": "Able",
+        "dailyRate": 500,
+        "inventoryCount": 8,
+        "description": "Command the skyline and dominate festival stages with the Able Archer 20W RGB Laser. Engineered for mega-scale events, this IP65-rated weatherproof projector delivers an immense 20,000mW of pristine laser energy. With an integrated Pangolin FB4 media server, you can trigger complex shows, liquid skies, and custom animations directly via Art-Net, sACN, or Ethernet without the need for cumbersome ILDA cables. The projector features a razor-tight <1.2mrad beam divergence for extreme long-throw visibility and utilizes 30Kpps high-speed scanners for perfectly smooth geometric rendering.",
+        "specs": [
+          "Total Optical Power: \u226520,000mW",
+          "Laser Diode Distribution: 6.4W Red, 6.4W Green, 8W Blue",
+          "Scanning Speed: 30Kpps @ 8\u00b0",
+          "Beam Divergence: <1.2mrad",
+          "Control Interfaces: FB4, Art-Net, Ethernet, DMX, ILDA",
+          "Ingress Protection: IP65"
+        ],
+        "frequentlyRentedTogether": [
+          "artfox-1500w-professional-hazer",
+          "400a-three-phase-power-distribution-rack",
+          "socapex-breakout-cable-19-pin-to-6x-edison"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/able-archer-20w-rgb-laser-projector-fb4-integrated.jpg",
+        "available": true,
+        "order": 1
+      },
+      {
+        "id": "high-power-10w-rgb-laser-projector",
+        "slug": "high-power-10w-rgb-laser-projector",
+        "name": "High-Power 10W RGB Laser Projector",
+        "category": "lasers",
+        "brand": "Generic",
         "dailyRate": 300,
-        "description": "20W RGBW projector with ILDA and DMX control for advanced beam architecture and aerial effects.",
+        "inventoryCount": 2,
+        "description": "Deliver stunning aerial effects and precise geometric animations with our High-Power 10W RGB Laser. Perfectly scaled for mid-sized indoor venues and high-energy nightclub environments, this projector utilizes high-performance analog modulation for infinite, smooth color blending. Equipped with professional 30Kpps high-speed scanners and a tight <1.5mrad beam divergence, the unit ensures sharp, flicker-free graphics. Control your show your way with support for ILDA, DMX512, and automatic sound-active modes.",
         "specs": [
-          "20W RGBW",
-          "ILDA + DMX",
-          "FDA Registered",
-          "Safety Interlock"
+          "Total Optical Power: 10,000mW",
+          "Laser Diode Distribution: 3W Red, 3W Green, 4W Blue",
+          "Scanning Speed: 30Kpps @ 8\u00b0",
+          "Beam Divergence: <1.5mrad",
+          "Control Interfaces: ILDA, DMX512, Auto, Sound"
         ],
-        "imageUrl": "https://pub-XXXX.r2.dev/rentals/kvant-spectrum-20.jpg",
-        "available": true
+        "frequentlyRentedTogether": [
+          "artfox-1500w-professional-hazer"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/high-power-10w-rgb-laser-projector.jpg",
+        "available": true,
+        "order": 2
       },
       {
-        "id": "cryofx-co2-jet",
-        "slug": "cryofx-co2-jet",
-        "name": "CryoFX CO2 Jet",
-        "category": "sfx",
-        "brand": "CryoFX",
-        "dailyRate": 75,
-        "description": "DMX-driven cryo cannon for stage-impact moments and timed audience hits.",
+        "id": "alpha-theta-cdj-3000x-professional-dj-multi-player",
+        "slug": "alpha-theta-cdj-3000x-professional-dj-multi-player",
+        "name": "Alpha Theta CDJ-3000x Professional DJ Multi Player",
+        "category": "audio-dj",
+        "brand": "Alpha Theta",
+        "dailyRate": 175,
+        "inventoryCount": 4,
+        "description": "Step into the booth with the undisputed global standard in DJ performance technology. The Alpha Theta CDJ-3000x is driven by an advanced multi-core MPU, ensuring lightning-fast track loading and flawless performance reliability. Navigate your sets intuitively on the massive 10.1-inch capacitive touchscreen, and experience unparalleled sonic purity thanks to the onboard ESS 32-bit DAC, which delivers a breathtaking 115 dB signal-to-noise ratio. With Gigabit PRO DJ LINK networking, dual USB-C ports, and Wi-Fi capability for CloudDirectPlay, the CDJ-3000x is built to command the world's largest festival stages.",
         "specs": [
-          "DMX 512",
-          "25 ft Blast",
-          "Liquid CO2 Feed",
-          "IP44"
+          "Audio Processing Resolution: 96kHz / 32-bit ESS DAC",
+          "Signal-to-Noise Ratio: 115 dB",
+          "Total Harmonic Distortion: 0.0018%",
+          "Connectivity: Gigabit PRO DJ LINK, Wi-Fi, USB-C",
+          "Performance Dimensions: 13.6 x 19.3 x 5.1 in"
         ],
-        "imageUrl": "https://pub-XXXX.r2.dev/rentals/cryo-jet.jpg",
-        "available": true
+        "frequentlyRentedTogether": [
+          "pioneer-dj-djm-a9-4-channel-professional-mixer"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/alpha-theta-cdj-3000x-professional-dj-multi-player.jpg",
+        "available": true,
+        "order": 3
       },
       {
-        "id": "chauvet-rogue-r3-wash",
-        "slug": "chauvet-rogue-r3-wash",
-        "name": "Chauvet Rogue R3 Wash",
+        "id": "pioneer-dj-djm-a9-4-channel-professional-mixer",
+        "slug": "pioneer-dj-djm-a9-4-channel-professional-mixer",
+        "name": "Pioneer DJ DJM-A9 4-Channel Professional Mixer",
+        "category": "audio-dj",
+        "brand": "Pioneer DJ",
+        "dailyRate": 150,
+        "inventoryCount": 1,
+        "description": "The heartbeat of the modern DJ booth. The Pioneer DJ DJM-A9 is a next-generation 4-channel mixer engineered for absolute sonic excellence. Utilizing 32-bit ESS Technology A/D and D/A converters, it delivers crystal-clear, high-resolution audio to both the dancefloor and the booth monitors. Designed for seamless artist transitions, the A9 features dual independent headphone outputs for effortless back-to-back sets, a phantom-powered microphone input for studio-grade condenser mics, and an expanded Sound Color FX section. Integrated Bluetooth and Wi-Fi capabilities ensure you are always connected, making this the ultimate mixing hub for any professional deployment.",
+        "specs": [
+          "Audio Processing Resolution: 96kHz / 32-bit ESS AD/DA",
+          "Signal-to-Noise Ratio: 105 dB (Line)",
+          "Total Harmonic Distortion: <0.005%",
+          "Connectivity: Dual USB-B/C, Bluetooth, Wi-Fi",
+          "Performance Dimensions: 16.4 x 18.4 x 4.25 in"
+        ],
+        "frequentlyRentedTogether": [
+          "alpha-theta-cdj-3000x-professional-dj-multi-player"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/pioneer-dj-djm-a9-4-channel-professional-mixer.jpg",
+        "available": true,
+        "order": 4
+      },
+      {
+        "id": "artfox-ipstrobe-m-motorized-strobe-wash-ip65",
+        "slug": "artfox-ipstrobe-m-motorized-strobe-wash-ip65",
+        "name": "Artfox IPStrobe M Motorized Strobe & Wash (IP65)",
         "category": "lighting",
-        "brand": "Chauvet Professional",
-        "dailyRate": 95,
-        "description": "RGBW wash moving head for stage texture, audience wash, and scenic layer control.",
+        "brand": "Artfox",
+        "dailyRate": 150,
+        "inventoryCount": 16,
+        "description": "Deliver devastating visual impact with the Artfox IPStrobe M. Comparable to the legendary Colorstrike M, this IP65-rated motorized strobe and wash fixture is built to withstand the harshest outdoor festival conditions. It features a blistering 1176W cool-white central strobe tube surrounded by a rich 392W RGB background wash panel, allowing for aggressive strobe blasts and saturated color washes from a single unit. With a lightning-fast 185-degree motorized tilt, full pixel mapping capabilities, and seamless Art-Net/DMX control, the IPStrobe M is the ultimate dynamic effect luminaire.",
         "specs": [
-          "RGBW LED",
-          "Moving Head",
-          "8-60\u00b0 Zoom",
-          "IP20"
+          "Light Source Engine: 1176W White Strobe / 392W RGB",
+          "Beam Optics: 185\u00b0 Motorized Tilt",
+          "Color Generation: RGB Wash + Pure White Strobe",
+          "Control Protocols: Art-Net, sACN, DMX, RDM",
+          "Ingress Protection: IP65"
         ],
-        "imageUrl": "https://pub-XXXX.r2.dev/rentals/rogue-r3.jpg",
-        "available": true
+        "frequentlyRentedTogether": [
+          "artfox-1500w-professional-hazer",
+          "400a-three-phase-power-distribution-rack",
+          "50ft-socapex-extension-cable-19-pin-12-awg",
+          "socapex-breakout-cable-19-pin-to-6x-edison"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/artfox-ipstrobe-m-motorized-strobe-wash-ip65.jpg",
+        "available": true,
+        "order": 5
       },
       {
-        "id": "mdg-theone-haze",
-        "slug": "mdg-theone-haze",
-        "name": "MDG theONE Haze Generator",
-        "category": "sfx",
-        "brand": "MDG",
+        "id": "artfox-matrix-hybrid-cmy-460-moving-head",
+        "slug": "artfox-matrix-hybrid-cmy-460-moving-head",
+        "name": "Artfox Matrix Hybrid CMY 460 Moving Head",
+        "category": "lighting",
+        "brand": "Artfox",
+        "dailyRate": 120,
+        "inventoryCount": 12,
+        "description": "Maximize your lighting rig's potential with the Artfox Matrix Hybrid CMY 460. This powerful all-in-one moving head is driven by a 460W Cool White LED engine and features a motorized linear zoom ranging from a piercing 4\u00b0 beam to a broad 30\u00b0 wash. Engineered for professional lighting designers, it offers incredibly smooth CMY subtractive color mixing, variable CTO/CTB color temperature correction, dual rotating prisms, and dynamic gobo wheels. Whether you need sharp mid-air aerial effects, textured stage spots, or even color washes, the Hybrid CMY 460 delivers uncompromising performance.",
+        "specs": [
+          "Light Source Engine: 460W Cool White LED (8000K)",
+          "Motorized Zoom: 4\u00b0 to 30\u00b0",
+          "Color Generation: CMY Mixing + Variable CTO/CTB",
+          "Control Protocol: DMX512 (25 Channel)",
+          "Ingress Protection: IP20"
+        ],
+        "frequentlyRentedTogether": [
+          "artfox-1500w-professional-hazer",
+          "400a-three-phase-power-distribution-rack",
+          "50ft-socapex-extension-cable-19-pin-12-awg",
+          "socapex-breakout-cable-19-pin-to-6x-edison"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/artfox-matrix-hybrid-cmy-460-moving-head.jpg",
+        "available": true,
+        "order": 6
+      },
+      {
+        "id": "artfox-solar-7-moving-zoom-wash",
+        "slug": "artfox-solar-7-moving-zoom-wash",
+        "name": "Artfox Solar 7 Moving Zoom Wash",
+        "category": "lighting",
+        "brand": "Artfox",
+        "dailyRate": 65,
+        "inventoryCount": 8,
+        "description": "Fast, compact, and incredibly bright. The Artfox Solar 7 Moving Wash features seven potent 40W RGBW LEDs capable of producing brilliant, perfectly blended colors. Its motorized linear zoom effortlessly transitions the beam angle from a tight 6\u00b0 column of light to a wide 45\u00b0 stage wash, making it an incredibly versatile tool for any rig. Thanks to its lightweight design and advanced 3-phase motors, the Solar 7 executes lightning-fast pan and tilt movements, ensuring it keeps pace with the most demanding, high-energy light shows.",
+        "specs": [
+          "Light Source Engine: 7x 40W RGBW LEDs",
+          "Motorized Zoom: 6\u00b0 to 45\u00b0",
+          "Color Generation: RGBW 4-in-1 Mixing",
+          "Control Protocol: DMX512 (17/22 Channel)",
+          "Ingress Protection: IP20 / IP65 Variants Available"
+        ],
+        "frequentlyRentedTogether": [
+          "artfox-1500w-professional-hazer",
+          "400a-three-phase-power-distribution-rack"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/artfox-solar-7-moving-zoom-wash.jpg",
+        "available": true,
+        "order": 7
+      },
+      {
+        "id": "cryogenic-co2-cannon-jet-includes-75lb-siphon-tank",
+        "slug": "cryogenic-co2-cannon-jet-includes-75lb-siphon-tank",
+        "name": "Cryogenic CO2 Cannon Jet (Includes 75lb Siphon Tank)",
+        "category": "atmospherics",
+        "brand": "Hot Beam Productions",
+        "dailyRate": 250,
+        "inventoryCount": 2,
+        "description": "Deliver massive, stadium-shaking energy with our professional Cryogenic CO2 Cannons. Engineered to blast dense, ice-cold plumes of white fog up to 35 feet in the air, these jets are the ultimate special effect for beat drops and grand entrances. The fog dissipates instantly, leaving the stage completely clear. To ensure you achieve the perfect cryogenic flash, this rental package includes one fully loaded 75lb Siphon CO2 tank per cannon, providing approximately 135 seconds of total output time. Fully DMX controllable for precise, synchronized firing.",
+        "specs": [
+          "Output Reach: 25 - 35 feet vertical plume",
+          "Consumable Required: Liquid CO2 (75lb Siphon Tank)",
+          "Control Protocol: DMX512 / Standard Relay",
+          "Power Consumption: 250W"
+        ],
+        "frequentlyRentedTogether": [],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/cryogenic-co2-cannon-jet-includes-75lb-siphon-tank.jpg",
+        "available": true,
+        "order": 8
+      },
+      {
+        "id": "artfox-1500w-professional-hazer",
+        "slug": "artfox-1500w-professional-hazer",
+        "name": "Artfox 1500W Professional Hazer",
+        "category": "atmospherics",
+        "brand": "Artfox",
         "dailyRate": 85,
-        "description": "Fine atmospheric haze for beam definition and consistent stage depth.",
+        "inventoryCount": 1,
+        "description": "Maximize the visual impact of your entire lighting and laser rig with the Artfox 1500W Professional Hazer. Unlike standard foggers, this touring-grade hazer outputs a fine, long-lasting mist at a massive 38,000 cubic feet per minute, perfectly illuminating mid-air light beams without smoking out your performers. Built into a rugged flight case, it features a 5-angle adjustable output baffle to work seamlessly with your venue's air currents. It heats up in just 60 seconds and offers full DMX512 control for precise atmospheric management.",
         "specs": [
-          "Oil-Based Fluid",
-          "DMX 512",
-          "Ultra-Fine Output",
-          "Dual Output"
+          "Output Volume: 38,000 cubic feet per minute",
+          "Consumable Required: Professional Haze Fluid (6L Tank)",
+          "Control Protocol: DMX512 (3-pin & 5-pin) / Manual",
+          "Power Consumption: 1500W"
         ],
-        "imageUrl": "https://pub-XXXX.r2.dev/rentals/mdg-theone.jpg",
-        "available": true
+        "frequentlyRentedTogether": [
+          "artfox-ipstrobe-m-motorized-strobe-wash-ip65",
+          "artfox-matrix-hybrid-cmy-460-moving-head",
+          "able-archer-20w-rgb-laser-projector-fb4-integrated"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/artfox-1500w-professional-hazer.jpg",
+        "available": true,
+        "order": 9
       },
       {
-        "id": "grandma3-light",
-        "slug": "grandma3-light",
-        "name": "grandMA3 Light",
-        "category": "lighting",
-        "brand": "MA Lighting",
-        "dailyRate": 275,
-        "description": "Touring-standard console for scalable cue stacks, busking, and synchronized show control.",
+        "id": "3m-f34-aluminum-square-truss",
+        "slug": "3m-f34-aluminum-square-truss",
+        "name": "3m (9.84ft) F34 Aluminum Square Truss",
+        "category": "rigging",
+        "brand": "F34",
+        "dailyRate": 20,
+        "inventoryCount": 4,
+        "description": "The industry standard for safe, heavy-duty rigging. Our 3-meter F34 290mm square trussing is constructed from high-strength aluminum with 50mm main tubes and a 2mm wall thickness, guaranteeing maximum load-bearing capacity for your lighting and video walls. Features quick-lock conical couplers for rapid, secure deployment.",
         "specs": [
-          "4096 Parameters",
-          "8 Universes",
-          "Dual Touchscreens",
-          "MA3 Platform"
+          "Length: 3m (9.84ft)",
+          "Profile: F34 290mm square truss",
+          "Main Tubes: 50mm aluminum",
+          "Wall Thickness: 2mm",
+          "Coupling: Conical quick-lock"
         ],
-        "imageUrl": "https://pub-XXXX.r2.dev/rentals/grandma3-light.jpg",
-        "available": true
+        "frequentlyRentedTogether": [
+          "f34-6-way-junction-corner-block",
+          "heavy-duty-truss-lift-crank-stand"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/3m-f34-aluminum-square-truss.jpg",
+        "available": true,
+        "order": 10
       },
       {
-        "id": "barco-e2-processor",
-        "slug": "barco-e2-processor",
-        "name": "Barco E2 Processor",
-        "category": "video",
-        "brand": "Barco",
+        "id": "1-5m-f34-aluminum-square-truss",
+        "slug": "1-5m-f34-aluminum-square-truss",
+        "name": "1.5m (4.92ft) F34 Aluminum Square Truss",
+        "category": "rigging",
+        "brand": "F34",
+        "dailyRate": 20,
+        "inventoryCount": 4,
+        "description": "Highly versatile 1.5-meter F34 square truss segment. Built to the same rigorous 50mm/2mm tubing standards as our longer spans, this half-size segment is perfect for creating custom grid dimensions, vertical totems, or adjusting the height of goal-post arches. Includes conical coupling hardware.",
+        "specs": [
+          "Length: 1.5m (4.92ft)",
+          "Profile: F34 290mm square truss",
+          "Main Tubes: 50mm aluminum",
+          "Wall Thickness: 2mm",
+          "Coupling: Conical hardware included"
+        ],
+        "frequentlyRentedTogether": [
+          "f34-6-way-junction-corner-block",
+          "3x3ft-heavy-duty-f34-base-plate"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/1-5m-f34-aluminum-square-truss.jpg",
+        "available": true,
+        "order": 11
+      },
+      {
+        "id": "f34-6-way-junction-corner-block",
+        "slug": "f34-6-way-junction-corner-block",
+        "name": "F34 6-Way Junction Corner Block",
+        "category": "rigging",
+        "brand": "F34",
+        "dailyRate": 20,
+        "inventoryCount": 4,
+        "description": "Build complex 3D grids and arches effortlessly. This heavy-duty 6-way junction block allows you to connect F34 truss segments in up to six different directions simultaneously, providing ultimate structural flexibility.",
+        "specs": [
+          "Connections: 6 directions",
+          "Compatible Profile: F34",
+          "Construction: Heavy-duty aluminum"
+        ],
+        "frequentlyRentedTogether": [
+          "3m-f34-aluminum-square-truss",
+          "1-5m-f34-aluminum-square-truss"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/f34-6-way-junction-corner-block.jpg",
+        "available": true,
+        "order": 12
+      },
+      {
+        "id": "3x3ft-heavy-duty-f34-base-plate",
+        "slug": "3x3ft-heavy-duty-f34-base-plate",
+        "name": "3x3ft Heavy-Duty F34 Base Plate",
+        "category": "rigging",
+        "brand": "F34",
+        "dailyRate": 30,
+        "inventoryCount": 4,
+        "description": "Ensure absolute stability for your freestanding truss totems. This massive 3x3-foot aluminum base plate provides a wide center of gravity, preventing heavy moving heads from tipping your vertical columns.",
+        "specs": [
+          "Footprint: 3x3ft",
+          "Use Case: Heavy totems",
+          "Material: Aluminum"
+        ],
+        "frequentlyRentedTogether": [
+          "3m-f34-aluminum-square-truss",
+          "heavy-duty-truss-lift-crank-stand"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/3x3ft-heavy-duty-f34-base-plate.jpg",
+        "available": true,
+        "order": 13
+      },
+      {
+        "id": "2x2ft-f34-base-plate",
+        "slug": "2x2ft-f34-base-plate",
+        "name": "2x2ft F34 Base Plate",
+        "category": "rigging",
+        "brand": "F34",
+        "dailyRate": 20,
+        "inventoryCount": 4,
+        "description": "A compact but highly stable 2x2-foot base plate designed to safely support standard vertical F34 truss totems holding lightweight lighting fixtures or TV monitors.",
+        "specs": [
+          "Footprint: 2x2ft",
+          "Use Case: Standard totems",
+          "Material: Aluminum"
+        ],
+        "frequentlyRentedTogether": [
+          "1-5m-f34-aluminum-square-truss"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/2x2ft-f34-base-plate.jpg",
+        "available": true,
+        "order": 14
+      },
+      {
+        "id": "1x1ft-f34-top-plate",
+        "slug": "1x1ft-f34-top-plate",
+        "name": "1x1ft F34 Top Plate",
+        "category": "rigging",
+        "brand": "F34",
+        "dailyRate": 10,
+        "inventoryCount": 4,
+        "description": "Mount your moving heads or laser projectors safely atop any vertical F34 truss totem. This 1x1-foot top plate provides a perfectly flat, secure mounting surface.",
+        "specs": [
+          "Footprint: 1x1ft",
+          "Use Case: Fixture mounting",
+          "Material: Aluminum"
+        ],
+        "frequentlyRentedTogether": [
+          "2x2ft-f34-base-plate"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/1x1ft-f34-top-plate.jpg",
+        "available": true,
+        "order": 15
+      },
+      {
+        "id": "24-inch-truss-arm-extension-pole-boom-arm",
+        "slug": "24-inch-truss-arm-extension-pole-boom-arm",
+        "name": "24-inch Truss Arm Extension Pole (Boom Arm)",
+        "category": "rigging",
+        "brand": "F34",
+        "dailyRate": 10,
+        "inventoryCount": 4,
+        "description": "Maximize your rigging space. This 24-inch aluminum extension pole features dual self-locking clamps that attach securely to a 2-inch truss tube, allowing you to hang fixtures out and away from the main span to achieve superior lighting angles.",
+        "specs": [
+          "Length: 24 inches",
+          "Mounting: Dual self-locking clamps",
+          "Truss Compatibility: 2-inch tube"
+        ],
+        "frequentlyRentedTogether": [
+          "3m-f34-aluminum-square-truss"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/24-inch-truss-arm-extension-pole-boom-arm.jpg",
+        "available": true,
+        "order": 16
+      },
+      {
+        "id": "heavy-duty-truss-lift-crank-stand",
+        "slug": "heavy-duty-truss-lift-crank-stand",
+        "name": "Heavy-Duty Truss Lift / Crank Stand",
+        "category": "rigging",
+        "brand": "Global Truss",
+        "dailyRate": 150,
+        "inventoryCount": 2,
+        "description": "Elevate your lighting and video rigs safely and efficiently. These heavy-duty multi-mast crank stands provide immense mechanical advantage, allowing a single operator to hoist hundreds of pounds of loaded truss to heights exceeding 13 feet. Featuring an automatic friction brake winch, spring-loaded safety locking pins, and massive adjustable outrigger legs for leveling on uneven terrain, these lifts guarantee absolute structural safety and stability for your event.",
+        "specs": [
+          "Lift Capacity: 220 - 330 lbs",
+          "Max Height: 13 - 15 ft",
+          "Safety: Automatic friction brake + lock pins",
+          "Footprint: 59 - 84 inches (adjustable outriggers)"
+        ],
+        "frequentlyRentedTogether": [
+          "3m-f34-aluminum-square-truss",
+          "premium-led-video-wall-system-2-8mm-vx400"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/heavy-duty-truss-lift-crank-stand.jpg",
+        "available": true,
+        "order": 17
+      },
+      {
+        "id": "artfox-4x4ft-modular-stage-deck-adjustable-height",
+        "slug": "artfox-4x4ft-modular-stage-deck-adjustable-height",
+        "name": "Artfox 4x4ft Modular Stage Deck (Adjustable Height)",
+        "category": "staging",
+        "brand": "Artfox",
+        "dailyRate": 50,
+        "inventoryCount": 24,
+        "description": "Build a rock-solid foundation for your performers. Our premium 4x4-foot stage decks feature an 18mm anti-slip plywood surface capable of supporting a massive 800kg per square meter. The true advantage lies in the infinitely adjustable telescoping legs, which allow you to set the stage height anywhere from 2 to 3.3 feet, making it incredibly easy to achieve a perfectly level stage on uneven outdoor terrain or slopes.",
+        "specs": [
+          "Deck Size: 4x4ft (1.22m x 1.22m)",
+          "Deck Surface: 18mm anti-slip plywood",
+          "Load Rating: 800kg per sqm",
+          "Height Range: 2 - 3.3 ft adjustable"
+        ],
+        "frequentlyRentedTogether": [
+          "artfox-stage-deck-stairs-adjustable"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/artfox-4x4ft-modular-stage-deck-adjustable-height.jpg",
+        "available": true,
+        "order": 18
+      },
+      {
+        "id": "artfox-stage-deck-stairs-adjustable",
+        "slug": "artfox-stage-deck-stairs-adjustable",
+        "name": "Artfox Stage Deck Stairs (Adjustable)",
+        "category": "staging",
+        "brand": "Artfox",
+        "dailyRate": 75,
+        "inventoryCount": 1,
+        "description": "Provide safe, professional access to your stage platform. These heavy-duty stage stairs lock securely into our Artfox 4x4 decks and perfectly match their adjustable heights, ensuring a seamless transition from the venue floor to the performance area.",
+        "specs": [
+          "Compatible System: Artfox stage decks",
+          "Height Match: 24 - 40 inches",
+          "Attachment: Mechanical lock-in"
+        ],
+        "frequentlyRentedTogether": [
+          "artfox-4x4ft-modular-stage-deck-adjustable-height"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/artfox-stage-deck-stairs-adjustable.jpg",
+        "available": true,
+        "order": 19
+      },
+      {
+        "id": "400a-three-phase-power-distribution-rack",
+        "slug": "400a-three-phase-power-distribution-rack",
+        "name": "400A Three-Phase Power Distribution Rack",
+        "category": "power",
+        "brand": "Hot Beam Productions",
         "dailyRate": 350,
-        "description": "High-capacity screen management and switching system for complex multi-destination video workflows.",
+        "inventoryCount": 1,
+        "description": "The beating heart of your production's power grid. This heavy-duty 400A Three-Phase Power Distro takes high-capacity Cam-Lok feeds from generators or venue tie-ins and safely routes it to your stage equipment. Featuring built-in circuit breakers for immediate backstage resetting, the unit provides multiple 19-pin Socapex outputs for overhead lighting grids and standard 20A Edison duplexes for stage-level gear. Housed in a rugged 21RU rolling rack, it ensures your rig receives clean, uninterrupted, and perfectly balanced power.",
         "specs": [
-          "32 Inputs",
-          "16 Outputs",
-          "4K Support",
-          "Seamless Switching"
+          "Input Connection: 400A Cam-Lok (3 Phase)",
+          "Output Connections: Socapex, NEMA 5-15 Duplex",
+          "Electrical Capacity: 400A total load",
+          "Housing: 21RU rolling rack"
         ],
-        "imageUrl": "https://pub-XXXX.r2.dev/rentals/barco-e2.jpg",
-        "available": true
+        "frequentlyRentedTogether": [
+          "50ft-socapex-extension-cable-19-pin-12-awg",
+          "socapex-breakout-cable-19-pin-to-6x-edison"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/400a-three-phase-power-distribution-rack.jpg",
+        "available": true,
+        "order": 20
+      },
+      {
+        "id": "50ft-socapex-extension-cable-19-pin-12-awg",
+        "slug": "50ft-socapex-extension-cable-19-pin-12-awg",
+        "name": "50ft Socapex Extension Cable (19-Pin, 12 AWG)",
+        "category": "power",
+        "brand": "Hot Beam Productions",
+        "dailyRate": 70,
+        "inventoryCount": 1,
+        "description": "Streamline your lighting rig's power infrastructure and eliminate the mess of extension cords. This heavy-duty 50-foot Socapex cable utilizes thick 12 AWG copper conductors to safely deliver six independent 20A power circuits through a single, crush-proof multipin snake. Perfect for feeding power from your distro directly to the truss grid.",
+        "specs": [
+          "Length: 50ft",
+          "Connector: 19-Pin (Male to Female)",
+          "Circuit Capacity: 20A per circuit (6 circuits)",
+          "Wire Gauge: 12 AWG copper, PVC jacket"
+        ],
+        "frequentlyRentedTogether": [
+          "400a-three-phase-power-distribution-rack",
+          "socapex-breakout-cable-19-pin-to-6x-edison"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/50ft-socapex-extension-cable-19-pin-12-awg.jpg",
+        "available": true,
+        "order": 21
+      },
+      {
+        "id": "socapex-breakout-cable-19-pin-to-6x-edison",
+        "slug": "socapex-breakout-cable-19-pin-to-6x-edison",
+        "name": "Socapex Breakout Cable (19-Pin to 6x Edison)",
+        "category": "power",
+        "brand": "Hot Beam Productions",
+        "dailyRate": 10,
+        "inventoryCount": 4,
+        "description": "Distribute power cleanly across your truss. This breakout tail attaches to the end of a Socapex cable, splitting the single 19-pin connection into six clearly numbered standard 20A Edison (NEMA 5-15) receptacles. This allows you to plug your intelligent moving heads, strobes, and lasers directly into the local grid, minimizing cable clutter and weight.",
+        "specs": [
+          "Input: 19-Pin male",
+          "Outputs: 6x NEMA 5-15 Edison",
+          "Circuit Capacity: 15A/20A per breakout tail",
+          "Cable Type: 12/3 SJOOW/SJEOOW"
+        ],
+        "frequentlyRentedTogether": [
+          "50ft-socapex-extension-cable-19-pin-12-awg",
+          "400a-three-phase-power-distribution-rack"
+        ],
+        "imageUrl": "https://pub-XXXX.r2.dev/rentals/socapex-breakout-cable-19-pin-to-6x-edison.jpg",
+        "available": true,
+        "order": 22
       }
     ]
   },

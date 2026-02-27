@@ -35,6 +35,8 @@ export default async function RentalDetailPage({ params }: Props) {
   const item = rentals.items.find((entry) => entry.id === id);
   if (!item) notFound();
 
+  const relatedItems = rentals.items.filter((entry) => item.frequentlyRentedTogether?.includes(entry.id));
+
   return (
     <div className="px-6 pb-24 pt-28 md:pt-32">
       <div className="mx-auto max-w-5xl">
@@ -84,6 +86,12 @@ export default async function RentalDetailPage({ params }: Props) {
               )}
             </div>
 
+            {typeof item.inventoryCount === "number" && (
+              <p className="mt-4 text-sm text-muted-light">
+                <span className="mono-label !text-foreground">Inventory:</span> {item.inventoryCount} units available
+              </p>
+            )}
+
             {item.specs.length > 0 && (
               <section className="mt-7 border border-border bg-surface p-5">
                 <p className="mono-label mb-3 !text-foreground">Key Specs</p>
@@ -92,6 +100,21 @@ export default async function RentalDetailPage({ params }: Props) {
                     <li key={spec} className="flex items-start gap-2 text-sm text-muted-light">
                       <span className="mt-2 inline-block h-1.5 w-1.5 rounded-full bg-laser-cyan" />
                       <span>{spec}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {relatedItems.length > 0 && (
+              <section className="mt-7 border border-border bg-surface p-5">
+                <p className="mono-label mb-3 !text-foreground">Frequently Rented Together</p>
+                <ul className="space-y-2">
+                  {relatedItems.map((related) => (
+                    <li key={related.id}>
+                      <Link className="text-sm text-laser-cyan hover:underline" href={`/rentals/${related.id}`}>
+                        {related.name}
+                      </Link>
                     </li>
                   ))}
                 </ul>

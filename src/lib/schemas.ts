@@ -1,6 +1,16 @@
 import { z } from "zod/v4";
 
-const serviceCategory = z.enum(["lighting", "video", "lasers", "sfx"]);
+const serviceCategory = z.enum([
+  "lighting",
+  "video",
+  "lasers",
+  "sfx",
+  "atmospherics",
+  "audio-dj",
+  "rigging",
+  "staging",
+  "power",
+]);
 const serviceIcon = z.enum(["lightbulb", "monitor", "zap", "sparkles"]);
 
 export const ctaSchema = z.object({
@@ -37,8 +47,10 @@ export const rentalSchema = z.object({
   category: serviceCategory,
   brand: z.string().min(1),
   dailyRate: z.number().nullable(),
+  inventoryCount: z.number().int().min(0).optional(),
   description: z.string().min(1),
   specs: z.array(z.string()),
+  frequentlyRentedTogether: z.array(z.string()).optional(),
   imageUrl: z.string(),
   available: z.boolean(),
   order: z.number().int().min(0).optional(),

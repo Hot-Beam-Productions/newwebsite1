@@ -2,7 +2,7 @@
 
 import { type ComponentType, useMemo, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Lightbulb, Monitor, Search, Sparkles, Wrench, Zap } from "lucide-react";
+import { Boxes, Headphones, Layers, Lightbulb, Monitor, Search, Sparkles, Wind, Wrench, Zap, Cable } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { GlowButton } from "@/components/glow-button";
@@ -14,6 +14,11 @@ const iconByCategory: Record<string, ComponentType<{ className?: string }>> = {
   lighting: Lightbulb,
   video: Monitor,
   lasers: Zap,
+  atmospherics: Wind,
+  "audio-dj": Headphones,
+  rigging: Boxes,
+  staging: Layers,
+  power: Cable,
   sfx: Sparkles,
 };
 
