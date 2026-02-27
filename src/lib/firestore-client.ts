@@ -11,8 +11,6 @@ import {
   deleteDoc,
   collection,
   getDocs,
-  query,
-  orderBy,
   writeBatch,
 } from "firebase/firestore";
 import { getFirebaseDb } from "./firebase";
@@ -21,6 +19,9 @@ import { getFirebaseDb } from "./firebase";
 
 export async function getSiteDoc<T>(docId: string): Promise<T> {
   const snap = await getDoc(doc(getFirebaseDb(), "site", docId));
+  if (!snap.exists()) {
+    throw new Error(`Missing site document: ${docId}`);
+  }
   return snap.data() as T;
 }
 
@@ -37,12 +38,16 @@ export async function getCollectionDocs<T>(
   collectionName: string,
   orderField = "order"
 ): Promise<T[]> {
-  const q = query(
-    collection(getFirebaseDb(), collectionName),
-    orderBy(orderField, "asc")
+  const snap = await getDocs(collection(getFirebaseDb(), collectionName));
+  const docs = snap.docs.map(
+    (d) => ({ ...d.data(), id: d.id }) as unknown as T & Record<string, unknown>
   );
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ ...d.data(), id: d.id }) as T);
+
+  return docs.sort((a, b) => {
+    const aOrder = Number(a[orderField] ?? 0);
+    const bOrder = Number(b[orderField] ?? 0);
+    return aOrder - bOrder;
+  }) as T[];
 }
 
 export async function getDocById<T>(

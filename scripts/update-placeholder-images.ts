@@ -19,7 +19,6 @@ import {
   getDocs,
   doc,
   updateDoc,
-  getDoc,
 } from "firebase/firestore";
 
 // ── Load .env.local ─────────────────────────────────────────────────────────

@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import {
-  onAuthStateChanged,
+  onIdTokenChanged,
   signInWithPopup,
   signOut as firebaseSignOut,
   GoogleAuthProvider,
@@ -35,12 +35,15 @@ const AuthContext = createContext<AuthContextValue>({
   signOut: async () => {},
 });
 
+export const ADMIN_DOMAIN =
+  process.env.NEXT_PUBLIC_ADMIN_EMAIL_DOMAIN ?? "hotbeamproductions.com";
+
 export function useAuth() {
   return useContext(AuthContext);
 }
 
 const googleProvider = new GoogleAuthProvider();
-googleProvider.setCustomParameters({ hd: "hotbeamproductions.com" });
+googleProvider.setCustomParameters({ hd: ADMIN_DOMAIN });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const firebaseConfigured = isFirebaseConfigured();
@@ -53,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!firebaseConfigured) return;
 
     const firebaseAuth = getFirebaseAuth();
-    const unsubscribe = onAuthStateChanged(firebaseAuth, async (firebaseUser) => {
+    const unsubscribe = onIdTokenChanged(firebaseAuth, async (firebaseUser) => {
       setUser(firebaseUser);
       if (firebaseUser) {
         const token = await firebaseUser.getIdToken();

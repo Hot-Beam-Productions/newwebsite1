@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { BrandData, FooterData, NavLink } from "@/lib/types";
+import { toSafeExternalUrl } from "@/lib/utils";
 
 interface FooterProps {
   brand: BrandData;
@@ -9,6 +10,8 @@ interface FooterProps {
 }
 
 export function Footer({ brand, footer, navigation }: FooterProps) {
+  const instagramUrl = toSafeExternalUrl(brand.instagramUrl, "https://www.instagram.com/");
+
   return (
     <footer className="border-t border-border bg-background">
       <div className="mx-auto max-w-7xl px-6 py-14">
@@ -75,7 +78,7 @@ export function Footer({ brand, footer, navigation }: FooterProps) {
               Site Map
             </Link>
             <a
-              href={brand.instagramUrl}
+              href={instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="mono-label text-[10px] !text-muted transition-colors hover:!text-laser-cyan"

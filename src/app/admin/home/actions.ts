@@ -1,5 +1,7 @@
 import { getSiteDoc, updateSiteDoc } from "@/lib/firestore-client";
 import { revalidatePaths } from "@/lib/admin-action";
+import { actionError, type ActionResult } from "@/lib/action-result";
+import { homeSchema } from "@/lib/schemas";
 import type { HomeData } from "@/lib/types";
 
 export async function getHomeAdmin(): Promise<HomeData> {
@@ -8,12 +10,13 @@ export async function getHomeAdmin(): Promise<HomeData> {
 
 export async function updateHome(
   data: HomeData
-): Promise<{ success: boolean; error?: string }> {
+): Promise<ActionResult> {
   try {
-    await updateSiteDoc("home", data as unknown as Record<string, unknown>);
+    const parsed = homeSchema.parse(data);
+    await updateSiteDoc("home", parsed as unknown as Record<string, unknown>);
     await revalidatePaths(["/"]);
     return { success: true };
   } catch (err) {
-    return { success: false, error: err instanceof Error ? err.message : "Save failed" };
+    return actionError(err, "Save failed");
   }
 }

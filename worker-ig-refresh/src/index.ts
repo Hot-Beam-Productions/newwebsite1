@@ -7,6 +7,7 @@ interface Env {
 }
 
 const IG_TOKEN_KEY = "instagram_access_token";
+const REQUEST_TIMEOUT_MS = 12_000;
 
 const worker = {
   async scheduled(_event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
@@ -29,10 +30,7 @@ const worker = {
         const result = await refreshToken(env);
         return Response.json(result);
       } catch {
-        return Response.json(
-          { success: false, error: "Refresh failed" },
-          { status: 500 }
-        );
+        return Response.json({ success: false, error: "Refresh failed" }, { status: 500 });
       }
     }
 
@@ -49,43 +47,73 @@ function isAuthorizedRequest(request: Request, env: Env): boolean {
   if (!authHeader?.startsWith("Bearer ")) return false;
 
   const providedToken = authHeader.slice(7).trim();
-  return providedToken === env.REFRESH_AUTH_TOKEN;
+  return constantTimeEqual(providedToken, env.REFRESH_AUTH_TOKEN);
+}
+
+function constantTimeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+
+  let mismatch = 0;
+  for (let i = 0; i < a.length; i++) {
+    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+
+  return mismatch === 0;
+}
+
+function buildVercelQuery(teamId: string | undefined): string {
+  const params = new URLSearchParams();
+  if (teamId) {
+    params.set("teamId", teamId);
+  }
+  const query = params.toString();
+  return query ? `?${query}` : "";
+}
+
+async function fetchJson<T>(url: string, init: RequestInit): Promise<T> {
+  const response = await fetch(url, {
+    ...init,
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Request failed (${response.status}): ${text}`);
+  }
+
+  return (await response.json()) as T;
 }
 
 async function refreshToken(env: Env): Promise<{ success: boolean; message: string }> {
-  // 1. Read current token from KV
+  if (!env.VERCEL_TOKEN || !env.VERCEL_PROJECT_ID) {
+    throw new Error("Missing required Vercel environment variables");
+  }
+
   const currentToken = await env.IG_TOKENS.get(IG_TOKEN_KEY);
   if (!currentToken) {
     throw new Error("No Instagram token found in KV. Seed it first.");
   }
 
-  // 2. Refresh the token via Instagram Graph API
-  const igResponse = await fetch(
-    `https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=${currentToken}`
-  );
+  const igUrl = new URL("https://graph.instagram.com/refresh_access_token");
+  igUrl.searchParams.set("grant_type", "ig_refresh_token");
+  igUrl.searchParams.set("access_token", currentToken);
 
-  if (!igResponse.ok) {
-    const body = await igResponse.text();
-    throw new Error(`Instagram refresh failed (${igResponse.status}): ${body}`);
-  }
-
-  const igData = (await igResponse.json()) as {
+  const igData = await fetchJson<{
     access_token: string;
     token_type: string;
     expires_in: number;
-  };
+  }>(igUrl.toString(), { method: "GET" });
 
   const newToken = igData.access_token;
+  if (!newToken) {
+    throw new Error("Instagram refresh did not return an access token");
+  }
 
-  // 3. Store the new token in KV (expires_in is in seconds, typically 5184000 = 60 days)
   await env.IG_TOKENS.put(IG_TOKEN_KEY, newToken, {
     expirationTtl: igData.expires_in,
   });
 
-  // 4. Update the Vercel environment variable
   await updateVercelEnvVar(env, newToken);
-
-  // 5. Trigger a Vercel redeployment
   await triggerVercelRedeploy(env);
 
   return {
@@ -95,67 +123,51 @@ async function refreshToken(env: Env): Promise<{ success: boolean; message: stri
 }
 
 async function updateVercelEnvVar(env: Env, newToken: string): Promise<void> {
-  const teamQuery = env.VERCEL_TEAM_ID ? `&teamId=${env.VERCEL_TEAM_ID}` : "";
+  const query = buildVercelQuery(env.VERCEL_TEAM_ID);
   const baseUrl = `https://api.vercel.com/v9/projects/${env.VERCEL_PROJECT_ID}/env`;
   const headers = {
     Authorization: `Bearer ${env.VERCEL_TOKEN}`,
     "Content-Type": "application/json",
   };
 
-  // List env vars to find the INSTAGRAM_ACCESS_TOKEN IDs
-  const listRes = await fetch(`${baseUrl}?${teamQuery}`, { headers });
-  if (!listRes.ok) {
-    throw new Error(`Vercel list env vars failed (${listRes.status})`);
-  }
+  const listData = await fetchJson<{
+    envs: Array<{ id: string; key: string }>;
+  }>(`${baseUrl}${query}`, { headers });
 
-  const listData = (await listRes.json()) as {
-    envs: Array<{ id: string; key: string; target: string[] }>;
-  };
-
-  const igEnvVars = listData.envs.filter((e) => e.key === "INSTAGRAM_ACCESS_TOKEN");
-
+  const igEnvVars = listData.envs.filter((entry) => entry.key === "INSTAGRAM_ACCESS_TOKEN");
   if (igEnvVars.length === 0) {
     throw new Error("INSTAGRAM_ACCESS_TOKEN not found in Vercel project env vars");
   }
 
-  // Update each matching env var (production, development, etc.)
   for (const envVar of igEnvVars) {
-    const patchRes = await fetch(`${baseUrl}/${envVar.id}?${teamQuery}`, {
+    await fetchJson(`${baseUrl}/${envVar.id}${query}`, {
       method: "PATCH",
       headers,
       body: JSON.stringify({ value: newToken }),
     });
-
-    if (!patchRes.ok) {
-      const body = await patchRes.text();
-      throw new Error(`Vercel env update failed for ${envVar.id} (${patchRes.status}): ${body}`);
-    }
   }
 }
 
 async function triggerVercelRedeploy(env: Env): Promise<void> {
-  const teamQuery = env.VERCEL_TEAM_ID ? `&teamId=${env.VERCEL_TEAM_ID}` : "";
+  const query = buildVercelQuery(env.VERCEL_TEAM_ID);
   const headers = {
     Authorization: `Bearer ${env.VERCEL_TOKEN}`,
     "Content-Type": "application/json",
   };
 
-  // Get the latest production deployment to redeploy it
-  const deploymentsRes = await fetch(
-    `https://api.vercel.com/v6/deployments?projectId=${env.VERCEL_PROJECT_ID}&target=production&limit=1${teamQuery}`,
+  const deploymentsData = await fetchJson<{
+    deployments: Array<{ uid: string }>;
+  }>(
+    `https://api.vercel.com/v6/deployments?projectId=${env.VERCEL_PROJECT_ID}&target=production&limit=1${query ? `&${query.slice(1)}` : ""}`,
     { headers }
   );
 
-  if (!deploymentsRes.ok) return;
-
-  const deploymentsData = (await deploymentsRes.json()) as {
-    deployments: Array<{ uid: string }>;
-  };
-
   const latestDeployment = deploymentsData.deployments[0];
-  if (!latestDeployment) return;
+  if (!latestDeployment) {
+    throw new Error("No production deployment found to redeploy");
+  }
 
-  await fetch(`https://api.vercel.com/v13/deployments?${teamQuery}`, {
+  await fetchJson(`https://api.vercel.com/v13/deployments${query}`, {
     method: "POST",
     headers,
     body: JSON.stringify({

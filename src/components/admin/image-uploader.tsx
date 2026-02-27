@@ -14,6 +14,9 @@ interface ImageUploaderProps {
   aspect?: "video" | "square" | "portrait";
 }
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const ALLOWED_FILE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
+
 const aspectClasses = {
   video: "aspect-video",
   square: "aspect-square",
@@ -35,7 +38,21 @@ export function ImageUploader({
 
   const upload = useCallback(
     async (file: File) => {
-      if (!idToken) return;
+      if (!idToken) {
+        setError("You must be signed in to upload images.");
+        return;
+      }
+
+      if (!ALLOWED_FILE_TYPES.has(file.type)) {
+        setError("Only JPEG, PNG, WebP, and AVIF files are allowed.");
+        return;
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        setError("File is too large. Maximum size is 10 MB.");
+        return;
+      }
+
       setError(null);
       setUploading(true);
 

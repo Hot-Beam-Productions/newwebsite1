@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { LoadingSpinner } from "./loading-spinner";
 import { FormStatus } from "./form-status";
 import { useUnsavedWarning } from "./use-unsaved-warning";
@@ -27,7 +27,6 @@ export function PageEditor<T>({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [originalData, setOriginalData] = useState<string | null>(null);
-  const originalDataRef = useRef<string | null>(null);
   const { addToast } = useToast();
 
   useEffect(() => {
@@ -42,7 +41,6 @@ export function PageEditor<T>({
         if (!active) return;
         setData(result);
         const serializedResult = JSON.stringify(result);
-        originalDataRef.current = serializedResult;
         setOriginalData(serializedResult);
       } catch {
         if (!active) return;
@@ -76,14 +74,17 @@ export function PageEditor<T>({
     if (!data) return;
     setSaving(true);
     setError(null);
-    const result = await saveData(data);
-    if (result.success) {
-      const serializedResult = JSON.stringify(data);
-      originalDataRef.current = serializedResult;
-      setOriginalData(serializedResult);
-      addToast("success", "Saved successfully");
-    } else {
-      setError(result.error || "Save failed");
+    try {
+      const result = await saveData(data);
+      if (result.success) {
+        const serializedResult = JSON.stringify(data);
+        setOriginalData(serializedResult);
+        addToast("success", "Saved successfully");
+      } else {
+        setError(result.error || "Save failed");
+      }
+    } catch {
+      setError("Save failed");
     }
     setSaving(false);
   }, [addToast, data, saveData]);

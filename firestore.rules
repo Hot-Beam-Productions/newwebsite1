@@ -6,6 +6,7 @@ service cloud.firestore {
     // Helper: check if the user is a Hot Beam admin
     function isAdmin() {
       return request.auth != null
+        && request.auth.token.email_verified == true
         && request.auth.token.email.matches('.*@hotbeamproductions[.]com$');
     }
 

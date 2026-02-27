@@ -68,7 +68,6 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
   const [available, setAvailable] = useState(initial?.available ?? true);
   const [order, setOrder] = useState(initial?.order ?? 0);
   const [autoSlug, setAutoSlug] = useState(!initial);
-  const initialSnapshotRef = useRef(initialSnapshotValue);
 
   function handleNameChange(val: string) {
     setName(val);
@@ -128,16 +127,18 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
     e.preventDefault();
     setSaving(true);
     setError(null);
-
-    const result = await onSubmit(currentData);
-    if (result.success) {
-      const serializedCurrentData = JSON.stringify(currentData);
-      initialSnapshotRef.current = serializedCurrentData;
-      setInitialSnapshot(serializedCurrentData);
-      addToast("success", "Saved successfully");
-      setTimeout(() => router.push("/admin/rentals"), 1000);
-    } else {
-      setError(result.error || "Save failed");
+    try {
+      const result = await onSubmit(currentData);
+      if (result.success) {
+        const serializedCurrentData = JSON.stringify(currentData);
+        setInitialSnapshot(serializedCurrentData);
+        addToast("success", "Saved successfully");
+        setTimeout(() => router.push("/admin/rentals"), 1000);
+      } else {
+        setError(result.error || "Save failed");
+      }
+    } catch {
+      setError("Save failed");
     }
     setSaving(false);
   }

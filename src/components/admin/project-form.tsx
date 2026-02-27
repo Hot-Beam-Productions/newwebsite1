@@ -67,7 +67,6 @@ export function ProjectForm({ initial, onSubmit, submitLabel }: ProjectFormProps
   const [order, setOrder] = useState(initial?.order ?? 0);
 
   const [autoSlug, setAutoSlug] = useState(!initial);
-  const initialSnapshotRef = useRef(initialSnapshotValue);
 
   function handleTitleChange(val: string) {
     setTitle(val);
@@ -134,17 +133,19 @@ export function ProjectForm({ initial, onSubmit, submitLabel }: ProjectFormProps
 
     setSaving(true);
     setError(null);
+    try {
+      const result = await onSubmit(currentData);
 
-    const result = await onSubmit(currentData);
-
-    if (result.success) {
-      const serializedCurrentData = JSON.stringify(currentData);
-      initialSnapshotRef.current = serializedCurrentData;
-      setInitialSnapshot(serializedCurrentData);
-      addToast("success", "Saved successfully");
-      setTimeout(() => router.push("/admin/portfolio"), 1000);
-    } else {
-      setError(result.error || "Save failed");
+      if (result.success) {
+        const serializedCurrentData = JSON.stringify(currentData);
+        setInitialSnapshot(serializedCurrentData);
+        addToast("success", "Saved successfully");
+        setTimeout(() => router.push("/admin/portfolio"), 1000);
+      } else {
+        setError(result.error || "Save failed");
+      }
+    } catch {
+      setError("Save failed");
     }
 
     setSaving(false);

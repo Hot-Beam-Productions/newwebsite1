@@ -87,6 +87,7 @@ export function ContactForm({ contact }: ContactFormProps) {
       if (response.ok && responseData.success) {
         setSuccess(true);
         form.reset();
+        setTurnstileToken("");
         return;
       }
 

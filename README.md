@@ -1,142 +1,121 @@
 # Hot Beam Productions Website
 
-High-end event production website built with Next.js App Router and a local JSON content model.
+Production website and lightweight CMS for Hot Beam Productions.
 
-## Stack
+## Tech Stack
 
-- Next.js 16 (App Router)
-- TypeScript
-- Tailwind CSS v4
-- Framer Motion
-- Cloudflare Turnstile
-- Cloudflare Worker contact endpoint (`worker/`)
+- Next.js 16 (App Router) + TypeScript
+- Tailwind CSS v4 + Framer Motion
+- Firebase Auth + Firestore (client-SDK based admin CMS)
+- Cloudflare Worker (`worker/`) for contact form intake
+- Cloudflare Worker (`worker-ig-refresh/`) for Instagram token refresh + Vercel env sync
+- Cloudflare R2 for image uploads via `src/app/api/upload/route.ts`
 
-## Content Architecture
+## Repository Layout
 
-All site content is centralized in:
+- `src/app/(public)` public routes
+- `src/app/admin` admin dashboard and editor pages
+- `src/app/api/upload/route.ts` authenticated R2 upload endpoint
+- `src/components` shared UI components
+- `src/components/admin` admin-specific UI + form utilities
+- `src/lib` shared runtime helpers, validation schemas, Firebase clients
+- `src/data/data.json` static fallback content used when Firestore is unavailable
+- `worker/` contact form worker
+- `worker-ig-refresh/` Instagram token refresh worker
+- `scripts/` one-off Firestore maintenance scripts
 
-- `src/data/data.json`
+## Content Model
 
-This file contains:
+Public pages use `getPublicSiteData()` from [`src/lib/public-site-data.ts`](/Users/danielmankin/Documents/GitHub/newwebsite/src/lib/public-site-data.ts).
 
-- Brand metadata and navigation
-- Home page copy and service blocks
-- Portfolio projects
-- Team and company copy
-- Rental inventory
-- Contact page and form options
+Data resolution order:
 
-Typed accessors live in:
+1. Read from Firestore (`site`, `projects`, `rentals`)
+2. Validate against Zod schemas (`src/lib/schemas.ts`)
+3. Fall back to `src/data/data.json` for any missing/invalid data
 
-- `src/lib/site-data.ts`
+## Environment Variables
+
+Copy `.env.local.example` to `.env.local` and fill values.
+
+Required for app/admin:
+
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+- `NEXT_PUBLIC_FIREBASE_APP_ID`
+
+Required for contact form UI:
+
+- `NEXT_PUBLIC_CONTACT_ENDPOINT`
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
+
+Required for upload API route:
+
+- `R2_ACCOUNT_ID`
+- `R2_ACCESS_KEY_ID`
+- `R2_SECRET_ACCESS_KEY`
+- `R2_BUCKET_NAME`
+- `NEXT_PUBLIC_R2_DOMAIN`
+
+Optional:
+
+- `NEXT_PUBLIC_ADMIN_EMAIL_DOMAIN` (client auth UX domain hint)
+- `ADMIN_EMAIL_DOMAIN` (server-side upload auth domain check)
+- `INSTAGRAM_ACCESS_TOKEN` (server-rendered Instagram feed)
 
 ## Local Development
 
-1. Install dependencies
+Install dependencies:
 
 ```bash
 npm install
+npm --prefix worker install
+npm --prefix worker-ig-refresh install
 ```
 
-2. Configure environment
-
-Create/update `.env.local`:
-
-```env
-NEXT_PUBLIC_CONTACT_ENDPOINT=https://hotbeam-contact.<your-subdomain>.workers.dev
-NEXT_PUBLIC_TURNSTILE_SITE_KEY=your_turnstile_site_key
-NEXT_PUBLIC_R2_DOMAIN=pub-xxxx.r2.dev
-NEXT_PUBLIC_FIREBASE_API_KEY=
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
-NEXT_PUBLIC_FIREBASE_APP_ID=
-# Optional
-# INSTAGRAM_ACCESS_TOKEN=...
-```
-
-Firebase env fallback:
-
-- Admin auth accepts `NEXT_PUBLIC_FIREBASE_*` and falls back to `FIREBASE_*`.
-- During build, `next.config.ts` maps `NEXT_PUBLIC_FIREBASE_*` from `FIREBASE_*` when only `FIREBASE_*` is provided.
-
-3. Start dev server
+Start web app:
 
 ```bash
 npm run dev
 ```
 
-4. Open:
-
-- `http://localhost:3000`
-
-## Contact Form (Free Cloudflare + Optional Google)
-
-The form posts to the Cloudflare Worker in `worker/src/index.ts`.
-
-### Cloudflare setup
-
-1. Enable Email Routing for your domain in Cloudflare.
-2. Verify your destination inbox.
-3. Deploy the worker:
+Optional worker dev servers:
 
 ```bash
-cd worker
-npm install
-npx wrangler secret put TURNSTILE_SECRET_KEY
-npx wrangler deploy
+npm --prefix worker run dev
+npm --prefix worker-ig-refresh run dev
 ```
 
-4. Set Worker variables (in `worker/wrangler.toml` or dashboard):
+## Production Validation
 
-- `ALLOWED_ORIGINS`
-- `CONTACT_TO_ADDRESS`
-- Optional: `GOOGLE_APPS_SCRIPT_URL`
-
-### Optional Google Sheets logging (free)
-
-If you want each lead logged to a Google Sheet:
-
-1. Create a Google Sheet.
-2. Open Apps Script and deploy as Web App (`Anyone with link`).
-3. Use this script body:
-
-```javascript
-function doPost(e) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Leads') || SpreadsheetApp.getActiveSpreadsheet().insertSheet('Leads');
-  const data = JSON.parse(e.postData.contents || '{}');
-  sheet.appendRow([
-    new Date(),
-    data.name || '',
-    data.email || '',
-    data.phone || '',
-    data.eventDate || '',
-    data.venue || '',
-    data.eventType || '',
-    (data.gearNeeds || []).join(', '),
-    data.message || '',
-    data.ipAddress || ''
-  ]);
-  return ContentService.createTextOutput(JSON.stringify({ ok: true })).setMimeType(ContentService.MimeType.JSON);
-}
-```
-
-4. Copy the Web App URL and set it as Worker secret/var:
-
-```bash
-npx wrangler secret put GOOGLE_APPS_SCRIPT_URL
-```
-
-## Production Build
+Run before opening a PR:
 
 ```bash
 npm run lint
 npm run build
+npm --prefix worker run deploy -- --dry-run
+npm --prefix worker-ig-refresh run deploy -- --dry-run
 ```
 
-## Deploy
+## Security Notes
 
-- Frontend: deploy on Vercel or Cloudflare Pages.
-- Contact backend: deploy `worker/` with Wrangler.
-- Update `NEXT_PUBLIC_CONTACT_ENDPOINT` in your production environment to the deployed Worker URL.
+- Admin writes are protected by Firebase Auth + Firestore rules (`@hotbeamproductions.com` + verified email).
+- Upload API verifies Firebase ID tokens server-side before writing to R2.
+- Contact worker enforces CORS allowlist, request size limits, input validation, and Turnstile verification.
+- Contact worker intentionally omits Turnstile token from external lead logging.
+- Public/cms payloads are schema-validated before rendering.
+
+## Coding Standards
+
+This repo favors straightforward, maintainable code:
+
+- Prefer explicit, readable logic over dense abstractions.
+- Keep validation close to write boundaries.
+- Use shared helpers when logic repeats in 3+ places.
+- Add comments only for non-obvious "why", not obvious "what".
+- Remove dead code and generated artifacts from version control.
+
+See [`AGENTS.md`](/Users/danielmankin/Documents/GitHub/newwebsite/AGENTS.md) for command workflows and contributor automation guidance.

@@ -5,6 +5,7 @@ import { ArrayEditor } from "@/components/admin/array-editor";
 import { getContactAdmin, updateContact } from "./actions";
 import type { ContactData } from "@/lib/types";
 import { Plus, X } from "lucide-react";
+import { updateAtPath } from "@/lib/utils";
 
 const inputClass =
   "w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted focus:border-laser-cyan focus:outline-none";
@@ -20,14 +21,7 @@ export default function ContactEditorPage() {
       saveData={updateContact}
       renderForm={(data, setData) => {
         function update(path: string, value: unknown) {
-          const next = structuredClone(data);
-          const keys = path.split(".");
-          let obj: Record<string, unknown> = next as unknown as Record<string, unknown>;
-          for (let i = 0; i < keys.length - 1; i++) {
-            obj = obj[keys[i]] as Record<string, unknown>;
-          }
-          obj[keys[keys.length - 1]] = value;
-          setData(next);
+          setData(updateAtPath(data, path, value));
         }
 
         return (

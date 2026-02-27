@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const R2_HOSTNAME = process.env.NEXT_PUBLIC_R2_DOMAIN ?? "pub-ec3449af645a4c318ca0a84f96ef82c8.r2.dev";
+const R2_HOSTNAME = process.env.NEXT_PUBLIC_R2_DOMAIN;
 const CONTACT_ENDPOINT = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT ?? process.env.NEXT_PUBLIC_WORKER_URL;
 const NEXT_PUBLIC_FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY ?? process.env.FIREBASE_API_KEY;
 const NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN = process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ?? process.env.FIREBASE_AUTH_DOMAIN;
@@ -20,6 +20,7 @@ function getContactOrigin(endpoint: string | undefined): string | null {
 }
 
 const contactOrigin = getContactOrigin(CONTACT_ENDPOINT);
+const r2ImageSource = R2_HOSTNAME ? `https://${R2_HOSTNAME}` : "";
 const connectSrc = [
   "'self'",
   "https://challenges.cloudflare.com",
@@ -30,13 +31,21 @@ const connectSrc = [
   "https://www.googleapis.com",
   ...(contactOrigin ? [contactOrigin] : []),
 ].join(" ");
+const imageSources = [
+  "'self'",
+  "data:",
+  "blob:",
+  "https://*.cdninstagram.com",
+  "https://*.instagram.com",
+  ...(r2ImageSource ? [r2ImageSource] : []),
+].join(" ");
 
 const ContentSecurityPolicy = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://apis.google.com https://www.gstatic.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
-  `img-src 'self' data: blob: https://${R2_HOSTNAME} https://*.cdninstagram.com https://*.instagram.com`,
+  `img-src ${imageSources}`,
   `connect-src ${connectSrc}`,
   "frame-src https://challenges.cloudflare.com https://accounts.google.com https://*.firebaseapp.com",
   "object-src 'none'",
@@ -55,10 +64,14 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: R2_HOSTNAME,
-      },
+      ...(R2_HOSTNAME
+        ? [
+            {
+              protocol: "https" as const,
+              hostname: R2_HOSTNAME,
+            },
+          ]
+        : []),
       {
         protocol: "https",
         hostname: "*.cdninstagram.com",

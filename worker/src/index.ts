@@ -1,18 +1,20 @@
 import { EmailMessage } from "cloudflare:email";
-import { createMimeMessage, Mailbox } from "mimetext";
+import { createMimeMessage } from "mimetext";
 import { z } from "zod";
 
 const ContactSchema = z.object({
-  name: z.string().trim().min(2, "Name must be at least 2 characters"),
-  email: z.string().trim().email("Invalid email address"),
-  phone: z.string().trim().optional(),
-  eventDate: z.string().trim().optional(),
-  venue: z.string().trim().optional(),
-  eventType: z.string().trim().optional(),
-  gearNeeds: z.array(z.string()).optional().default([]),
-  message: z.string().trim().min(10, "Message must be at least 10 characters"),
-  turnstileToken: z.string().min(1, "Bot verification token missing"),
+  name: z.string().trim().min(2, "Name must be at least 2 characters").max(120),
+  email: z.string().trim().email("Invalid email address").max(254),
+  phone: z.string().trim().max(40).optional(),
+  eventDate: z.string().trim().max(40).optional(),
+  venue: z.string().trim().max(160).optional(),
+  eventType: z.string().trim().max(80).optional(),
+  gearNeeds: z.array(z.string().trim().min(1).max(60)).max(20).optional().default([]),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(5_000),
+  turnstileToken: z.string().min(1, "Bot verification token missing").max(2_048),
 });
+
+type ContactPayload = z.infer<typeof ContactSchema>;
 
 interface Env {
   SEND_EMAIL: SendEmail;
@@ -30,6 +32,8 @@ const DEFAULT_ALLOWED_ORIGINS = [
 
 const FROM_ADDRESS = "contact@hotbeamproductions.com";
 const MAX_BODY_BYTES = 25_000;
+const TURNSTILE_TIMEOUT_MS = 8_000;
+const GOOGLE_LOG_TIMEOUT_MS = 8_000;
 
 const worker = {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -41,7 +45,10 @@ const worker = {
       if (origin && !allowedOrigins.includes(origin)) {
         return new Response("Forbidden", { status: 403 });
       }
-      return corsResponse(null, 204, allowedOrigin);
+      return new Response(null, {
+        status: 204,
+        headers: corsHeaders(allowedOrigin),
+      });
     }
 
     if (request.method !== "POST") {
@@ -52,14 +59,29 @@ const worker = {
       return new Response("Forbidden", { status: 403 });
     }
 
+    if (!env.TURNSTILE_SECRET_KEY) {
+      return corsResponse({ success: false, error: "Turnstile is not configured" }, 500, allowedOrigin);
+    }
+
     const contentLength = Number(request.headers.get("content-length") ?? "0");
     if (Number.isFinite(contentLength) && contentLength > MAX_BODY_BYTES) {
       return corsResponse({ success: false, error: "Request body too large" }, 413, allowedOrigin);
     }
 
+    let rawBody = "";
+    try {
+      rawBody = await request.text();
+    } catch {
+      return corsResponse({ success: false, error: "Invalid request body" }, 400, allowedOrigin);
+    }
+
+    if (rawBody.length > MAX_BODY_BYTES) {
+      return corsResponse({ success: false, error: "Request body too large" }, 413, allowedOrigin);
+    }
+
     let body: unknown;
     try {
-      body = await request.json();
+      body = JSON.parse(rawBody);
     } catch {
       return corsResponse({ success: false, error: "Invalid request body" }, 400, allowedOrigin);
     }
@@ -78,6 +100,7 @@ const worker = {
       env.TURNSTILE_SECRET_KEY,
       request.headers.get("CF-Connecting-IP")
     );
+
     if (!turnstileResult) {
       return corsResponse(
         { success: false, error: "Bot verification failed. Please try again." },
@@ -90,19 +113,16 @@ const worker = {
 
     try {
       const html = buildEmailHtml(parsed.data);
-      const msg = createMimeMessage();
-      msg.setSender({ name: "Hot Beam Website", addr: FROM_ADDRESS });
-      msg.setRecipient(toAddress);
-      msg.setHeader(
-        "Reply-To",
-        new Mailbox({ addr: parsed.data.email }, { type: "To" }) as unknown as string
-      );
-      msg.setSubject(
+      const message = createMimeMessage();
+      message.setSender({ name: "Hot Beam Website", addr: FROM_ADDRESS });
+      message.setRecipient(toAddress);
+      message.setHeader("Reply-To", parsed.data.email);
+      message.setSubject(
         `Proposal Request from ${parsed.data.name}${parsed.data.eventType ? ` - ${parsed.data.eventType}` : ""}`
       );
-      msg.addMessage({ contentType: "text/html", data: html });
+      message.addMessage({ contentType: "text/html", data: html });
 
-      const emailMessage = new EmailMessage(FROM_ADDRESS, toAddress, msg.asRaw());
+      const emailMessage = new EmailMessage(FROM_ADDRESS, toAddress, message.asRaw());
       await env.SEND_EMAIL.send(emailMessage);
     } catch {
       return corsResponse(
@@ -134,20 +154,25 @@ function getAllowedOrigins(raw: string | undefined): string[] {
 }
 
 async function verifyTurnstile(token: string, secret: string, ipAddress: string | null): Promise<boolean> {
-  const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      secret,
-      response: token,
-      ...(ipAddress ? { remoteip: ipAddress } : {}),
-    }),
-  });
+  try {
+    const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        secret,
+        response: token,
+        ...(ipAddress ? { remoteip: ipAddress } : {}),
+      }),
+      signal: AbortSignal.timeout(TURNSTILE_TIMEOUT_MS),
+    });
 
-  if (!response.ok) return false;
+    if (!response.ok) return false;
 
-  const result = (await response.json()) as { success?: boolean };
-  return Boolean(result.success);
+    const result = (await response.json()) as { success?: boolean };
+    return Boolean(result.success);
+  } catch {
+    return false;
+  }
 }
 
 function escapeHtml(value: string): string {
@@ -159,7 +184,7 @@ function escapeHtml(value: string): string {
     .replace(/'/g, "&#39;");
 }
 
-function buildEmailHtml(data: z.infer<typeof ContactSchema>): string {
+function buildEmailHtml(data: ContactPayload): string {
   const name = escapeHtml(data.name);
   const email = escapeHtml(data.email);
   const phone = data.phone ? escapeHtml(data.phone) : "";
@@ -191,9 +216,20 @@ function buildEmailHtml(data: z.infer<typeof ContactSchema>): string {
 
 async function logToGoogleSheet(
   endpoint: string,
-  data: z.infer<typeof ContactSchema>,
+  data: ContactPayload,
   ipAddress: string | null
 ): Promise<void> {
+  const leadData: Omit<ContactPayload, "turnstileToken"> = {
+    name: data.name,
+    email: data.email,
+    phone: data.phone,
+    eventDate: data.eventDate,
+    venue: data.venue,
+    eventType: data.eventType,
+    gearNeeds: data.gearNeeds,
+    message: data.message,
+  };
+
   try {
     await fetch(endpoint, {
       method: "POST",
@@ -202,12 +238,22 @@ async function logToGoogleSheet(
         submittedAt: new Date().toISOString(),
         source: "hotbeam-website",
         ipAddress,
-        ...data,
+        ...leadData,
       }),
+      signal: AbortSignal.timeout(GOOGLE_LOG_TIMEOUT_MS),
     });
   } catch {
     // Ignore logging failures to avoid blocking lead intake.
   }
+}
+
+function corsHeaders(origin: string): HeadersInit {
+  return {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    Vary: "Origin",
+  };
 }
 
 function corsResponse(body: unknown, status: number, origin: string): Response {
@@ -215,9 +261,7 @@ function corsResponse(body: unknown, status: number, origin: string): Response {
     status,
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": origin,
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
+      ...corsHeaders(origin),
     },
   });
 }

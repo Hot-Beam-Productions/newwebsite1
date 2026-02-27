@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/components/admin/auth-provider";
+import { ADMIN_DOMAIN, useAuth } from "@/components/admin/auth-provider";
 import { LoadingSpinner } from "@/components/admin/loading-spinner";
 import { AlertCircle } from "lucide-react";
 
@@ -89,7 +89,7 @@ export default function AdminLoginPage() {
         </button>
 
         <p className="text-center text-xs text-muted">
-          Only @hotbeamproductions.com accounts are allowed
+          Only @{ADMIN_DOMAIN} accounts are allowed
         </p>
       </div>
     </div>

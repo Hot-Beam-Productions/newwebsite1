@@ -1,5 +1,11 @@
 import { z } from "zod/v4";
 
+function isSafeHref(href: string): boolean {
+  if (!href) return false;
+  if (href.startsWith("/") && !href.startsWith("//")) return true;
+  return /^(https?:|mailto:|tel:)/i.test(href);
+}
+
 const serviceCategory = z.enum([
   "lighting",
   "video",
@@ -15,7 +21,7 @@ const serviceIcon = z.enum(["lightbulb", "monitor", "zap", "sparkles"]);
 
 export const ctaSchema = z.object({
   label: z.string().min(1),
-  href: z.string().min(1),
+  href: z.string().min(1).refine(isSafeHref, "Invalid link"),
 });
 
 export const sectionHeadingSchema = z.object({
@@ -152,7 +158,15 @@ export const footerSchema = z.object({
 });
 
 export const navigationSchema = z.object({
-  links: z.array(z.object({ href: z.string(), label: z.string() })),
+  links: z.array(
+    z.object({
+      href: z
+        .string()
+        .min(1)
+        .refine((href) => href.startsWith("/") && !href.startsWith("//"), "Navigation links must be internal paths"),
+      label: z.string().min(1),
+    })
+  ),
 });
 
 export const workSettingsSchema = z.object({

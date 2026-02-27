@@ -4,9 +4,12 @@
  * Used only for the R2 upload API route.
  */
 
-const ALLOWED_DOMAIN = "hotbeamproductions.com";
-const PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? process.env.FIREBASE_PROJECT_ID ?? "";
-const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY ?? process.env.FIREBASE_API_KEY ?? "";
+const DEFAULT_ALLOWED_DOMAIN = "hotbeamproductions.com";
+const FIREBASE_API_TIMEOUT_MS = 8_000;
+const allowedDomain =
+  process.env.ADMIN_EMAIL_DOMAIN?.trim().toLowerCase() || DEFAULT_ALLOWED_DOMAIN;
+const firebaseApiKey =
+  process.env.NEXT_PUBLIC_FIREBASE_API_KEY ?? process.env.FIREBASE_API_KEY;
 
 interface AccountsLookupResponse {
   users?: Array<{
@@ -19,19 +22,29 @@ interface AccountsLookupResponse {
 export async function verifyAdminToken(
   token: string
 ): Promise<{ uid: string; email: string }> {
-  if (!PROJECT_ID || !FIREBASE_API_KEY) {
+  if (!firebaseApiKey) {
     throw new Error("Firebase auth is not configured");
   }
 
-  const response = await fetch(
-    `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${encodeURIComponent(FIREBASE_API_KEY)}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ idToken: token }),
-      cache: "no-store",
-    }
-  );
+  if (!token.trim()) {
+    throw new Error("Missing auth token");
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(
+      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${encodeURIComponent(firebaseApiKey)}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idToken: token }),
+        cache: "no-store",
+        signal: AbortSignal.timeout(FIREBASE_API_TIMEOUT_MS),
+      }
+    );
+  } catch {
+    throw new Error("Auth verification request failed");
+  }
 
   if (!response.ok) {
     throw new Error("Invalid auth token");
@@ -48,10 +61,10 @@ export async function verifyAdminToken(
     throw new Error("Email must be verified");
   }
 
-  // Verify email domain
-  if (!user.email.endsWith(`@${ALLOWED_DOMAIN}`)) {
-    throw new Error("Unauthorized: account must be @hotbeamproductions.com");
+  const normalizedEmail = user.email.trim().toLowerCase();
+  if (!normalizedEmail.endsWith(`@${allowedDomain}`)) {
+    throw new Error(`Unauthorized: account must be @${allowedDomain}`);
   }
 
-  return { uid: user.localId, email: user.email };
+  return { uid: user.localId, email: normalizedEmail };
 }

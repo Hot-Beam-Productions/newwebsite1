@@ -2,66 +2,124 @@ import { NextRequest, NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { verifyAdminToken } from "@/lib/auth-helpers";
 
-let _s3: S3Client | null = null;
-function getS3(): S3Client {
-  if (_s3) return _s3;
-  _s3 = new S3Client({
-    region: "auto",
-    endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-    credentials: {
-      accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-    },
-  });
-  return _s3;
-}
+export const runtime = "nodejs";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
 const SAFE_FOLDER_PATTERN = /^[a-z0-9/-]+$/;
 
-function sanitizeFolder(rawFolder: string): string {
-  const folder = rawFolder.toLowerCase().replace(/\\/g, "/").replace(/^\/+|\/+$/g, "");
+interface UploadConfig {
+  accountId: string;
+  accessKeyId: string;
+  secretAccessKey: string;
+  bucketName: string;
+  publicDomain: string;
+}
+
+let cachedS3Client: S3Client | null = null;
+
+function getUploadConfig(): UploadConfig {
+  const accountId = process.env.R2_ACCOUNT_ID;
+  const accessKeyId = process.env.R2_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+  const bucketName = process.env.R2_BUCKET_NAME;
+  const publicDomain = process.env.NEXT_PUBLIC_R2_DOMAIN;
+
+  if (!accountId || !accessKeyId || !secretAccessKey || !bucketName || !publicDomain) {
+    throw new Error("Missing required R2 environment variables");
+  }
+
+  return {
+    accountId,
+    accessKeyId,
+    secretAccessKey,
+    bucketName,
+    publicDomain,
+  };
+}
+
+function getS3Client(config: UploadConfig): S3Client {
+  if (cachedS3Client) return cachedS3Client;
+
+  cachedS3Client = new S3Client({
+    region: "auto",
+    endpoint: `https://${config.accountId}.r2.cloudflarestorage.com`,
+    credentials: {
+      accessKeyId: config.accessKeyId,
+      secretAccessKey: config.secretAccessKey,
+    },
+  });
+
+  return cachedS3Client;
+}
+
+function sanitizeFolder(rawFolder: unknown): string {
+  const folder = String(rawFolder ?? "uploads")
+    .toLowerCase()
+    .replace(/\\/g, "/")
+    .replace(/^\/+|\/+$/g, "");
+
   if (!folder || folder.includes("..") || !SAFE_FOLDER_PATTERN.test(folder)) {
     throw new Error("Invalid upload folder");
   }
+
   return folder;
 }
 
 function getFileExtension(fileName: string, mimeType: string): string {
-  const extFromType: Record<string, string> = {
+  const extensionFromType: Record<string, string> = {
     "image/jpeg": "jpg",
     "image/png": "png",
     "image/webp": "webp",
     "image/avif": "avif",
   };
 
-  const rawExt = fileName.split(".").pop()?.toLowerCase() ?? "";
-  const safeExt = /^[a-z0-9]+$/.test(rawExt) ? rawExt : "";
-  return safeExt || extFromType[mimeType] || "jpg";
+  const rawExtension = fileName.split(".").pop()?.toLowerCase() ?? "";
+  const safeExtension = /^[a-z0-9]+$/.test(rawExtension) ? rawExtension : "";
+  return safeExtension || extensionFromType[mimeType] || "jpg";
+}
+
+function isFile(value: FormDataEntryValue | null): value is File {
+  return value instanceof File;
+}
+
+function unauthorizedResponse() {
+  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 }
 
 export async function POST(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
   if (!authHeader?.startsWith("Bearer ")) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return unauthorizedResponse();
   }
 
   try {
     await verifyAdminToken(authHeader.slice(7));
   } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return unauthorizedResponse();
   }
 
-  const formData = await request.formData();
-  const file = formData.get("file") as File | null;
-  const folderRaw = (formData.get("folder") as string) || "uploads";
+  let config: UploadConfig;
+  try {
+    config = getUploadConfig();
+  } catch {
+    return NextResponse.json({ error: "Upload service is not configured" }, { status: 500 });
+  }
 
-  if (!file) {
+  let formData: FormData;
+  try {
+    formData = await request.formData();
+  } catch {
+    return NextResponse.json({ error: "Invalid form data" }, { status: 400 });
+  }
+
+  const fileField = formData.get("file");
+  if (!isFile(fileField)) {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
   }
 
-  if (!ALLOWED_TYPES.includes(file.type)) {
+  const file = fileField;
+  if (!ALLOWED_TYPES.has(file.type)) {
     return NextResponse.json(
       { error: "File type not allowed. Use JPEG, PNG, WebP, or AVIF." },
       { status: 400 }
@@ -77,25 +135,28 @@ export async function POST(request: NextRequest) {
 
   let folder: string;
   try {
-    folder = sanitizeFolder(folderRaw);
+    folder = sanitizeFolder(formData.get("folder"));
   } catch {
     return NextResponse.json({ error: "Invalid upload folder" }, { status: 400 });
   }
 
-  const ext = getFileExtension(file.name, file.type);
-  const key = `${folder}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${ext}`;
+  const extension = getFileExtension(file.name, file.type);
+  const key = `${folder}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${extension}`;
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await getS3().send(
-    new PutObjectCommand({
-      Bucket: process.env.R2_BUCKET_NAME,
-      Key: key,
-      Body: buffer,
-      ContentType: file.type,
-      CacheControl: "public, max-age=31536000, immutable",
-    })
-  );
+  try {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    await getS3Client(config).send(
+      new PutObjectCommand({
+        Bucket: config.bucketName,
+        Key: key,
+        Body: buffer,
+        ContentType: file.type,
+        CacheControl: "public, max-age=31536000, immutable",
+      })
+    );
+  } catch {
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+  }
 
-  const url = `https://${process.env.NEXT_PUBLIC_R2_DOMAIN}/${key}`;
-  return NextResponse.json({ url });
+  return NextResponse.json({ url: `https://${config.publicDomain}/${key}` });
 }

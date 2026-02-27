@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Instagram } from "lucide-react";
 import { SectionHeading } from "@/components/section-heading";
 import type { BrandData } from "@/lib/types";
+import { toSafeExternalUrl } from "@/lib/utils";
 
 interface InstagramPost {
   id: string;
@@ -13,6 +14,8 @@ interface InstagramPost {
   permalink: string;
 }
 
+const INSTAGRAM_API_TIMEOUT_MS = 8_000;
+
 async function getInstagramPosts(): Promise<InstagramPost[]> {
   const token = process.env.INSTAGRAM_ACCESS_TOKEN;
   if (!token) return [];
@@ -20,7 +23,10 @@ async function getInstagramPosts(): Promise<InstagramPost[]> {
   try {
     const response = await fetch(
       `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&limit=3&access_token=${token}`,
-      { next: { revalidate: 3600 } }
+      {
+        next: { revalidate: 3600 },
+        signal: AbortSignal.timeout(INSTAGRAM_API_TIMEOUT_MS),
+      }
     );
 
     if (!response.ok) return [];
@@ -38,6 +44,7 @@ interface InstagramFeedProps {
 
 export async function InstagramFeed({ brand }: InstagramFeedProps) {
   const posts = await getInstagramPosts();
+  const instagramUrl = toSafeExternalUrl(brand.instagramUrl, "https://www.instagram.com/");
 
   return (
     <section className="px-6 py-24">
@@ -57,7 +64,7 @@ export async function InstagramFeed({ brand }: InstagramFeedProps) {
               return (
                 <Link
                   key={post.id}
-                  href={post.permalink}
+                  href={toSafeExternalUrl(post.permalink, instagramUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group relative aspect-[4/5] overflow-hidden border border-border bg-surface transition-colors hover:border-laser-cyan/40"
@@ -89,7 +96,7 @@ export async function InstagramFeed({ brand }: InstagramFeedProps) {
 
         <div className="mt-8 text-center">
           <Link
-            href={brand.instagramUrl}
+            href={instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="mono-label inline-flex items-center gap-2 !text-laser-cyan transition-colors hover:!text-laser-cyan-dim"

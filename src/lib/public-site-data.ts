@@ -12,6 +12,18 @@ import type {
   SiteData,
   HomeData,
 } from "@/lib/types";
+import {
+  aboutSchema,
+  brandSchema,
+  contactSchema,
+  footerSchema,
+  homeSchema,
+  navigationSchema,
+  projectSchema,
+  rentalSchema,
+  rentalsSettingsSchema,
+  seoSchema,
+} from "@/lib/schemas";
 
 type FirestoreValue =
   | { nullValue: null }
@@ -94,6 +106,10 @@ function mergeCollectionWithFallback<T extends { id: string; order?: number }>(
   return sortByOrder(Array.from(mergedItems.values()));
 }
 
+function parseOrNull<T>(result: { success: boolean; data?: T }): T | null {
+  return result.success ? (result.data as T) : null;
+}
+
 async function fetchFirestoreJson<T>(url: string): Promise<T | null> {
   try {
     const response = await fetch(url, { cache: "no-store" });
@@ -163,24 +179,38 @@ export async function getPublicSiteData(): Promise<SiteData> {
 
   const projects = mergeCollectionWithFallback(fallbackSiteData.work.projects, projectsDocs);
   const rentals = mergeCollectionWithFallback(fallbackSiteData.rentals.items, rentalsDocs);
+  const parsedBrand = parseOrNull(brandSchema.safeParse(brandDoc));
+  const parsedNavigation = parseOrNull(navigationSchema.safeParse({ links: navigationDoc?.links ?? [] }))?.links;
+  const parsedSeo = parseOrNull(seoSchema.safeParse(seoDoc));
+  const parsedHome = parseOrNull(homeSchema.safeParse(homeDoc));
+  const parsedAbout = parseOrNull(aboutSchema.safeParse(aboutDoc));
+  const parsedContact = parseOrNull(contactSchema.safeParse(contactDoc));
+  const parsedFooter = parseOrNull(footerSchema.safeParse(footerDoc));
+  const parsedRentalsSettings = parseOrNull(rentalsSettingsSchema.safeParse(rentalsSettingsDoc));
+  const parsedProjects = projects
+    .map((project) => parseOrNull(projectSchema.safeParse(project)))
+    .filter((project): project is ProjectItem => Boolean(project));
+  const parsedRentals = rentals
+    .map((rental) => parseOrNull(rentalSchema.safeParse(rental)))
+    .filter((rental): rental is RentalItem => Boolean(rental));
 
   return {
     ...fallbackSiteData,
-    brand: brandDoc ?? fallbackSiteData.brand,
-    navigation: navigationDoc?.links ?? fallbackSiteData.navigation,
-    seo: seoDoc ?? fallbackSiteData.seo,
-    home: homeDoc ?? fallbackSiteData.home,
-    about: aboutDoc ?? fallbackSiteData.about,
-    contact: contactDoc ?? fallbackSiteData.contact,
-    footer: footerDoc ?? fallbackSiteData.footer,
+    brand: parsedBrand ?? fallbackSiteData.brand,
+    navigation: parsedNavigation ?? fallbackSiteData.navigation,
+    seo: parsedSeo ?? fallbackSiteData.seo,
+    home: parsedHome ?? fallbackSiteData.home,
+    about: parsedAbout ?? fallbackSiteData.about,
+    contact: parsedContact ?? fallbackSiteData.contact,
+    footer: parsedFooter ?? fallbackSiteData.footer,
     work: {
       ...fallbackSiteData.work,
-      projects,
+      projects: parsedProjects.length > 0 ? parsedProjects : fallbackSiteData.work.projects,
     },
     rentals: {
       ...fallbackSiteData.rentals,
-      ...(rentalsSettingsDoc ?? {}),
-      items: rentals,
+      ...(parsedRentalsSettings ?? {}),
+      items: parsedRentals.length > 0 ? parsedRentals : fallbackSiteData.rentals.items,
     },
   };
 }
