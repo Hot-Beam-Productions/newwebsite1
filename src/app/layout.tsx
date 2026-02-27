@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Manrope, Sora } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
 import { brand, home, seo } from "@/lib/site-data";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -87,11 +85,7 @@ export default function RootLayout({
       <body
         className={`${sora.variable} ${manrope.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground`}
       >
-        <Navbar />
-        <main id="main-content" className="min-h-screen">
-          {children}
-        </main>
-        <Footer />
+        {children}
         <SpeedInsights />
       </body>
     </html>

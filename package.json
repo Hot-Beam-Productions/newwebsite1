@@ -13,10 +13,12 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.999.0",
     "@marsidev/react-turnstile": "^1.4.2",
     "@opennextjs/cloudflare": "^1.17.1",
     "@vercel/speed-insights": "^1.3.1",
     "clsx": "^2.1.1",
+    "firebase": "^12.9.0",
     "framer-motion": "^12.34.3",
     "lucide-react": "^0.575.0",
     "next": "16.1.6",

@@ -1,0 +1,154 @@
+import { z } from "zod/v4";
+
+const serviceCategory = z.enum(["lighting", "video", "lasers", "sfx"]);
+const serviceIcon = z.enum(["lightbulb", "monitor", "zap", "sparkles"]);
+
+export const ctaSchema = z.object({
+  label: z.string().min(1),
+  href: z.string().min(1),
+});
+
+export const sectionHeadingSchema = z.object({
+  label: z.string().min(1),
+  title: z.string().min(1),
+  subtitle: z.string(),
+});
+
+export const projectSchema = z.object({
+  id: z.string().min(1),
+  slug: z.string().min(1).regex(/^[a-z0-9-]+$/),
+  title: z.string().min(1),
+  client: z.string().min(1),
+  location: z.string().min(1),
+  eventDate: z.string().min(1),
+  services: z.array(serviceCategory).min(1),
+  description: z.string().min(1),
+  longDescription: z.string().min(1),
+  mainImageUrl: z.string(),
+  gallery: z.array(z.string()),
+  featured: z.boolean(),
+  order: z.number().int().min(0).optional(),
+});
+
+export const rentalSchema = z.object({
+  id: z.string().min(1),
+  slug: z.string().min(1).regex(/^[a-z0-9-]+$/),
+  name: z.string().min(1),
+  category: serviceCategory,
+  brand: z.string().min(1),
+  dailyRate: z.number().nullable(),
+  description: z.string().min(1),
+  specs: z.array(z.string()),
+  imageUrl: z.string(),
+  available: z.boolean(),
+  order: z.number().int().min(0).optional(),
+});
+
+export const teamMemberSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  role: z.string().min(1),
+  bio: z.string().optional(),
+  imageUrl: z.string(),
+});
+
+export const brandSchema = z.object({
+  name: z.string().min(1),
+  shortName: z.string().min(1),
+  url: z.string().url(),
+  location: z.string().min(1),
+  region: z.string().min(1),
+  phoneDisplay: z.string().min(1),
+  phoneHref: z.string().min(1),
+  email: z.string().email(),
+  instagramHandle: z.string().min(1),
+  instagramUrl: z.string().url(),
+  heroLogo: z.string(),
+  valueProposition: z.string().min(1),
+});
+
+export const seoSchema = z.object({
+  defaultTitle: z.string().min(1),
+  titleTemplate: z.string().min(1),
+  description: z.string().min(1),
+  keywords: z.array(z.string()),
+});
+
+export const homeServiceSchema = z.object({
+  id: serviceCategory,
+  icon: serviceIcon,
+  title: z.string().min(1),
+  description: z.string().min(1),
+  highlights: z.array(z.string()),
+});
+
+export const homeSchema = z.object({
+  hero: z.object({
+    eyebrow: z.string(),
+    headline: z.string().min(1),
+    subheadline: z.string(),
+    departmentLine: z.string(),
+    description: z.string().min(1),
+    primaryCta: ctaSchema,
+    secondaryCta: ctaSchema,
+  }),
+  trustSignals: z.array(z.string()),
+  services: z.object({
+    label: z.string(),
+    title: z.string().min(1),
+    subtitle: z.string(),
+    featuredServiceId: serviceCategory,
+    items: z.array(homeServiceSchema),
+  }),
+  results: z.array(z.object({ label: z.string(), value: z.string() })),
+  closingCta: z.object({
+    title: z.string().min(1),
+    description: z.string(),
+    button: ctaSchema,
+  }),
+});
+
+export const aboutSchema = z.object({
+  heading: sectionHeadingSchema,
+  storyTitle: z.string().min(1),
+  story: z.array(z.string()),
+  stats: z.array(z.object({ label: z.string(), value: z.string() })),
+  values: z.array(z.object({ title: z.string(), description: z.string() })),
+  partners: z.array(teamMemberSchema),
+  crew: z.array(teamMemberSchema),
+  closingCta: z.object({
+    title: z.string().min(1),
+    description: z.string(),
+    button: ctaSchema,
+  }),
+});
+
+export const contactSchema = z.object({
+  heading: sectionHeadingSchema,
+  directContactTitle: z.string().min(1),
+  cards: z.array(z.object({ title: z.string(), body: z.string() })),
+  eventTypes: z.array(z.string()),
+  serviceNeeds: z.array(z.string()),
+  success: z.object({ title: z.string(), message: z.string() }),
+  submitLabel: z.string().min(1),
+  complianceBadges: z.array(z.string()),
+});
+
+export const footerSchema = z.object({
+  description: z.string().min(1),
+  departments: z.array(z.string()),
+});
+
+export const navigationSchema = z.object({
+  links: z.array(z.object({ href: z.string(), label: z.string() })),
+});
+
+export const workSettingsSchema = z.object({
+  heading: sectionHeadingSchema,
+});
+
+export const rentalsSettingsSchema = z.object({
+  heading: sectionHeadingSchema,
+  categories: z.array(z.object({ value: z.string(), label: z.string() })),
+  footerNote: z.string(),
+});

@@ -1,186 +1,35 @@
+/**
+ * Site data access layer.
+ *
+ * Public pages read from the static JSON file for fast builds.
+ * The admin panel reads/writes Firestore via src/lib/firestore.ts.
+ * After admin edits, the Firestore data takes effect on the next revalidation.
+ */
 import rawData from "@/data/data.json";
 
-export type ServiceCategory = "lighting" | "video" | "lasers" | "sfx";
-export type ServiceIcon = "lightbulb" | "monitor" | "zap" | "sparkles";
+// Re-export all types from the shared types module
+export type {
+  ServiceCategory,
+  ServiceIcon,
+  NavLink,
+  Cta,
+  BrandData,
+  SeoData,
+  HomeService,
+  ProjectItem,
+  RentalItem,
+  TeamMember,
+  SiteData,
+  HomeData,
+  AboutData,
+  ContactData,
+  FooterData,
+  SectionHeading,
+  WorkSettings,
+  RentalsSettings,
+} from "./types";
 
-export interface NavLink {
-  href: string;
-  label: string;
-}
-
-export interface Cta {
-  label: string;
-  href: string;
-}
-
-export interface BrandData {
-  name: string;
-  shortName: string;
-  url: string;
-  location: string;
-  region: string;
-  phoneDisplay: string;
-  phoneHref: string;
-  email: string;
-  instagramHandle: string;
-  instagramUrl: string;
-  heroLogo: string;
-  valueProposition: string;
-}
-
-export interface SeoData {
-  defaultTitle: string;
-  titleTemplate: string;
-  description: string;
-  keywords: string[];
-}
-
-export interface HomeService {
-  id: ServiceCategory;
-  icon: ServiceIcon;
-  title: string;
-  description: string;
-  highlights: string[];
-}
-
-export interface ProjectItem {
-  id: string;
-  slug: string;
-  title: string;
-  client: string;
-  location: string;
-  eventDate: string;
-  services: ServiceCategory[];
-  description: string;
-  longDescription: string;
-  mainImageUrl: string;
-  gallery: string[];
-  featured: boolean;
-}
-
-export interface RentalItem {
-  id: string;
-  slug: string;
-  name: string;
-  category: ServiceCategory;
-  brand: string;
-  dailyRate: number | null;
-  description: string;
-  specs: string[];
-  imageUrl: string;
-  available: boolean;
-}
-
-export interface TeamMember {
-  id: string;
-  name: string;
-  role: string;
-  bio?: string;
-  imageUrl: string;
-}
-
-export interface SiteData {
-  brand: BrandData;
-  navigation: NavLink[];
-  seo: SeoData;
-  home: {
-    hero: {
-      eyebrow: string;
-      headline: string;
-      subheadline: string;
-      departmentLine: string;
-      description: string;
-      primaryCta: Cta;
-      secondaryCta: Cta;
-    };
-    trustSignals: string[];
-    services: {
-      label: string;
-      title: string;
-      subtitle: string;
-      featuredServiceId: ServiceCategory;
-      items: HomeService[];
-    };
-    results: Array<{
-      label: string;
-      value: string;
-    }>;
-    closingCta: {
-      title: string;
-      description: string;
-      button: Cta;
-    };
-  };
-  work: {
-    heading: {
-      label: string;
-      title: string;
-      subtitle: string;
-    };
-    projects: ProjectItem[];
-  };
-  about: {
-    heading: {
-      label: string;
-      title: string;
-      subtitle: string;
-    };
-    storyTitle: string;
-    story: string[];
-    stats: Array<{
-      label: string;
-      value: string;
-    }>;
-    values: Array<{
-      title: string;
-      description: string;
-    }>;
-    partners: TeamMember[];
-    crew: TeamMember[];
-    closingCta: {
-      title: string;
-      description: string;
-      button: Cta;
-    };
-  };
-  rentals: {
-    heading: {
-      label: string;
-      title: string;
-      subtitle: string;
-    };
-    categories: Array<{
-      value: string;
-      label: string;
-    }>;
-    footerNote: string;
-    items: RentalItem[];
-  };
-  contact: {
-    heading: {
-      label: string;
-      title: string;
-      subtitle: string;
-    };
-    directContactTitle: string;
-    cards: Array<{
-      title: string;
-      body: string;
-    }>;
-    eventTypes: string[];
-    serviceNeeds: string[];
-    success: {
-      title: string;
-      message: string;
-    };
-    submitLabel: string;
-    complianceBadges: string[];
-  };
-  footer: {
-    description: string;
-    departments: string[];
-  };
-}
+import type { SiteData, ProjectItem, RentalItem } from "./types";
 
 export const siteData = rawData as SiteData;
 
