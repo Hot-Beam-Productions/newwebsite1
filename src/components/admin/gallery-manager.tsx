@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import Image from "next/image";
 import { X, Plus, ArrowUp, ArrowDown } from "lucide-react";
 import { ImageUploader } from "./image-uploader";
+import { CmsImage } from "@/components/cms-image";
 
 interface GalleryManagerProps {
   value: string[];
@@ -71,7 +71,7 @@ export function GalleryManager({
                 className="group relative aspect-video overflow-hidden rounded-md border border-border"
               >
                 {hasImage ? (
-                  <Image src={url} alt={`Gallery ${i + 1}`} fill className="object-cover" />
+                  <CmsImage src={url} alt={`Gallery ${i + 1}`} fill className="object-cover" />
                 ) : (
                   <div className="flex h-full items-center justify-center bg-surface text-xs text-muted">
                     No image

@@ -5,6 +5,7 @@ import { GlowButton } from "@/components/glow-button";
 import { HeroBeams } from "@/components/hero-animations";
 import { InstagramFeed } from "@/components/instagram-feed";
 import { MediaPlaceholder } from "@/components/media-placeholder";
+import { CmsImage } from "@/components/cms-image";
 import { getPublicSiteData } from "@/lib/public-site-data";
 
 export default async function Home() {
@@ -231,7 +232,7 @@ export default async function Home() {
               >
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-light">
                   {project.mainImageUrl && !project.mainImageUrl.includes("pub-XXXX") ? (
-                    <Image
+                    <CmsImage
                       src={project.mainImageUrl}
                       alt={project.title}
                       fill

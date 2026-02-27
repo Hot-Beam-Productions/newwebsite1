@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowLeft, CheckCircle2, CircleAlert } from "lucide-react";
+import { CmsImage } from "@/components/cms-image";
 import { GlowButton } from "@/components/glow-button";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import { getPublicSiteData } from "@/lib/public-site-data";
+import { stripMediaUrlDecorators } from "@/lib/media-url";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -24,7 +25,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${item.name} | ${item.brand}`,
       description: item.description,
-      images: item.imageUrl && !item.imageUrl.includes("pub-XXXX") ? [{ url: item.imageUrl }] : [],
+      images:
+        item.imageUrl && !item.imageUrl.includes("pub-XXXX")
+          ? [{ url: stripMediaUrlDecorators(item.imageUrl) }]
+          : [],
     },
   };
 }
@@ -52,7 +56,7 @@ export default async function RentalDetailPage({ params }: Props) {
           <div className="overflow-hidden border border-border bg-surface">
             {item.imageUrl && !item.imageUrl.includes("pub-XXXX") ? (
               <div className="relative aspect-square w-full">
-                <Image
+                <CmsImage
                   src={item.imageUrl}
                   alt={item.name}
                   fill

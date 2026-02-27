@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { ArrowRight, Award, MapPin, Users, Zap } from "lucide-react";
+import { CmsImage } from "@/components/cms-image";
 import { GlowButton } from "@/components/glow-button";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import { SectionHeading } from "@/components/section-heading";
@@ -39,7 +39,7 @@ export default async function AboutPage() {
                 <div className="flex items-start gap-5">
                   <div className="h-20 w-20 flex-shrink-0 overflow-hidden border border-border bg-surface-light">
                     {partner.imageUrl && !partner.imageUrl.includes("pub-XXXX") ? (
-                      <Image
+                      <CmsImage
                         src={partner.imageUrl}
                         alt={partner.name}
                         width={80}
@@ -125,7 +125,7 @@ export default async function AboutPage() {
                 <article key={member.id} className="text-center">
                   <div className="mx-auto mb-3 h-16 w-16 overflow-hidden rounded-full border border-border bg-surface-light">
                     {member.imageUrl && !member.imageUrl.includes("pub-XXXX") ? (
-                      <Image
+                      <CmsImage
                         src={member.imageUrl}
                         alt={member.name}
                         width={64}

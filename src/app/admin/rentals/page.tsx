@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Package, Pencil, Plus, Search, Settings, Trash2 } from "lucide-react";
+import { CmsImage } from "@/components/cms-image";
 import { LoadingSpinner } from "@/components/admin/loading-spinner";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { FormStatus } from "@/components/admin/form-status";
@@ -156,7 +156,7 @@ export default function RentalsListPage() {
                   <div className="flex items-start gap-3">
                     <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded border border-border">
                       {hasImage ? (
-                        <Image src={item.imageUrl} alt={item.name} fill className="object-cover" />
+                        <CmsImage src={item.imageUrl} alt={item.name} fill className="object-cover" />
                       ) : (
                         <div className="flex h-full items-center justify-center bg-surface text-xs text-muted">--</div>
                       )}
@@ -206,7 +206,7 @@ export default function RentalsListPage() {
                         <div className="flex items-center gap-3">
                           <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded border border-border">
                             {hasImage ? (
-                              <Image src={item.imageUrl} alt={item.name} fill className="object-cover" />
+                              <CmsImage src={item.imageUrl} alt={item.name} fill className="object-cover" />
                             ) : (
                               <div className="flex h-full items-center justify-center bg-surface text-xs text-muted">--</div>
                             )}

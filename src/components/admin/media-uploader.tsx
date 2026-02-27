@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { Loader2, Scissors, Upload, X } from "lucide-react";
+import { Loader2, Move, Scissors, Upload, X } from "lucide-react";
 import { useAuth } from "./auth-provider";
 import { CropPreview } from "./crop-preview";
+import { FocalPointEditor } from "./focal-point-editor";
 import { cn } from "@/lib/utils";
+import { focalPointToObjectPosition, parseMediaUrl, withFocalPoint } from "@/lib/media-url";
 
 type UploadAspect = "video" | "square" | "portrait" | "fullscreen";
 type UploadAccept = "image" | "video" | "both";
@@ -220,6 +222,7 @@ export function MediaUploader({
   const [localPreviewType, setLocalPreviewType] = useState<MediaType | null>(null);
   const [naturalSize, setNaturalSize] = useState<{ width: number; height: number } | null>(null);
   const [showCropModal, setShowCropModal] = useState(false);
+  const [showFocalEditor, setShowFocalEditor] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -229,10 +232,12 @@ export function MediaUploader({
     };
   }, [localPreviewUrl]);
 
-  const previewUrl = localPreviewUrl || value;
+  const parsedCommitted = useMemo(() => parseMediaUrl(value), [value]);
+  const previewUrl = localPreviewUrl || parsedCommitted.src;
   const previewType =
     localPreviewType || inferMediaTypeFromUrl(previewUrl) || (accept === "video" ? "video" : "image");
   const hasMedia = Boolean(previewUrl) && !previewUrl.includes("pub-XXXX");
+  const imageObjectPosition = focalPointToObjectPosition(localPreviewUrl ? null : parsedCommitted.focalPoint);
 
   const dropzoneMessage = useMemo(() => {
     if (accept === "video") return "Drop a video here or click to browse";
@@ -386,6 +391,7 @@ export function MediaUploader({
     setConversionMessage(null);
     setNaturalSize(null);
     setShowCropModal(false);
+    setShowFocalEditor(false);
     setLocalPreviewType(null);
     setLocalPreviewUrl((current) => {
       if (current?.startsWith("blob:")) {
@@ -427,6 +433,7 @@ export function MediaUploader({
               fill
               unoptimized
               className="object-cover"
+              style={{ objectPosition: imageObjectPosition }}
               onLoad={(event) => {
                 const width = event.currentTarget.naturalWidth;
                 const height = event.currentTarget.naturalHeight;
@@ -437,6 +444,18 @@ export function MediaUploader({
             />
           )}
           <div className="absolute right-2 top-2 flex gap-2">
+            {previewType === "image" && value ? (
+              <button
+                type="button"
+                onClick={() => setShowFocalEditor(true)}
+                className="rounded-md bg-background/80 px-2 py-1 text-xs text-foreground transition-colors hover:bg-background"
+              >
+                <span className="inline-flex items-center gap-1">
+                  <Move className="h-3 w-3" />
+                  Frame
+                </span>
+              </button>
+            ) : null}
             {showCropPreview && naturalSize && naturalSize.width > 0 && naturalSize.height > 0 ? (
               <button
                 type="button"
@@ -518,6 +537,19 @@ export function MediaUploader({
           naturalWidth={naturalSize.width}
           naturalHeight={naturalSize.height}
           onClose={() => setShowCropModal(false)}
+        />
+      ) : null}
+
+      {showFocalEditor && value && previewType === "image" ? (
+        <FocalPointEditor
+          src={parsedCommitted.src}
+          aspect={aspect}
+          initialPoint={parsedCommitted.focalPoint}
+          onCancel={() => setShowFocalEditor(false)}
+          onSave={(point) => {
+            onChange(withFocalPoint(value, point));
+            setShowFocalEditor(false);
+          }}
         />
       ) : null}
     </div>

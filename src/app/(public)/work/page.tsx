@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { CmsImage } from "@/components/cms-image";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import { SectionHeading } from "@/components/section-heading";
 import { getPublicSiteData } from "@/lib/public-site-data";
@@ -45,7 +45,7 @@ export default async function WorkPage() {
                   style={{ height: `${260 + (index % 3) * 70}px` }}
                 >
                   {project.mainImageUrl && !project.mainImageUrl.includes("pub-XXXX") ? (
-                    <Image
+                    <CmsImage
                       src={project.mainImageUrl}
                       alt={project.title}
                       fill

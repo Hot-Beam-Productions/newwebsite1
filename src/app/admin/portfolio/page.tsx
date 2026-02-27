@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Film, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { CmsImage } from "@/components/cms-image";
 import { LoadingSpinner } from "@/components/admin/loading-spinner";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { FormStatus } from "@/components/admin/form-status";
@@ -127,7 +127,7 @@ export default function PortfolioListPage() {
                   <div className="flex items-start gap-3">
                     <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded border border-border">
                       {hasImage ? (
-                        <Image src={project.mainImageUrl} alt={project.title} fill className="object-cover" />
+                        <CmsImage src={project.mainImageUrl} alt={project.title} fill className="object-cover" />
                       ) : (
                         <div className="flex h-full items-center justify-center bg-surface text-xs text-muted">--</div>
                       )}
@@ -186,7 +186,7 @@ export default function PortfolioListPage() {
                         <div className="flex items-center gap-3">
                           <div className="relative h-10 w-16 shrink-0 overflow-hidden rounded border border-border">
                             {hasImage ? (
-                              <Image
+                              <CmsImage
                                 src={project.mainImageUrl}
                                 alt={project.title}
                                 fill

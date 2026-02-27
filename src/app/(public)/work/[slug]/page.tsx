@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
+import { CmsImage } from "@/components/cms-image";
 import { GlowButton } from "@/components/glow-button";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import { getPublicSiteData } from "@/lib/public-site-data";
+import { stripMediaUrlDecorators } from "@/lib/media-url";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: project.title,
       description: project.description,
-      images: project.mainImageUrl ? [{ url: project.mainImageUrl }] : [],
+      images: project.mainImageUrl ? [{ url: stripMediaUrlDecorators(project.mainImageUrl) }] : [],
     },
   };
 }
@@ -82,7 +83,7 @@ export default async function WorkProjectPage({ params }: Props) {
         <div className="mb-12 overflow-hidden border border-border bg-surface">
           {project.mainImageUrl && !project.mainImageUrl.includes("pub-XXXX") ? (
             <div className="relative aspect-video w-full">
-              <Image
+              <CmsImage
                 src={project.mainImageUrl}
                 alt={project.title}
                 fill
@@ -139,7 +140,7 @@ export default async function WorkProjectPage({ params }: Props) {
                 <div key={url} className="overflow-hidden border border-border bg-surface">
                   {!url.includes("pub-XXXX") ? (
                     <div className="relative aspect-video w-full">
-                      <Image src={url} alt={`${project.title} image ${index + 1}`} fill className="object-cover" />
+                      <CmsImage src={url} alt={`${project.title} image ${index + 1}`} fill className="object-cover" />
                     </div>
                   ) : (
                     <MediaPlaceholder label="Gallery image" aspect="video" />

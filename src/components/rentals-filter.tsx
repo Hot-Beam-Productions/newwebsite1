@@ -3,9 +3,9 @@
 import { type ComponentType, useMemo, useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Boxes, Headphones, Layers, Lightbulb, Monitor, Search, Sparkles, Wind, Wrench, Zap, Cable } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { GlowButton } from "@/components/glow-button";
+import { CmsImage } from "@/components/cms-image";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import type { RentalItem } from "@/lib/types";
 
@@ -106,7 +106,7 @@ export function RentalsFilter({ items, categories, footerNote }: RentalsFilterPr
             >
               <div className="relative h-48 w-full overflow-hidden bg-surface-light">
                 {item.imageUrl && !item.imageUrl.includes("pub-XXXX") ? (
-                  <Image
+                  <CmsImage
                     src={item.imageUrl}
                     alt={item.name}
                     fill
