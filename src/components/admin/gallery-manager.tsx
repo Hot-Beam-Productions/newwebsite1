@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { X, Plus, ArrowUp, ArrowDown } from "lucide-react";
 import { ImageUploader } from "./image-uploader";
 import { CmsImage } from "@/components/cms-image";
+import { isPublishedMediaUrl } from "@/lib/media-url";
 
 interface GalleryManagerProps {
   value: string[];
@@ -64,7 +65,7 @@ export function GalleryManager({
       {value.length > 0 && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {value.map((url, i) => {
-            const hasImage = url && !url.includes("pub-XXXX");
+            const hasImage = isPublishedMediaUrl(url);
             return (
               <div
                 key={`${url}-${i}`}

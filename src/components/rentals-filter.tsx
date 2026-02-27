@@ -7,6 +7,7 @@ import Link from "next/link";
 import { GlowButton } from "@/components/glow-button";
 import { CmsImage } from "@/components/cms-image";
 import { MediaPlaceholder } from "@/components/media-placeholder";
+import { isPublishedMediaUrl } from "@/lib/media-url";
 import type { RentalItem } from "@/lib/types";
 
 const iconByCategory: Record<string, ComponentType<{ className?: string }>> = {
@@ -105,7 +106,7 @@ export function RentalsFilter({ items, categories, footerNote }: RentalsFilterPr
               className="group overflow-hidden border border-border bg-surface transition-all duration-300 hover:border-laser-cyan/40"
             >
               <div className="relative h-48 w-full overflow-hidden bg-surface-light">
-                {item.imageUrl && !item.imageUrl.includes("pub-XXXX") ? (
+                {isPublishedMediaUrl(item.imageUrl) ? (
                   <CmsImage
                     src={item.imageUrl}
                     alt={item.name}

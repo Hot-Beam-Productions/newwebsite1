@@ -6,6 +6,7 @@ import { HeroBeams } from "@/components/hero-animations";
 import { InstagramFeed } from "@/components/instagram-feed";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import { CmsImage } from "@/components/cms-image";
+import { isPublishedMediaUrl } from "@/lib/media-url";
 import { getPublicSiteData } from "@/lib/public-site-data";
 
 export default async function Home() {
@@ -231,7 +232,7 @@ export default async function Home() {
                 className="group overflow-hidden border border-border bg-surface transition-all duration-300 hover:border-laser-cyan/45"
               >
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-light">
-                  {project.mainImageUrl && !project.mainImageUrl.includes("pub-XXXX") ? (
+                  {isPublishedMediaUrl(project.mainImageUrl) ? (
                     <CmsImage
                       src={project.mainImageUrl}
                       alt={project.title}

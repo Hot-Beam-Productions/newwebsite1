@@ -5,6 +5,11 @@ export interface FocalPoint {
 
 const FOCAL_PARAM = "fp";
 const DEFAULT_FOCAL_POINT: FocalPoint = { x: 50, y: 50 };
+const PLACEHOLDER_URL_TOKEN = "pub-XXXX";
+
+function normalizeRawUrl(rawUrl: unknown): string {
+  return typeof rawUrl === "string" ? rawUrl.trim() : "";
+}
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
@@ -37,17 +42,18 @@ function isCentered(point: FocalPoint): boolean {
   return Math.abs(point.x - DEFAULT_FOCAL_POINT.x) < 0.05 && Math.abs(point.y - DEFAULT_FOCAL_POINT.y) < 0.05;
 }
 
-export function parseMediaUrl(rawUrl: string): {
+export function parseMediaUrl(rawUrl: unknown): {
   src: string;
   focalPoint: FocalPoint | null;
 } {
-  if (!rawUrl) {
+  const normalizedUrl = normalizeRawUrl(rawUrl);
+  if (!normalizedUrl) {
     return { src: "", focalPoint: null };
   }
 
-  const hashIndex = rawUrl.indexOf("#");
-  const src = hashIndex >= 0 ? rawUrl.slice(0, hashIndex) : rawUrl;
-  const hash = hashIndex >= 0 ? rawUrl.slice(hashIndex + 1) : "";
+  const hashIndex = normalizedUrl.indexOf("#");
+  const src = hashIndex >= 0 ? normalizedUrl.slice(0, hashIndex) : normalizedUrl;
+  const hash = hashIndex >= 0 ? normalizedUrl.slice(hashIndex + 1) : "";
   const params = new URLSearchParams(hash);
 
   return {
@@ -56,12 +62,13 @@ export function parseMediaUrl(rawUrl: string): {
   };
 }
 
-export function withFocalPoint(rawUrl: string, point: FocalPoint | null): string {
-  if (!rawUrl) return "";
+export function withFocalPoint(rawUrl: unknown, point: FocalPoint | null): string {
+  const normalizedUrl = normalizeRawUrl(rawUrl);
+  if (!normalizedUrl) return "";
 
-  const hashIndex = rawUrl.indexOf("#");
-  const src = hashIndex >= 0 ? rawUrl.slice(0, hashIndex) : rawUrl;
-  const hash = hashIndex >= 0 ? rawUrl.slice(hashIndex + 1) : "";
+  const hashIndex = normalizedUrl.indexOf("#");
+  const src = hashIndex >= 0 ? normalizedUrl.slice(0, hashIndex) : normalizedUrl;
+  const hash = hashIndex >= 0 ? normalizedUrl.slice(hashIndex + 1) : "";
   const params = new URLSearchParams(hash);
   params.delete(FOCAL_PARAM);
 
@@ -84,7 +91,11 @@ export function focalPointToObjectPosition(point: FocalPoint | null): string {
   return `${normalized.x}% ${normalized.y}%`;
 }
 
-export function stripMediaUrlDecorators(rawUrl: string): string {
+export function stripMediaUrlDecorators(rawUrl: unknown): string {
   return parseMediaUrl(rawUrl).src;
 }
 
+export function isPublishedMediaUrl(rawUrl: unknown): rawUrl is string {
+  const normalizedUrl = normalizeRawUrl(rawUrl);
+  return Boolean(normalizedUrl) && !normalizedUrl.includes(PLACEHOLDER_URL_TOKEN);
+}

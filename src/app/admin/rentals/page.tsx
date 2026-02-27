@@ -10,6 +10,7 @@ import { FormStatus } from "@/components/admin/form-status";
 import { EmptyState } from "@/components/admin/empty-state";
 import { useToast } from "@/components/admin/toast";
 import { getRentalsAdmin, deleteRental } from "./actions";
+import { isPublishedMediaUrl } from "@/lib/media-url";
 import type { RentalItem } from "@/lib/types";
 
 export default function RentalsListPage() {
@@ -150,7 +151,7 @@ export default function RentalsListPage() {
         <>
           <div className="space-y-3 md:hidden">
             {filteredItems.map((item) => {
-              const hasImage = item.imageUrl && !item.imageUrl.includes("pub-XXXX");
+              const hasImage = isPublishedMediaUrl(item.imageUrl);
               return (
                 <div key={item.id} className="rounded-lg border border-border bg-surface/60 p-3">
                   <div className="flex items-start gap-3">
@@ -195,7 +196,7 @@ export default function RentalsListPage() {
               </thead>
               <tbody>
                 {filteredItems.map((item) => {
-                  const hasImage = item.imageUrl && !item.imageUrl.includes("pub-XXXX");
+                  const hasImage = isPublishedMediaUrl(item.imageUrl);
                   return (
                     <tr key={item.id} className="border-b border-border transition-colors hover:bg-surface/50">
                       <td className="px-4 py-3">

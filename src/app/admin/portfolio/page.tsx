@@ -10,6 +10,7 @@ import { FormStatus } from "@/components/admin/form-status";
 import { EmptyState } from "@/components/admin/empty-state";
 import { useToast } from "@/components/admin/toast";
 import { getProjectsAdmin, deleteProject } from "./actions";
+import { isPublishedMediaUrl } from "@/lib/media-url";
 import type { ProjectItem } from "@/lib/types";
 
 export default function PortfolioListPage() {
@@ -120,8 +121,7 @@ export default function PortfolioListPage() {
         <>
           <div className="space-y-3 md:hidden">
             {filteredProjects.map((project) => {
-              const hasImage =
-                project.mainImageUrl && !project.mainImageUrl.includes("pub-XXXX");
+              const hasImage = isPublishedMediaUrl(project.mainImageUrl);
               return (
                 <div key={project.id} className="rounded-lg border border-border bg-surface/60 p-3">
                   <div className="flex items-start gap-3">
@@ -175,8 +175,7 @@ export default function PortfolioListPage() {
               </thead>
               <tbody>
                 {filteredProjects.map((project) => {
-                  const hasImage =
-                    project.mainImageUrl && !project.mainImageUrl.includes("pub-XXXX");
+                  const hasImage = isPublishedMediaUrl(project.mainImageUrl);
                   return (
                     <tr
                       key={project.id}

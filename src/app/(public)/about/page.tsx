@@ -4,6 +4,7 @@ import { CmsImage } from "@/components/cms-image";
 import { GlowButton } from "@/components/glow-button";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import { SectionHeading } from "@/components/section-heading";
+import { isPublishedMediaUrl } from "@/lib/media-url";
 import { getPublicSiteData } from "@/lib/public-site-data";
 
 export const metadata: Metadata = {
@@ -38,7 +39,7 @@ export default async function AboutPage() {
               >
                 <div className="flex items-start gap-5">
                   <div className="h-20 w-20 flex-shrink-0 overflow-hidden border border-border bg-surface-light">
-                    {partner.imageUrl && !partner.imageUrl.includes("pub-XXXX") ? (
+                    {isPublishedMediaUrl(partner.imageUrl) ? (
                       <CmsImage
                         src={partner.imageUrl}
                         alt={partner.name}
@@ -124,7 +125,7 @@ export default async function AboutPage() {
               {about.crew.map((member) => (
                 <article key={member.id} className="text-center">
                   <div className="mx-auto mb-3 h-16 w-16 overflow-hidden rounded-full border border-border bg-surface-light">
-                    {member.imageUrl && !member.imageUrl.includes("pub-XXXX") ? (
+                    {isPublishedMediaUrl(member.imageUrl) ? (
                       <CmsImage
                         src={member.imageUrl}
                         alt={member.name}

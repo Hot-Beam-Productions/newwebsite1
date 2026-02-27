@@ -6,7 +6,7 @@ import { CmsImage } from "@/components/cms-image";
 import { GlowButton } from "@/components/glow-button";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import { getPublicSiteData } from "@/lib/public-site-data";
-import { stripMediaUrlDecorators } from "@/lib/media-url";
+import { isPublishedMediaUrl, stripMediaUrlDecorators } from "@/lib/media-url";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -81,7 +81,7 @@ export default async function WorkProjectPage({ params }: Props) {
         </header>
 
         <div className="mb-12 overflow-hidden border border-border bg-surface">
-          {project.mainImageUrl && !project.mainImageUrl.includes("pub-XXXX") ? (
+          {isPublishedMediaUrl(project.mainImageUrl) ? (
             <div className="relative aspect-video w-full">
               <CmsImage
                 src={project.mainImageUrl}
@@ -138,7 +138,7 @@ export default async function WorkProjectPage({ params }: Props) {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {project.gallery.map((url, index) => (
                 <div key={url} className="overflow-hidden border border-border bg-surface">
-                  {!url.includes("pub-XXXX") ? (
+                  {isPublishedMediaUrl(url) ? (
                     <div className="relative aspect-video w-full">
                       <CmsImage src={url} alt={`${project.title} image ${index + 1}`} fill className="object-cover" />
                     </div>

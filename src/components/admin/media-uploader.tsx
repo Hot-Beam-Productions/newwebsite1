@@ -7,7 +7,7 @@ import { useAuth } from "./auth-provider";
 import { CropPreview } from "./crop-preview";
 import { FocalPointEditor } from "./focal-point-editor";
 import { cn } from "@/lib/utils";
-import { focalPointToObjectPosition, parseMediaUrl, withFocalPoint } from "@/lib/media-url";
+import { focalPointToObjectPosition, isPublishedMediaUrl, parseMediaUrl, withFocalPoint } from "@/lib/media-url";
 
 type UploadAspect = "video" | "square" | "portrait" | "fullscreen";
 type UploadAccept = "image" | "video" | "both";
@@ -236,7 +236,7 @@ export function MediaUploader({
   const previewUrl = localPreviewUrl || parsedCommitted.src;
   const previewType =
     localPreviewType || inferMediaTypeFromUrl(previewUrl) || (accept === "video" ? "video" : "image");
-  const hasMedia = Boolean(previewUrl) && !previewUrl.includes("pub-XXXX");
+  const hasMedia = isPublishedMediaUrl(previewUrl);
   const imageObjectPosition = focalPointToObjectPosition(localPreviewUrl ? null : parsedCommitted.focalPoint);
 
   const dropzoneMessage = useMemo(() => {

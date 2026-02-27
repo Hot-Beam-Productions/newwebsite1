@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import { CmsImage } from "@/components/cms-image";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import { SectionHeading } from "@/components/section-heading";
+import { isPublishedMediaUrl } from "@/lib/media-url";
 import { getPublicSiteData } from "@/lib/public-site-data";
 
 export const metadata: Metadata = {
@@ -44,7 +45,7 @@ export default async function WorkPage() {
                   className="relative w-full overflow-hidden bg-surface-light"
                   style={{ height: `${260 + (index % 3) * 70}px` }}
                 >
-                  {project.mainImageUrl && !project.mainImageUrl.includes("pub-XXXX") ? (
+                  {isPublishedMediaUrl(project.mainImageUrl) ? (
                     <CmsImage
                       src={project.mainImageUrl}
                       alt={project.title}
