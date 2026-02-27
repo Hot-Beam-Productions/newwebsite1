@@ -3,11 +3,12 @@ interface Env {
   VERCEL_TOKEN: string;
   VERCEL_PROJECT_ID: string;
   VERCEL_TEAM_ID?: string;
+  REFRESH_AUTH_TOKEN?: string;
 }
 
 const IG_TOKEN_KEY = "instagram_access_token";
 
-export default {
+const worker = {
   async scheduled(_event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
     ctx.waitUntil(refreshToken(env));
   },
@@ -16,20 +17,40 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === "/refresh") {
+      if (request.method !== "POST") {
+        return Response.json({ success: false, error: "Method Not Allowed" }, { status: 405 });
+      }
+
+      if (!isAuthorizedRequest(request, env)) {
+        return Response.json({ success: false, error: "Unauthorized" }, { status: 401 });
+      }
+
       try {
         const result = await refreshToken(env);
         return Response.json(result);
-      } catch (err) {
+      } catch {
         return Response.json(
-          { success: false, error: err instanceof Error ? err.message : "Unknown error" },
+          { success: false, error: "Refresh failed" },
           { status: 500 }
         );
       }
     }
 
-    return Response.json({ status: "ok", hint: "POST /refresh or wait for cron" });
+    return Response.json({ status: "ok", hint: "POST /refresh" });
   },
 };
+
+export default worker;
+
+function isAuthorizedRequest(request: Request, env: Env): boolean {
+  if (!env.REFRESH_AUTH_TOKEN) return false;
+
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) return false;
+
+  const providedToken = authHeader.slice(7).trim();
+  return providedToken === env.REFRESH_AUTH_TOKEN;
+}
 
 async function refreshToken(env: Env): Promise<{ success: boolean; message: string }> {
   // 1. Read current token from KV
