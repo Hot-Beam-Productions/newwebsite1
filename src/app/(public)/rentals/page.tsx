@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { RentalsFilter } from "@/components/rentals-filter";
 import { SectionHeading } from "@/components/section-heading";
-import { rentals } from "@/lib/site-data";
+import { getPublicSiteData } from "@/lib/public-site-data";
 
 export const metadata: Metadata = {
   title: "Inventory",
@@ -9,7 +9,9 @@ export const metadata: Metadata = {
     "Browse show-ready inventory from Hot Beam Productions including lighting, audio, video, laser, and effects systems.",
 };
 
-export default function RentalsPage() {
+export default async function RentalsPage() {
+  const { rentals } = await getPublicSiteData();
+
   return (
     <div className="px-6 pb-24 pt-28 md:pt-32">
       <div className="mx-auto max-w-7xl">

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import { SectionHeading } from "@/components/section-heading";
-import { work } from "@/lib/site-data";
+import { getPublicSiteData } from "@/lib/public-site-data";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -20,7 +20,9 @@ const serviceStyles: Record<string, string> = {
   sfx: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
 };
 
-export default function WorkPage() {
+export default async function WorkPage() {
+  const { work } = await getPublicSiteData();
+
   return (
     <div className="px-6 pb-24 pt-28 md:pt-32">
       <div className="mx-auto max-w-7xl">

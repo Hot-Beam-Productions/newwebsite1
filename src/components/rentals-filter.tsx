@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { GlowButton } from "@/components/glow-button";
 import { MediaPlaceholder } from "@/components/media-placeholder";
-import { type RentalItem } from "@/lib/site-data";
+import type { RentalItem } from "@/lib/types";
 
 const iconByCategory: Record<string, ComponentType<{ className?: string }>> = {
   all: Wrench,

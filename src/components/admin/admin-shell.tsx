@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -34,9 +35,14 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       {/* Sidebar */}
       <aside className="flex w-56 shrink-0 flex-col border-r border-border bg-surface">
         <div className="border-b border-border p-4">
-          <Link href="/admin" className="font-heading text-lg tracking-wide text-foreground">
-            HBP Admin
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/" aria-label="Back to website homepage" className="rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/50">
+              <Image src="/logo-icon.png" alt="" width={28} height={24} className="h-6 w-auto" />
+            </Link>
+            <Link href="/admin" className="font-heading text-lg tracking-wide text-foreground">
+              HBP Admin
+            </Link>
+          </div>
         </div>
 
         <nav className="flex-1 overflow-y-auto p-3">

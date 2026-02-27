@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Instagram } from "lucide-react";
 import { SectionHeading } from "@/components/section-heading";
-import { brand } from "@/lib/site-data";
+import type { BrandData } from "@/lib/types";
 
 interface InstagramPost {
   id: string;
@@ -32,7 +32,11 @@ async function getInstagramPosts(): Promise<InstagramPost[]> {
   }
 }
 
-export async function InstagramFeed() {
+interface InstagramFeedProps {
+  brand: BrandData;
+}
+
+export async function InstagramFeed({ brand }: InstagramFeedProps) {
   const posts = await getInstagramPosts();
 
   return (

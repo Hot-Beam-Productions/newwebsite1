@@ -4,7 +4,7 @@ import { ArrowRight, Award, MapPin, Users, Zap } from "lucide-react";
 import { GlowButton } from "@/components/glow-button";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import { SectionHeading } from "@/components/section-heading";
-import { about } from "@/lib/site-data";
+import { getPublicSiteData } from "@/lib/public-site-data";
 
 export const metadata: Metadata = {
   title: "About",
@@ -14,7 +14,9 @@ export const metadata: Metadata = {
 
 const statIcons = [Zap, Users, MapPin, Award];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { about } = await getPublicSiteData();
+
   return (
     <div className="px-6 pb-24 pt-28 md:pt-32">
       <div className="mx-auto max-w-7xl">

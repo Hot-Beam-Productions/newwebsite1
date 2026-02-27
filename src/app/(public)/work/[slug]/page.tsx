@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { GlowButton } from "@/components/glow-button";
 import { MediaPlaceholder } from "@/components/media-placeholder";
-import { getWorkProject, work } from "@/lib/site-data";
+import { getPublicSiteData } from "@/lib/public-site-data";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -19,13 +19,10 @@ const serviceStyles: Record<string, string> = {
   sfx: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
 };
 
-export async function generateStaticParams() {
-  return work.projects.map((project) => ({ slug: project.slug }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const project = getWorkProject(slug);
+  const { work } = await getPublicSiteData();
+  const project = work.projects.find((item) => item.slug === slug);
 
   if (!project) return { title: "Not Found" };
 
@@ -42,7 +39,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function WorkProjectPage({ params }: Props) {
   const { slug } = await params;
-  const project = getWorkProject(slug);
+  const { work } = await getPublicSiteData();
+  const project = work.projects.find((item) => item.slug === slug);
   if (!project) notFound();
 
   return (

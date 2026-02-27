@@ -7,11 +7,12 @@ import { HeroBeams } from "@/components/hero-animations";
 import { InstagramFeed } from "@/components/instagram-feed";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import { ServicesAccordion } from "@/components/services-accordion";
-import { home, work } from "@/lib/site-data";
+import { getPublicSiteData } from "@/lib/public-site-data";
 
-const featuredProjects = work.projects.filter((project) => project.featured).slice(0, 3);
+export default async function Home() {
+  const { home, work, brand } = await getPublicSiteData();
+  const featuredProjects = work.projects.filter((project) => project.featured).slice(0, 3);
 
-export default function Home() {
   return (
     <>
       <section className="relative flex min-h-screen items-center justify-center overflow-clip px-6 pb-20 pt-28">
@@ -150,7 +151,7 @@ export default function Home() {
         </div>
       </section>
 
-      <InstagramFeed />
+      <InstagramFeed brand={brand} />
 
       <section className="px-6 pb-28 pt-10">
         <div className="mx-auto max-w-4xl border border-border bg-surface px-8 py-12 text-center md:px-12 md:py-16">

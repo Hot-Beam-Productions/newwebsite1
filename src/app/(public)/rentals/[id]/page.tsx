@@ -5,19 +5,16 @@ import Image from "next/image";
 import { ArrowLeft, CheckCircle2, CircleAlert } from "lucide-react";
 import { GlowButton } from "@/components/glow-button";
 import { MediaPlaceholder } from "@/components/media-placeholder";
-import { getRentalItem, rentals } from "@/lib/site-data";
+import { getPublicSiteData } from "@/lib/public-site-data";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-export async function generateStaticParams() {
-  return rentals.items.map((item) => ({ id: item.id }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const item = getRentalItem(id);
+  const { rentals } = await getPublicSiteData();
+  const item = rentals.items.find((entry) => entry.id === id);
 
   if (!item) return { title: "Not Found" };
 
@@ -34,7 +31,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function RentalDetailPage({ params }: Props) {
   const { id } = await params;
-  const item = getRentalItem(id);
+  const { rentals } = await getPublicSiteData();
+  const item = rentals.items.find((entry) => entry.id === id);
   if (!item) notFound();
 
   return (

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Lightbulb, Monitor, Sparkles, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { ServiceIcon } from "@/lib/site-data";
+import type { ServiceIcon } from "@/lib/types";
 
 const iconMap: Record<ServiceIcon, React.ComponentType<{ className?: string }>> = {
   lightbulb: Lightbulb,
