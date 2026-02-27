@@ -67,6 +67,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "*.instagram.com",
       },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+      },
     ],
   },
   async headers() {

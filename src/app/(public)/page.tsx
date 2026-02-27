@@ -15,32 +15,34 @@ export default async function Home() {
 
   return (
     <>
-      <section className="relative flex min-h-screen items-center justify-center overflow-clip px-6 pb-20 pt-28">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(46,99,255,0.22),transparent_44%),radial-gradient(circle_at_80%_80%,rgba(208,164,88,0.16),transparent_36%)]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background" />
+      <section className="relative flex h-screen items-center justify-center overflow-clip">
+        <div className="absolute inset-0">
+          <video className="h-full w-full object-cover" autoPlay loop muted playsInline>
+            <source src="/sae%20proppa%20odd%20mob%202.mov" type="video/quicktime" />
+            Your browser does not support the video tag.
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background" />
+        </div>
+
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <Image
+            src="/logo.png"
+            alt=""
+            width={600}
+            height={600}
+            className="h-auto w-[clamp(16rem,40vw,36rem)]"
+            priority
+          />
+        </div>
+      </section>
+
+      <section className="relative px-6 pb-20 pt-16">
         <HeroBeams />
 
         <div className="relative z-10 mx-auto w-full max-w-5xl text-center">
-          <p className="mono-label mb-8 !text-laser-cyan">{home.hero.eyebrow}</p>
+          <p className="mono-label mb-6 !text-laser-cyan">{home.hero.eyebrow}</p>
 
-          <div className="relative mx-auto mt-8 aspect-video w-full max-w-4xl overflow-hidden border border-border/80 bg-surface">
-            <video className="h-full w-full object-cover opacity-35" autoPlay loop muted playsInline>
-              <source src="/sae%20proppa%20odd%20mob%202.mov" type="video/quicktime" />
-              Your browser does not support the video tag.
-            </video>
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <Image
-                src="/logo.png"
-                alt=""
-                width={320}
-                height={320}
-                className="h-auto w-[clamp(9rem,20vw,20rem)] opacity-70"
-                priority
-              />
-            </div>
-          </div>
-
-          <h1 className="mx-auto mt-6 max-w-4xl font-heading text-4xl leading-tight tracking-tight text-foreground md:text-6xl">
+          <h1 className="mx-auto max-w-4xl font-heading text-4xl leading-tight tracking-tight text-foreground md:text-6xl">
             {home.hero.headline}
           </h1>
 
@@ -48,11 +50,11 @@ export default async function Home() {
             {home.hero.subheadline}
           </p>
 
-          <p className="mt-6 font-heading text-xl tracking-[0.2em] text-foreground/82 uppercase md:text-2xl">
+          <p className="mt-6 font-heading text-xl tracking-[0.2em] text-foreground/90 uppercase md:text-2xl">
             {home.hero.departmentLine}
           </p>
 
-          <p className="mx-auto mt-7 max-w-3xl text-base leading-relaxed text-muted md:text-lg">
+          <p className="mx-auto mt-7 max-w-3xl text-base leading-relaxed text-muted-light md:text-lg">
             {home.hero.description}
           </p>
 
@@ -78,9 +80,9 @@ export default async function Home() {
       </section>
 
       <section className="px-6 pb-16" aria-label="Trust signals">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-3 border border-border bg-surface p-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-3 border border-border bg-surface p-5 lg:grid-cols-4">
           {home.trustSignals.map((signal) => (
-            <p key={signal} className="mono-label !text-muted-light">
+            <p key={signal} className="mono-label !text-foreground/70">
               {signal}
             </p>
           ))}
@@ -113,9 +115,9 @@ export default async function Home() {
             </div>
             <Link
               href="/work"
-              className="mono-label hidden !text-muted-light transition-colors hover:!text-laser-cyan sm:inline-flex"
+              className="mono-label !text-muted-light transition-colors hover:!text-laser-cyan"
             >
-              View full portfolio
+              View all &rarr;
             </Link>
           </div>
 
@@ -143,7 +145,7 @@ export default async function Home() {
                   <h3 className="font-heading text-2xl tracking-tight text-foreground transition-colors group-hover:text-laser-cyan">
                     {project.title}
                   </h3>
-                  <p className="text-sm leading-relaxed text-muted">{project.description}</p>
+                  <p className="text-sm leading-relaxed text-muted-light">{project.description}</p>
                 </div>
               </Link>
             ))}
@@ -153,12 +155,12 @@ export default async function Home() {
 
       <InstagramFeed brand={brand} />
 
-      <section className="px-6 pb-28 pt-10">
-        <div className="mx-auto max-w-4xl border border-border bg-surface px-8 py-12 text-center md:px-12 md:py-16">
+      <section className="px-6 pb-28 pt-16">
+        <div className="mx-auto max-w-4xl border border-laser-cyan/20 bg-surface px-8 py-14 text-center md:px-14 md:py-20">
           <h2 className="font-heading text-4xl tracking-tight text-foreground md:text-5xl">
             {home.closingCta.title}
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted">
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-light">
             {home.closingCta.description}
           </p>
           <div className="mt-9">

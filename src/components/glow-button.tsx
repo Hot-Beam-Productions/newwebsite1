@@ -23,12 +23,12 @@ export function GlowButton({
   disabled,
 }: GlowButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center rounded-sm border px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+    "inline-flex items-center justify-center rounded-sm border px-7 py-3.5 text-[12px] font-bold uppercase tracking-[0.16em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
   const variants = {
     primary: cn(
       "border-laser-cyan bg-laser-cyan text-background",
-      "hover:translate-y-[-1px] hover:bg-laser-cyan-dim hover:shadow-[0_0_22px_rgba(46,99,255,0.35)]",
+      "hover:translate-y-[-1px] hover:bg-laser-cyan-dim hover:shadow-[0_0_28px_rgba(46,99,255,0.4)]",
       "active:translate-y-0"
     ),
     outline: cn(

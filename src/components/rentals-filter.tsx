@@ -117,14 +117,14 @@ export function RentalsFilter({ items, categories, footerNote }: RentalsFilterPr
                 <h3 className="font-heading text-2xl leading-tight tracking-tight text-foreground">
                   {item.name}
                 </h3>
-                <p className="text-sm leading-relaxed text-muted">{item.description}</p>
+                <p className="text-sm leading-relaxed text-muted-light">{item.description}</p>
 
                 {item.specs.length > 0 && (
                   <div className="flex flex-wrap gap-1 pt-1">
                     {item.specs.slice(0, 3).map((spec) => (
                       <span
                         key={spec}
-                        className="border border-border bg-surface-light px-2 py-1 text-[10px] uppercase tracking-wide text-muted-light"
+                        className="border border-border bg-surface-light px-2 py-1 text-[11px] uppercase tracking-wide text-muted-light"
                       >
                         {spec}
                       </span>
@@ -153,7 +153,7 @@ export function RentalsFilter({ items, categories, footerNote }: RentalsFilterPr
       )}
 
       <div className="mt-16 border border-border bg-surface px-8 py-10 text-center">
-        <p className="mx-auto max-w-2xl text-sm leading-relaxed text-muted">{footerNote}</p>
+        <p className="mx-auto max-w-2xl text-sm leading-relaxed text-muted-light">{footerNote}</p>
         <div className="mt-6">
           <GlowButton href="/contact" variant="primary">
             Request Inventory Sheet

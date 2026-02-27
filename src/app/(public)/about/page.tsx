@@ -59,7 +59,7 @@ export default async function AboutPage() {
                       {partner.name}
                     </h3>
                     <p className="mono-label mt-1 !text-laser-cyan">{partner.role}</p>
-                    <p className="mt-4 text-sm leading-relaxed text-muted">{partner.bio}</p>
+                    <p className="mt-4 text-sm leading-relaxed text-muted-light">{partner.bio}</p>
                   </div>
                 </div>
               </article>
@@ -72,7 +72,7 @@ export default async function AboutPage() {
             <h2 className="font-heading text-4xl tracking-tight text-foreground md:text-5xl">
               {about.storyTitle}
             </h2>
-            <div className="mt-6 space-y-4 text-base leading-relaxed text-muted">
+            <div className="mt-6 space-y-4 text-base leading-relaxed text-muted-light">
               {about.story.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
@@ -111,7 +111,7 @@ export default async function AboutPage() {
                 <h3 className="font-heading text-2xl tracking-tight text-foreground">
                   {value.title}
                 </h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted">{value.description}</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted-light">{value.description}</p>
               </article>
             ))}
           </div>
@@ -152,7 +152,7 @@ export default async function AboutPage() {
           <h2 className="font-heading text-4xl tracking-tight text-foreground md:text-5xl">
             {about.closingCta.title}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted">
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-light">
             {about.closingCta.description}
           </p>
           <div className="mt-8">

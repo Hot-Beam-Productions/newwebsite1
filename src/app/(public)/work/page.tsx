@@ -71,7 +71,7 @@ export default async function WorkPage() {
                   <h3 className="font-heading text-2xl tracking-tight text-foreground transition-colors group-hover:text-laser-cyan">
                     {project.title}
                   </h3>
-                  <p className="text-sm leading-relaxed text-muted">{project.description}</p>
+                  <p className="text-sm leading-relaxed text-muted-light">{project.description}</p>
                   <div className="flex flex-wrap gap-2 pt-1">
                     {project.services.map((service) => (
                       <span

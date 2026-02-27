@@ -11,8 +11,8 @@
   --color-surface-light: oklch(14% 0.012 260);
   --color-border: oklch(24% 0.012 260);
   --color-border-bright: oklch(36% 0.018 260);
-  --color-muted: oklch(76% 0.018 260);
-  --color-muted-light: oklch(84% 0.016 260);
+  --color-muted: oklch(78% 0.012 260);
+  --color-muted-light: oklch(86% 0.010 260);
 
   --font-display: var(--font-sora), sans-serif;
   --font-heading: var(--font-sora), sans-serif;
@@ -77,11 +77,11 @@ body::before {
 
 .mono-label {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.17em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--color-muted);
+  color: var(--color-muted-light);
 }
 
 .spec-line {

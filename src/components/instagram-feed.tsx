@@ -19,7 +19,7 @@ async function getInstagramPosts(): Promise<InstagramPost[]> {
 
   try {
     const response = await fetch(
-      `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&limit=9&access_token=${token}`,
+      `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&limit=3&access_token=${token}`,
       { next: { revalidate: 3600 } }
     );
 
@@ -49,7 +49,7 @@ export async function InstagramFeed({ brand }: InstagramFeedProps) {
         />
 
         {posts.length > 0 ? (
-          <div className="grid grid-cols-3 gap-1 md:gap-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {posts.map((post) => {
               const imageUrl = post.media_type === "VIDEO" ? post.thumbnail_url : post.media_url;
               if (!imageUrl) return null;
@@ -60,7 +60,7 @@ export async function InstagramFeed({ brand }: InstagramFeedProps) {
                   href={post.permalink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group relative aspect-square overflow-hidden border border-border bg-surface"
+                  className="group relative aspect-[4/5] overflow-hidden border border-border bg-surface transition-colors hover:border-laser-cyan/40"
                   aria-label={post.caption ? post.caption.slice(0, 80) : "Open Instagram post"}
                 >
                   <Image
@@ -68,10 +68,10 @@ export async function InstagramFeed({ brand }: InstagramFeedProps) {
                     alt={post.caption ? post.caption.slice(0, 100) : "Instagram post"}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 33vw, (max-width: 1280px) 25vw, 380px"
+                    sizes="(max-width: 640px) 100vw, 33vw"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/55">
-                    <Instagram className="h-6 w-6 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-all duration-300 group-hover:bg-black/50">
+                    <Instagram className="h-7 w-7 text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   </div>
                 </Link>
               );

@@ -55,9 +55,9 @@ export function Navbar({ brand, navigation }: NavbarProps) {
           ))}
           <Link
             href="/contact"
-            className="mono-label rounded-sm border border-laser-cyan/50 px-4 py-2 !text-laser-cyan transition-all hover:bg-laser-cyan/12"
+            className="mono-label rounded-sm border border-laser-cyan bg-laser-cyan/10 px-4 py-2 !text-laser-cyan transition-all hover:bg-laser-cyan/20"
           >
-            Check Date Availability
+            Get a Quote
           </Link>
         </div>
 

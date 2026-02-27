@@ -55,7 +55,7 @@ export default async function ContactPage() {
                 <h4 className="font-heading text-lg tracking-tight text-foreground">
                   {card.title}
                 </h4>
-                <p className="mt-3 text-sm leading-relaxed text-muted">{card.body}</p>
+                <p className="mt-3 text-sm leading-relaxed text-muted-light">{card.body}</p>
               </div>
             ))}
 
@@ -64,7 +64,7 @@ export default async function ContactPage() {
               <h4 className="font-heading text-lg tracking-tight text-foreground">Compliance & Safety</h4>
               <ul className="mt-3 space-y-2">
                 {contact.complianceBadges.map((badge) => (
-                  <li key={badge} className="text-sm leading-relaxed text-muted">
+                  <li key={badge} className="text-sm leading-relaxed text-muted-light">
                     {badge}
                   </li>
                 ))}

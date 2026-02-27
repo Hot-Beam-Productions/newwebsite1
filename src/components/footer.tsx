@@ -21,7 +21,7 @@ export function Footer({ brand, footer, navigation }: FooterProps) {
               height={41}
               className="h-10 w-auto"
             />
-            <p className="mt-4 max-w-md text-sm leading-relaxed text-muted">
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-light">
               {footer.description}
             </p>
             <div className="mt-5 space-y-1 text-xs text-muted-light">
@@ -52,7 +52,7 @@ export function Footer({ brand, footer, navigation }: FooterProps) {
 
           <div>
             <h4 className="mono-label mb-4 !text-foreground">Departments</h4>
-            <ul className="space-y-2 text-sm text-muted">
+            <ul className="space-y-2 text-sm text-muted-light">
               {footer.departments.map((department) => (
                 <li key={department}>{department}</li>
               ))}
@@ -61,14 +61,14 @@ export function Footer({ brand, footer, navigation }: FooterProps) {
         </div>
 
         <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-border pt-6 md:flex-row md:items-center">
-          <p className="mono-label text-[10px] !text-muted">
+          <p className="mono-label !text-muted">
             &copy; {new Date().getFullYear()} {brand.name}. All rights reserved.
           </p>
           <a
             href={brand.instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mono-label text-[10px] !text-muted transition-colors hover:!text-laser-cyan"
+            className="mono-label !text-muted transition-colors hover:!text-laser-cyan"
           >
             {brand.instagramHandle}
           </a>

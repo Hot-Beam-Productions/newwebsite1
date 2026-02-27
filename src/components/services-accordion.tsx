@@ -103,7 +103,7 @@ export function ServicesAccordion({ items, defaultOpenId }: ServicesAccordionPro
                   className="overflow-hidden"
                 >
                   <div className="px-6 pb-8 pt-2 md:px-10 md:pl-[6.5rem]">
-                    <p className="max-w-2xl text-base leading-relaxed text-muted">
+                    <p className="max-w-2xl text-base leading-relaxed text-muted-light">
                       {service.description}
                     </p>
                     <div className="mt-6 space-y-2">

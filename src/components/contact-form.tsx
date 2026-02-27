@@ -7,7 +7,7 @@ import { GlowButton } from "@/components/glow-button";
 import type { ContactData } from "@/lib/types";
 
 const inputStyles =
-  "w-full border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted/65 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/45";
+  "w-full border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/45";
 
 interface ContactResponse {
   success: boolean;
@@ -105,7 +105,7 @@ export function ContactForm({ contact }: ContactFormProps) {
         <h3 className="font-heading text-3xl tracking-tight text-foreground">
           {contact.success.title}
         </h3>
-        <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-muted">
+        <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-muted-light">
           {contact.success.message}
         </p>
       </div>
