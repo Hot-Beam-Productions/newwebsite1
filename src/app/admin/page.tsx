@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { collection, getCountFromServer } from "firebase/firestore";
 import { Film, Package, Home, Users, Mail, Settings } from "lucide-react";
-import { getFirebaseDb } from "@/lib/firebase";
+import { getProjectsAdmin } from "@/app/admin/portfolio/actions";
+import { getRentalsAdmin } from "@/app/admin/rentals/actions";
 
 const quickLinks = [
   { href: "/admin/portfolio", label: "Portfolio", description: "Manage productions", icon: Film, countKey: "projects" as const },
@@ -26,16 +26,12 @@ export default function AdminDashboard() {
 
     async function loadCounts() {
       try {
-        const db = getFirebaseDb();
-        const [projectsSnap, rentalsSnap] = await Promise.all([
-          getCountFromServer(collection(db, "projects")),
-          getCountFromServer(collection(db, "rentals")),
-        ]);
+        const [projects, rentals] = await Promise.all([getProjectsAdmin(), getRentalsAdmin()]);
 
         if (!active) return;
         setCounts({
-          projects: projectsSnap.data().count,
-          rentals: rentalsSnap.data().count,
+          projects: projects.length,
+          rentals: rentals.length,
         });
       } catch {
         if (!active) return;
