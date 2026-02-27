@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Manrope, Sora } from "next/font/google";
 import "./globals.css";
-import { brand, home, seo } from "@/lib/site-data";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { getPublicSiteData } from "@/lib/public-site-data";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -22,56 +22,62 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: seo.defaultTitle,
-    template: seo.titleTemplate,
-  },
-  description: seo.description,
-  keywords: seo.keywords,
-  openGraph: {
-    siteName: brand.name,
-    locale: "en_US",
-    type: "website",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { brand, seo } = await getPublicSiteData();
 
-const localBusinessSchema = {
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  name: brand.name,
-  url: brand.url,
-  telephone: brand.phoneHref,
-  email: brand.email,
-  description: seo.description,
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Denver",
-    addressRegion: "CO",
-    addressCountry: "US",
-  },
-  geo: {
-    "@type": "GeoCoordinates",
-    latitude: "39.7392",
-    longitude: "-104.9903",
-  },
-  areaServed: [
-    { "@type": "State", name: "Colorado" },
-    { "@type": "Country", name: "United States" },
-  ],
-  hasOfferCatalog: {
-    "@type": "OfferCatalog",
-    name: "Event Production Services",
-    itemListElement: home.services.items.map((item) => ({
-      "@type": "Offer",
-      itemOffered: { "@type": "Service", name: item.title },
-    })),
-  },
-};
+  return {
+    title: {
+      default: seo.defaultTitle,
+      template: seo.titleTemplate,
+    },
+    description: seo.description,
+    keywords: seo.keywords,
+    openGraph: {
+      siteName: brand.name,
+      locale: "en_US",
+      type: "website",
+    },
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const { brand, home, seo } = await getPublicSiteData();
+
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: brand.name,
+    url: brand.url,
+    telephone: brand.phoneHref,
+    email: brand.email,
+    description: seo.description,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Denver",
+      addressRegion: "CO",
+      addressCountry: "US",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: "39.7392",
+      longitude: "-104.9903",
+    },
+    areaServed: [
+      { "@type": "State", name: "Colorado" },
+      { "@type": "Country", name: "United States" },
+    ],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Event Production Services",
+      itemListElement: home.services.items.map((item) => ({
+        "@type": "Offer",
+        itemOffered: { "@type": "Service", name: item.title },
+      })),
+    },
+  };
+
   return (
     <html lang="en">
       <head>

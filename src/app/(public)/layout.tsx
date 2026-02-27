@@ -1,16 +1,19 @@
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { getPublicSiteData } from "@/lib/public-site-data";
 
-export default function PublicLayout({
+export default async function PublicLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const { brand, footer, navigation } = await getPublicSiteData();
+
   return (
     <>
-      <Navbar />
+      <Navbar brand={brand} navigation={navigation} />
       <main id="main-content" className="min-h-screen">
         {children}
       </main>
-      <Footer />
+      <Footer brand={brand} footer={footer} navigation={navigation} />
     </>
   );
 }

@@ -4,7 +4,7 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import { useMemo, useState } from "react";
 import { AlertCircle, CheckCircle2, Send } from "lucide-react";
 import { GlowButton } from "@/components/glow-button";
-import { contact } from "@/lib/site-data";
+import type { ContactData } from "@/lib/types";
 
 const inputStyles =
   "w-full border border-border bg-surface px-4 py-3 text-sm text-foreground placeholder:text-muted/65 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/45";
@@ -14,7 +14,11 @@ interface ContactResponse {
   error?: string;
 }
 
-export function ContactForm() {
+interface ContactFormProps {
+  contact: ContactData;
+}
+
+export function ContactForm({ contact }: ContactFormProps) {
   const [pending, setPending] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | undefined>();

@@ -6,15 +6,20 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { brand, navigation } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
+import type { BrandData, NavLink } from "@/lib/types";
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
   return pathname.startsWith(href);
 }
 
-export function Navbar() {
+interface NavbarProps {
+  brand: BrandData;
+  navigation: NavLink[];
+}
+
+export function Navbar({ brand, navigation }: NavbarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 

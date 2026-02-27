@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { ContactForm } from "@/components/contact-form";
 import { SectionHeading } from "@/components/section-heading";
-import { brand, contact } from "@/lib/site-data";
+import { getPublicSiteData } from "@/lib/public-site-data";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -10,7 +10,9 @@ export const metadata: Metadata = {
     "Request a live event production proposal from Hot Beam Productions. Share your show requirements and receive a scoped response within one business day.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { brand, contact } = await getPublicSiteData();
+
   return (
     <div className="px-6 pb-24 pt-28 md:pt-32">
       <div className="mx-auto max-w-7xl">
@@ -72,7 +74,7 @@ export default function ContactPage() {
 
           <div className="lg:col-span-2">
             <div className="border border-border bg-surface p-6 sm:p-8">
-              <ContactForm />
+              <ContactForm contact={contact} />
             </div>
           </div>
         </div>

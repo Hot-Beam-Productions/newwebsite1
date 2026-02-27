@@ -1,8 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
-import { brand, footer, navigation } from "@/lib/site-data";
+import type { BrandData, FooterData, NavLink } from "@/lib/types";
 
-export function Footer() {
+interface FooterProps {
+  brand: BrandData;
+  footer: FooterData;
+  navigation: NavLink[];
+}
+
+export function Footer({ brand, footer, navigation }: FooterProps) {
   return (
     <footer className="border-t border-border bg-background">
       <div className="mx-auto max-w-7xl px-6 py-14">
