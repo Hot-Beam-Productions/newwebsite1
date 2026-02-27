@@ -75,6 +75,25 @@ function sortByOrder<T extends { order?: number }>(items: T[]): T[] {
   return [...items].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 }
 
+function mergeCollectionWithFallback<T extends { id: string; order?: number }>(
+  fallbackItems: T[],
+  cmsItems: T[] | null
+): T[] {
+  if (!cmsItems) return fallbackItems;
+
+  const mergedItems = new Map<string, T>();
+
+  for (const item of fallbackItems) {
+    mergedItems.set(item.id, item);
+  }
+
+  for (const item of cmsItems) {
+    mergedItems.set(item.id, item);
+  }
+
+  return sortByOrder(Array.from(mergedItems.values()));
+}
+
 async function fetchFirestoreJson<T>(url: string): Promise<T | null> {
   try {
     const response = await fetch(url, { cache: "no-store" });
@@ -142,8 +161,8 @@ export async function getPublicSiteData(): Promise<SiteData> {
     getCollectionDocs<RentalItem>("rentals"),
   ]);
 
-  const projects = projectsDocs ? sortByOrder(projectsDocs) : fallbackSiteData.work.projects;
-  const rentals = rentalsDocs ? sortByOrder(rentalsDocs) : fallbackSiteData.rentals.items;
+  const projects = mergeCollectionWithFallback(fallbackSiteData.work.projects, projectsDocs);
+  const rentals = mergeCollectionWithFallback(fallbackSiteData.rentals.items, rentalsDocs);
 
   return {
     ...fallbackSiteData,
