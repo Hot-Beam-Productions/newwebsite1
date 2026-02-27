@@ -1,0 +1,13 @@
+name = "hotbeam-ig-refresh"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Run every 30 days (on the 1st and 15th of each month at midnight UTC)
+[triggers]
+crons = ["0 0 1,15 * *"]
+
+# KV namespace binding — replace the id after `wrangler kv namespace create`
+[[kv_namespaces]]
+binding = "IG_TOKENS"
+id = "257355f5c50d482ebc1b1672238d6633"
