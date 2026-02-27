@@ -50,9 +50,9 @@ export async function InstagramFeed({ brand }: InstagramFeedProps) {
     <section className="px-6 py-24">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
-          label="Live Feed"
+          label="From the Field"
           title={brand.instagramHandle}
-          subtitle="On-site moments, rig builds, and show-night snapshots from current deployments."
+          subtitle="Rig builds, show nights, and behind-the-scenes moments from recent productions."
         />
 
         {posts.length > 0 ? (
@@ -102,7 +102,7 @@ export async function InstagramFeed({ brand }: InstagramFeedProps) {
             className="mono-label inline-flex items-center gap-2 !text-laser-cyan transition-colors hover:!text-laser-cyan-dim"
           >
             <Instagram className="h-4 w-4" />
-            Follow updates
+            Follow along
           </Link>
         </div>
       </div>
