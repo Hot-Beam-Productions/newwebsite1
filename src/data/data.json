@@ -148,129 +148,239 @@
     },
     "projects": [
       {
-        "id": "red-rocks-amphitheatre",
-        "slug": "red-rocks-amphitheatre",
-        "title": "Red Rocks Amphitheatre",
-        "client": "Live Nation",
-        "location": "Morrison, CO",
-        "eventDate": "2024-08-15",
+        "id": "omnom-a-sig-indiana-university",
+        "slug": "omnom-a-sig-indiana-university",
+        "title": "OMNOM at A-Sig Indiana University",
+        "client": "A-Sig Indiana University",
+        "location": "Bloomington, IN",
+        "eventDate": "2025-02-08",
         "services": [
           "lighting",
-          "lasers",
-          "sfx"
+          "lasers"
         ],
-        "description": "Laser and effects package for a sold-out headline set, integrated with a touring lighting system across a 9,500-capacity venue.",
-        "longDescription": "Red Rocks requires clean execution with limited margin for rework. We advanced rigging and cue architecture with the touring team ten days out, deployed a 22-fixture MAC Ultra system, synchronized a Kvant array to timecode, and integrated CO2 hits into the music stack. The show ran without technical holds and delivered full cue fidelity from first song through encore.",
-        "mainImageUrl": "https://pub-XXXX.r2.dev/portfolio/red-rocks-hero.jpg",
+        "description": "Show production support for OMNOM with laser and lighting integration for a packed university event.",
+        "longDescription": "Delivered laser and lighting support for OMNOM at A-Sig Indiana University, aligning visuals with the artist set flow and venue limitations while maintaining clean, safe operation throughout load-in, show, and load-out.",
+        "mainImageUrl": "/logo-dark.jpg",
         "gallery": [
-          "https://pub-XXXX.r2.dev/portfolio/red-rocks-01.jpg",
-          "https://pub-XXXX.r2.dev/portfolio/red-rocks-02.jpg",
-          "https://pub-XXXX.r2.dev/portfolio/red-rocks-03.jpg"
+          "/logo-dark.jpg",
+          "/logo.png"
         ],
         "featured": true
       },
       {
-        "id": "denver-tech-summit",
-        "slug": "denver-tech-summit",
-        "title": "Denver Tech Summit",
-        "client": "TechStars",
-        "location": "Denver, CO",
-        "eventDate": "2024-04-22",
-        "services": [
-          "video",
-          "lighting"
-        ],
-        "description": "General session production for 1,200 attendees with LED keynote canvas and confidence system routing.",
-        "longDescription": "The venue had no turnkey infrastructure for a broadcast-grade keynote. We built the room from zero with a 384-tile LED wall and redundant signal paths for media and confidence feeds. The production supported executive presentations, panel transitions, and live content roll-ins with zero switch failures.",
-        "mainImageUrl": "https://pub-XXXX.r2.dev/portfolio/tech-summit-hero.jpg",
-        "gallery": [
-          "https://pub-XXXX.r2.dev/portfolio/tech-summit-01.jpg",
-          "https://pub-XXXX.r2.dev/portfolio/tech-summit-02.jpg"
-        ],
-        "featured": false
-      },
-      {
-        "id": "mountain-music-festival",
-        "slug": "mountain-music-festival",
-        "title": "Mountain Music Festival",
-        "client": "Colorado Events Co",
-        "location": "Breckenridge, CO",
-        "eventDate": "2024-07-04",
-        "services": [
-          "lighting",
-          "lasers",
-          "sfx"
-        ],
-        "description": "Three-day festival production at altitude with two stages, synchronized sunset show moments, and weather-adaptive operations.",
-        "longDescription": "At 8,400 feet, system behavior and logistics change fast. We pre-advanced power and weather contingencies, deployed dedicated systems per stage, and coordinated a timed laser and fireworks sequence at dusk. Across three days and multiple artist turnovers, the site remained on schedule and within spec.",
-        "mainImageUrl": "https://pub-XXXX.r2.dev/portfolio/mountain-fest-hero.jpg",
-        "gallery": [
-          "https://pub-XXXX.r2.dev/portfolio/mountain-fest-01.jpg",
-          "https://pub-XXXX.r2.dev/portfolio/mountain-fest-02.jpg",
-          "https://pub-XXXX.r2.dev/portfolio/mountain-fest-03.jpg",
-          "https://pub-XXXX.r2.dev/portfolio/mountain-fest-04.jpg"
-        ],
-        "featured": true
-      },
-      {
-        "id": "corporate-gala-deloitte",
-        "slug": "corporate-gala-deloitte",
-        "title": "Annual Corporate Gala",
-        "client": "Deloitte",
-        "location": "Denver, CO",
-        "eventDate": "2024-11-09",
-        "services": [
-          "lighting",
-          "video"
-        ],
-        "description": "Architectural lighting and show control for a high-profile executive gala inside a non-standard rigging environment.",
-        "longDescription": "The museum venue imposed strict rigging and preservation constraints. We engineered a custom ground-support system, designed camera-safe lighting scenes around permanent installations, and delivered a polished visual environment for speeches, dinner programming, and awards. The client received a cinematic room with full compliance to venue policy.",
-        "mainImageUrl": "https://pub-XXXX.r2.dev/portfolio/deloitte-gala-hero.jpg",
-        "gallery": [
-          "https://pub-XXXX.r2.dev/portfolio/deloitte-gala-01.jpg",
-          "https://pub-XXXX.r2.dev/portfolio/deloitte-gala-02.jpg"
-        ],
-        "featured": false
-      },
-      {
-        "id": "neon-nights-festival",
-        "slug": "neon-nights-festival",
-        "title": "Neon Nights Festival",
-        "client": "AEG Presents",
-        "location": "Colorado Springs, CO",
-        "eventDate": "2024-09-28",
-        "services": [
-          "lasers",
-          "sfx",
-          "lighting"
-        ],
-        "description": "Headline EDM stage with 40kW laser deployment and synchronized effects choreography across an 80-foot stage line.",
-        "longDescription": "For the closing set, the artist direction demanded high-density beams with exact cue precision. We programmed an eight-position laser topology, integrated cryo timing into playback automation, and ran pre-show safety verification with site operations. The final sequence hit every programmed transition and became the campaign hero content.",
-        "mainImageUrl": "https://pub-XXXX.r2.dev/portfolio/neon-nights-hero.jpg",
-        "gallery": [
-          "https://pub-XXXX.r2.dev/portfolio/neon-nights-01.jpg",
-          "https://pub-XXXX.r2.dev/portfolio/neon-nights-02.jpg",
-          "https://pub-XXXX.r2.dev/portfolio/neon-nights-03.jpg"
-        ],
-        "featured": true
-      },
-      {
-        "id": "ecotech-product-launch",
-        "slug": "ecotech-product-launch",
-        "title": "EcoTech Product Launch",
-        "client": "EcoTech Inc",
+        "id": "odd-mob-fox-boulder",
+        "slug": "odd-mob-fox-boulder",
+        "title": "Odd Mob at The Fox",
+        "client": "The Fox Theatre",
         "location": "Boulder, CO",
-        "eventDate": "2024-03-14",
+        "eventDate": "2025-01-18",
         "services": [
-          "video",
+          "lighting",
+          "lasers"
+        ],
+        "description": "Live show production for Odd Mob at The Fox in Boulder.",
+        "longDescription": "Ran lighting and laser-driven visual moments for Odd Mob at The Fox, building a club-forward look tuned to the room and artist pacing.",
+        "mainImageUrl": "/logo.png",
+        "gallery": [
+          "/logo.png",
+          "/logo-icon.png"
+        ],
+        "featured": true
+      },
+      {
+        "id": "proppa-sae-boulder",
+        "slug": "proppa-sae-boulder",
+        "title": "Proppa at SAE",
+        "client": "SAE Boulder",
+        "location": "Boulder, CO",
+        "eventDate": "2024-11-16",
+        "services": [
+          "lighting",
+          "lasers"
+        ],
+        "description": "Production visuals for Proppa at SAE Boulder.",
+        "longDescription": "Provided on-site show support for Proppa at SAE Boulder with coordinated lighting and laser looks designed for high-impact drops and sustained atmosphere.",
+        "mainImageUrl": "/logo-icon.png",
+        "gallery": [
+          "/logo-icon.png",
+          "/logo-dark.jpg"
+        ],
+        "featured": true
+      },
+      {
+        "id": "gudfella-hanger-new-orleans",
+        "slug": "gudfella-hanger-new-orleans",
+        "title": "Gudfella at The Hanger",
+        "client": "The Hanger",
+        "location": "New Orleans, LA",
+        "eventDate": "2024-10-12",
+        "services": [
+          "lighting",
+          "lasers"
+        ],
+        "description": "Event production support for Gudfella at The Hanger in New Orleans.",
+        "longDescription": "Designed and executed the visual package for Gudfella at The Hanger, balancing venue constraints with high-energy beam architecture and show-ready cueing.",
+        "mainImageUrl": "/logo-dark.jpg",
+        "gallery": [
+          "/logo-dark.jpg",
+          "/logo.png"
+        ],
+        "featured": false
+      },
+      {
+        "id": "gudfella-chi-psi-boulder",
+        "slug": "gudfella-chi-psi-boulder",
+        "title": "Gudfella at Chi Psi",
+        "client": "Chi Psi Boulder",
+        "location": "Boulder, CO",
+        "eventDate": "2024-09-21",
+        "services": [
+          "lighting",
+          "lasers"
+        ],
+        "description": "Show visuals for Gudfella at Chi Psi in Boulder.",
+        "longDescription": "Executed a fast-turn student event production for Gudfella at Chi Psi Boulder with synchronized beams and room-filling atmosphere.",
+        "mainImageUrl": "/logo.png",
+        "gallery": [
+          "/logo.png",
+          "/logo-icon.png"
+        ],
+        "featured": false
+      },
+      {
+        "id": "twin-diplomacy-zbt-boulder",
+        "slug": "twin-diplomacy-zbt-boulder",
+        "title": "Twin Diplomacy at ZBT",
+        "client": "ZBT Boulder",
+        "location": "Boulder, CO",
+        "eventDate": "2024-09-07",
+        "services": [
+          "lighting",
+          "lasers"
+        ],
+        "description": "Production support for Twin Diplomacy at ZBT Boulder.",
+        "longDescription": "Delivered a compact but high-output visual setup for Twin Diplomacy at ZBT Boulder with quick deployment and focused cue execution.",
+        "mainImageUrl": "/logo-icon.png",
+        "gallery": [
+          "/logo-icon.png",
+          "/logo-dark.jpg"
+        ],
+        "featured": false
+      },
+      {
+        "id": "its-murph-mission-ballroom-lasers",
+        "slug": "its-murph-mission-ballroom-lasers",
+        "title": "Laser Support for it\u2019s murph at Mission Ballroom",
+        "client": "Mission Ballroom",
+        "location": "Denver, CO",
+        "eventDate": "2024-08-24",
+        "services": [
+          "lasers"
+        ],
+        "description": "Provided laser systems and operation support for it\u2019s murph at Mission Ballroom.",
+        "longDescription": "Supplied and operated laser components for it\u2019s murph at Mission Ballroom, integrating with existing show infrastructure while maintaining variance-compliant procedures.",
+        "mainImageUrl": "/logo-dark.jpg",
+        "gallery": [
+          "/logo-dark.jpg",
+          "/logo.png"
+        ],
+        "featured": false
+      },
+      {
+        "id": "bunt-shrine-la-lasers",
+        "slug": "bunt-shrine-la-lasers",
+        "title": "Laser Support for BUNT at The Shrine",
+        "client": "The Shrine",
+        "location": "Los Angeles, CA",
+        "eventDate": "2024-07-19",
+        "services": [
+          "lasers"
+        ],
+        "description": "Provided laser package support for BUNT at The Shrine in Los Angeles.",
+        "longDescription": "Handled laser deployment and operation for BUNT at The Shrine LA, coordinating with touring departments to ensure safe and impactful beam looks.",
+        "mainImageUrl": "/logo.png",
+        "gallery": [
+          "/logo.png",
+          "/logo-icon.png"
+        ],
+        "featured": false
+      },
+      {
+        "id": "noizu-phi-delt-boulder",
+        "slug": "noizu-phi-delt-boulder",
+        "title": "Noizu at Phi Delt",
+        "client": "Phi Delt Boulder",
+        "location": "Boulder, CO",
+        "eventDate": "2024-06-15",
+        "services": [
+          "lighting",
+          "lasers"
+        ],
+        "description": "Show production for Noizu at Phi Delt Boulder.",
+        "longDescription": "Supported Noizu at Phi Delt Boulder with a tight-footprint production setup that emphasized dynamic beam moments and consistent visual pacing.",
+        "mainImageUrl": "/logo-icon.png",
+        "gallery": [
+          "/logo-icon.png",
+          "/logo-dark.jpg"
+        ],
+        "featured": false
+      },
+      {
+        "id": "private-client-timecoded-light-show-peak-crested-butte",
+        "slug": "private-client-timecoded-light-show-peak-crested-butte",
+        "title": "Custom Timecoded Light Show for Private Client",
+        "client": "Private Client",
+        "location": "Peak of Crested Butte, CO",
+        "eventDate": "2024-03-02",
+        "services": [
           "lighting"
         ],
-        "description": "Media launch with projection-mapped reveal architecture and timed scenic movement for the hero announcement.",
-        "longDescription": "The reveal concept required physical concealment, projection precision, and single-pass execution. We designed a custom scenic structure, mapped content to curved geometry, and rehearsed full sequence timing over two technical days. The product unveil executed in one live pass for press and investor coverage.",
-        "mainImageUrl": "https://pub-XXXX.r2.dev/portfolio/ecotech-launch-hero.jpg",
+        "description": "Custom timecoded lighting show designed for a private event at the peak of Crested Butte.",
+        "longDescription": "Built and programmed a fully timecoded light show for a private client event at the peak of Crested Butte, with cue structure tailored to music moments and the mountain environment.",
+        "mainImageUrl": "/logo-dark.jpg",
         "gallery": [
-          "https://pub-XXXX.r2.dev/portfolio/ecotech-launch-01.jpg",
-          "https://pub-XXXX.r2.dev/portfolio/ecotech-launch-02.jpg"
+          "/logo-dark.jpg",
+          "/logo.png"
+        ],
+        "featured": false
+      },
+      {
+        "id": "charlie-wonder-fox-boiler-room-boulder",
+        "slug": "charlie-wonder-fox-boiler-room-boulder",
+        "title": "Charlie Wonder at Fox Boiler Room",
+        "client": "Fox Theatre Boiler Room",
+        "location": "Boulder, CO",
+        "eventDate": "2024-04-20",
+        "services": [
+          "lighting",
+          "lasers"
+        ],
+        "description": "Show production for Charlie Wonder at the Fox Boiler Room in Boulder.",
+        "longDescription": "Delivered lighting and laser support for Charlie Wonder at Fox Boiler Room Boulder, with artist-aligned cueing and rapid event-day deployment.",
+        "mainImageUrl": "/logo.png",
+        "gallery": [
+          "/logo.png",
+          "/logo-icon.png"
+        ],
+        "featured": false
+      },
+      {
+        "id": "goodneighburs-theta-chi-boulder",
+        "slug": "goodneighburs-theta-chi-boulder",
+        "title": "Goodneighburs at Theta Chi",
+        "client": "Theta Chi Boulder",
+        "location": "Boulder, CO",
+        "eventDate": "2024-05-11",
+        "services": [
+          "lighting",
+          "lasers"
+        ],
+        "description": "Show production for Goodneighburs at Theta Chi in Boulder.",
+        "longDescription": "Delivered lighting and laser support for Goodneighburs at Theta Chi Boulder, with artist-focused cueing and smooth deployment from load-in through show end.",
+        "mainImageUrl": "/logo-dark.jpg",
+        "gallery": [
+          "/logo-dark.jpg",
+          "/logo.png"
         ],
         "featured": false
       }
