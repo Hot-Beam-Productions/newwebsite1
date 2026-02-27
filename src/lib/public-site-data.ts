@@ -5,13 +5,13 @@ import type {
   BrandData,
   ContactData,
   FooterData,
+  HomeData,
   NavLink,
   ProjectItem,
-  RentalsSettings,
   RentalItem,
+  RentalsSettings,
   SeoData,
   SiteData,
-  HomeData,
 } from "@/lib/types";
 import {
   aboutSchema,
@@ -24,7 +24,9 @@ import {
   rentalSchema,
   rentalsSettingsSchema,
   seoSchema,
+  workSettingsSchema,
 } from "@/lib/schemas";
+import { getPublishedSiteSnapshot } from "@/lib/published-site-snapshot";
 
 type FirestoreValue =
   | { nullValue: null }
@@ -47,6 +49,11 @@ interface FirestoreDocument {
 interface FirestoreCollectionResponse {
   documents?: FirestoreDocument[];
   nextPageToken?: string;
+}
+
+interface LoadOptions {
+  fresh?: boolean;
+  fallback?: SiteData;
 }
 
 const fallbackSiteData = rawData as SiteData;
@@ -113,14 +120,91 @@ function parseOrNull<T>(result: { success: boolean; data?: T }): T | null {
   return result.success ? (result.data as T) : null;
 }
 
-async function fetchFirestoreJson<T>(url: string): Promise<T | null> {
+function normalizeFallbackSiteData(candidate: SiteData | null): SiteData {
+  if (!candidate || typeof candidate !== "object") {
+    return fallbackSiteData;
+  }
+
+  const source = candidate as Partial<SiteData>;
+  const sourceWork = source.work;
+  const sourceRentals = source.rentals;
+
+  const parsedBrand = parseOrNull(brandSchema.safeParse(source.brand));
+  const parsedNavigation = Array.isArray(source.navigation)
+    ? parseOrNull(navigationSchema.safeParse({ links: source.navigation }))?.links
+    : null;
+  const parsedSeo = parseOrNull(seoSchema.safeParse(source.seo));
+  const parsedHome = parseOrNull(homeSchema.safeParse(source.home));
+  const parsedAbout = parseOrNull(aboutSchema.safeParse(source.about));
+  const parsedContact = parseOrNull(contactSchema.safeParse(source.contact));
+  const parsedFooter = parseOrNull(footerSchema.safeParse(source.footer));
+  const parsedWorkSettings = parseOrNull(
+    workSettingsSchema.safeParse({
+      heading: sourceWork?.heading,
+    })
+  );
+  const parsedRentalsSettings = parseOrNull(
+    rentalsSettingsSchema.safeParse({
+      heading: sourceRentals?.heading,
+      categories: sourceRentals?.categories,
+      footerNote: sourceRentals?.footerNote,
+    })
+  );
+
+  const sourceProjects = Array.isArray(sourceWork?.projects) ? sourceWork.projects : [];
+  const sourceRentalsItems = Array.isArray(sourceRentals?.items) ? sourceRentals.items : [];
+
+  const parsedProjects = sourceProjects
+    .map((project) => parseOrNull(projectSchema.safeParse(project)))
+    .filter((project): project is ProjectItem => Boolean(project));
+  const parsedRentals = sourceRentalsItems
+    .map((rental) => parseOrNull(rentalSchema.safeParse(rental)))
+    .filter((rental): rental is RentalItem => Boolean(rental));
+
+  return {
+    ...fallbackSiteData,
+    brand: parsedBrand ?? fallbackSiteData.brand,
+    navigation:
+      parsedNavigation && parsedNavigation.length > 0
+        ? parsedNavigation
+        : fallbackSiteData.navigation,
+    seo: parsedSeo ?? fallbackSiteData.seo,
+    home: parsedHome ?? fallbackSiteData.home,
+    about: parsedAbout ?? fallbackSiteData.about,
+    contact: parsedContact ?? fallbackSiteData.contact,
+    footer: parsedFooter ?? fallbackSiteData.footer,
+    work: {
+      ...fallbackSiteData.work,
+      ...(parsedWorkSettings ?? {}),
+      projects: parsedProjects.length > 0 ? parsedProjects : fallbackSiteData.work.projects,
+    },
+    rentals: {
+      ...fallbackSiteData.rentals,
+      ...(parsedRentalsSettings ?? {}),
+      items: parsedRentals.length > 0 ? parsedRentals : fallbackSiteData.rentals.items,
+    },
+  };
+}
+
+async function getBaseFallbackData(options: LoadOptions = {}): Promise<SiteData> {
+  if (options.fallback) return options.fallback;
+  const publishedFallback = await getPublishedSiteSnapshot({ fresh: options.fresh });
+  return normalizeFallbackSiteData(publishedFallback);
+}
+
+async function fetchFirestoreJson<T>(url: string, options: LoadOptions = {}): Promise<T | null> {
   try {
-    const response = await fetch(url, {
-      next: {
-        revalidate: PUBLIC_DATA_REVALIDATE_SECONDS,
-        tags: [PUBLIC_CACHE_TAG],
-      },
-    });
+    const response = await fetch(
+      url,
+      options.fresh
+        ? { cache: "no-store" }
+        : {
+            next: {
+              revalidate: PUBLIC_DATA_REVALIDATE_SECONDS,
+              tags: [PUBLIC_CACHE_TAG],
+            },
+          }
+    );
     if (!response.ok) return null;
     return (await response.json()) as T;
   } catch {
@@ -128,16 +212,16 @@ async function fetchFirestoreJson<T>(url: string): Promise<T | null> {
   }
 }
 
-async function getSiteDoc<T>(docId: string): Promise<T | null> {
+async function getSiteDoc<T>(docId: string, options: LoadOptions = {}): Promise<T | null> {
   if (!projectId || !apiKey) return null;
   const encodedDocId = encodeURIComponent(docId);
   const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/site/${encodedDocId}?key=${apiKey}`;
-  const doc = await fetchFirestoreJson<FirestoreDocument>(url);
+  const doc = await fetchFirestoreJson<FirestoreDocument>(url, options);
   if (!doc) return null;
   return decodeFirestoreFields(doc.fields ?? {}) as T;
 }
 
-async function getCollectionDocs<T>(collectionName: string): Promise<T[] | null> {
+async function getCollectionDocs<T>(collectionName: string, options: LoadOptions = {}): Promise<T[] | null> {
   if (!projectId || !apiKey) return null;
 
   let nextPageToken: string | undefined;
@@ -150,7 +234,7 @@ async function getCollectionDocs<T>(collectionName: string): Promise<T[] | null>
       ...(nextPageToken ? { pageToken: nextPageToken } : {}),
     });
     const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/${collectionName}?${query.toString()}`;
-    const data = await fetchFirestoreJson<FirestoreCollectionResponse>(url);
+    const data = await fetchFirestoreJson<FirestoreCollectionResponse>(url, options);
     if (!data) return null;
 
     docs.push(...(data.documents ?? []).map((doc) => decodeFirestoreDocument<T>(doc)));
@@ -160,97 +244,109 @@ async function getCollectionDocs<T>(collectionName: string): Promise<T[] | null>
   return docs;
 }
 
-async function loadBrandData(): Promise<BrandData> {
-  const brandDoc = await getSiteDoc<BrandData>("brand");
-  return parseOrNull(brandSchema.safeParse(brandDoc)) ?? fallbackSiteData.brand;
+async function loadBrandData(options: LoadOptions = {}): Promise<BrandData> {
+  const baseFallback = await getBaseFallbackData(options);
+  const brandDoc = await getSiteDoc<BrandData>("brand", options);
+  return parseOrNull(brandSchema.safeParse(brandDoc)) ?? baseFallback.brand;
 }
 
-async function loadNavigationData(): Promise<NavLink[]> {
-  const navigationDoc = await getSiteDoc<{ links?: NavLink[] }>("navigation");
+async function loadNavigationData(options: LoadOptions = {}): Promise<NavLink[]> {
+  const baseFallback = await getBaseFallbackData(options);
+  const navigationDoc = await getSiteDoc<{ links?: NavLink[] }>("navigation", options);
   if (!navigationDoc || !Array.isArray(navigationDoc.links)) {
-    return fallbackSiteData.navigation;
+    return baseFallback.navigation;
   }
 
   const parsed = parseOrNull(navigationSchema.safeParse({ links: navigationDoc.links }))?.links;
   if (!parsed || parsed.length === 0) {
-    return fallbackSiteData.navigation;
+    return baseFallback.navigation;
   }
 
   return parsed;
 }
 
-async function loadSeoData(): Promise<SeoData> {
-  const seoDoc = await getSiteDoc<SeoData>("seo");
-  return parseOrNull(seoSchema.safeParse(seoDoc)) ?? fallbackSiteData.seo;
+async function loadSeoData(options: LoadOptions = {}): Promise<SeoData> {
+  const baseFallback = await getBaseFallbackData(options);
+  const seoDoc = await getSiteDoc<SeoData>("seo", options);
+  return parseOrNull(seoSchema.safeParse(seoDoc)) ?? baseFallback.seo;
 }
 
-async function loadHomeData(): Promise<HomeData> {
-  const homeDoc = await getSiteDoc<HomeData>("home");
-  return parseOrNull(homeSchema.safeParse(homeDoc)) ?? fallbackSiteData.home;
+async function loadHomeData(options: LoadOptions = {}): Promise<HomeData> {
+  const baseFallback = await getBaseFallbackData(options);
+  const homeDoc = await getSiteDoc<HomeData>("home", options);
+  return parseOrNull(homeSchema.safeParse(homeDoc)) ?? baseFallback.home;
 }
 
-async function loadAboutData(): Promise<AboutData> {
-  const aboutDoc = await getSiteDoc<AboutData>("about");
-  return parseOrNull(aboutSchema.safeParse(aboutDoc)) ?? fallbackSiteData.about;
+async function loadAboutData(options: LoadOptions = {}): Promise<AboutData> {
+  const baseFallback = await getBaseFallbackData(options);
+  const aboutDoc = await getSiteDoc<AboutData>("about", options);
+  return parseOrNull(aboutSchema.safeParse(aboutDoc)) ?? baseFallback.about;
 }
 
-async function loadContactData(): Promise<ContactData> {
-  const contactDoc = await getSiteDoc<ContactData>("contact");
-  return parseOrNull(contactSchema.safeParse(contactDoc)) ?? fallbackSiteData.contact;
+async function loadContactData(options: LoadOptions = {}): Promise<ContactData> {
+  const baseFallback = await getBaseFallbackData(options);
+  const contactDoc = await getSiteDoc<ContactData>("contact", options);
+  return parseOrNull(contactSchema.safeParse(contactDoc)) ?? baseFallback.contact;
 }
 
-async function loadFooterData(): Promise<FooterData> {
-  const footerDoc = await getSiteDoc<FooterData>("footer");
-  return parseOrNull(footerSchema.safeParse(footerDoc)) ?? fallbackSiteData.footer;
+async function loadFooterData(options: LoadOptions = {}): Promise<FooterData> {
+  const baseFallback = await getBaseFallbackData(options);
+  const footerDoc = await getSiteDoc<FooterData>("footer", options);
+  return parseOrNull(footerSchema.safeParse(footerDoc)) ?? baseFallback.footer;
 }
 
-async function loadWorkData(): Promise<SiteData["work"]> {
-  const projectsDocs = await getCollectionDocs<ProjectItem>("projects");
-  const projects = mergeCollectionWithFallback(fallbackSiteData.work.projects, projectsDocs);
+async function loadWorkData(options: LoadOptions = {}): Promise<SiteData["work"]> {
+  const baseFallback = await getBaseFallbackData(options);
+  const projectsDocs = await getCollectionDocs<ProjectItem>("projects", options);
+  const projects = mergeCollectionWithFallback(baseFallback.work.projects, projectsDocs);
   const parsedProjects = projects
     .map((project) => parseOrNull(projectSchema.safeParse(project)))
     .filter((project): project is ProjectItem => Boolean(project));
 
   return {
-    ...fallbackSiteData.work,
-    projects: parsedProjects.length > 0 ? parsedProjects : fallbackSiteData.work.projects,
+    ...baseFallback.work,
+    projects: parsedProjects.length > 0 ? parsedProjects : baseFallback.work.projects,
   };
 }
 
-async function loadRentalsData(): Promise<SiteData["rentals"]> {
+async function loadRentalsData(options: LoadOptions = {}): Promise<SiteData["rentals"]> {
+  const baseFallback = await getBaseFallbackData(options);
   const [rentalsSettingsDoc, rentalsDocs] = await Promise.all([
-    getSiteDoc<RentalsSettings>("rentals-settings"),
-    getCollectionDocs<RentalItem>("rentals"),
+    getSiteDoc<RentalsSettings>("rentals-settings", options),
+    getCollectionDocs<RentalItem>("rentals", options),
   ]);
 
-  const rentals = mergeCollectionWithFallback(fallbackSiteData.rentals.items, rentalsDocs);
+  const rentals = mergeCollectionWithFallback(baseFallback.rentals.items, rentalsDocs);
   const parsedRentalsSettings = parseOrNull(rentalsSettingsSchema.safeParse(rentalsSettingsDoc));
   const parsedRentals = rentals
     .map((rental) => parseOrNull(rentalSchema.safeParse(rental)))
     .filter((rental): rental is RentalItem => Boolean(rental));
 
   return {
-    ...fallbackSiteData.rentals,
+    ...baseFallback.rentals,
     ...(parsedRentalsSettings ?? {}),
-    items: parsedRentals.length > 0 ? parsedRentals : fallbackSiteData.rentals.items,
+    items: parsedRentals.length > 0 ? parsedRentals : baseFallback.rentals.items,
   };
 }
 
-async function loadPublicSiteData(): Promise<SiteData> {
+async function loadPublicSiteData(options: LoadOptions = {}): Promise<SiteData> {
+  const baseFallback = await getBaseFallbackData(options);
+  const nextOptions: LoadOptions = { ...options, fallback: baseFallback };
+
   const [brand, navigation, seo, home, about, contact, footer, work, rentals] = await Promise.all([
-    loadBrandData(),
-    loadNavigationData(),
-    loadSeoData(),
-    loadHomeData(),
-    loadAboutData(),
-    loadContactData(),
-    loadFooterData(),
-    loadWorkData(),
-    loadRentalsData(),
+    loadBrandData(nextOptions),
+    loadNavigationData(nextOptions),
+    loadSeoData(nextOptions),
+    loadHomeData(nextOptions),
+    loadAboutData(nextOptions),
+    loadContactData(nextOptions),
+    loadFooterData(nextOptions),
+    loadWorkData(nextOptions),
+    loadRentalsData(nextOptions),
   ]);
 
   return {
-    ...fallbackSiteData,
+    ...baseFallback,
     brand,
     navigation,
     seo,
@@ -263,59 +359,86 @@ async function loadPublicSiteData(): Promise<SiteData> {
   };
 }
 
-async function loadPublicShellData(): Promise<Pick<SiteData, "brand" | "navigation" | "footer">> {
-  const [brand, navigation, footer] = await Promise.all([loadBrandData(), loadNavigationData(), loadFooterData()]);
+async function loadPublicShellData(options: LoadOptions = {}): Promise<Pick<SiteData, "brand" | "navigation" | "footer">> {
+  const baseFallback = await getBaseFallbackData(options);
+  const nextOptions: LoadOptions = { ...options, fallback: baseFallback };
+  const [brand, navigation, footer] = await Promise.all([
+    loadBrandData(nextOptions),
+    loadNavigationData(nextOptions),
+    loadFooterData(nextOptions),
+  ]);
   return { brand, navigation, footer };
 }
 
-async function loadPublicBrandData(): Promise<Pick<SiteData, "brand">> {
-  const brand = await loadBrandData();
+async function loadPublicBrandData(options: LoadOptions = {}): Promise<Pick<SiteData, "brand">> {
+  const baseFallback = await getBaseFallbackData(options);
+  const brand = await loadBrandData({ ...options, fallback: baseFallback });
   return { brand };
 }
 
-async function loadPublicBrandSeoData(): Promise<Pick<SiteData, "brand" | "seo">> {
-  const [brand, seo] = await Promise.all([loadBrandData(), loadSeoData()]);
+async function loadPublicBrandSeoData(options: LoadOptions = {}): Promise<Pick<SiteData, "brand" | "seo">> {
+  const baseFallback = await getBaseFallbackData(options);
+  const nextOptions: LoadOptions = { ...options, fallback: baseFallback };
+  const [brand, seo] = await Promise.all([loadBrandData(nextOptions), loadSeoData(nextOptions)]);
   return { brand, seo };
 }
 
-async function loadPublicNavigationData(): Promise<Pick<SiteData, "navigation">> {
-  const navigation = await loadNavigationData();
+async function loadPublicNavigationData(options: LoadOptions = {}): Promise<Pick<SiteData, "navigation">> {
+  const baseFallback = await getBaseFallbackData(options);
+  const navigation = await loadNavigationData({ ...options, fallback: baseFallback });
   return { navigation };
 }
 
-async function loadPublicHomePageData(): Promise<Pick<SiteData, "brand" | "home" | "work">> {
-  const [brand, home, work] = await Promise.all([loadBrandData(), loadHomeData(), loadWorkData()]);
+async function loadPublicHomePageData(options: LoadOptions = {}): Promise<Pick<SiteData, "brand" | "home" | "work">> {
+  const baseFallback = await getBaseFallbackData(options);
+  const nextOptions: LoadOptions = { ...options, fallback: baseFallback };
+  const [brand, home, work] = await Promise.all([
+    loadBrandData(nextOptions),
+    loadHomeData(nextOptions),
+    loadWorkData(nextOptions),
+  ]);
   return { brand, home, work };
 }
 
-async function loadPublicWorkPageData(): Promise<Pick<SiteData, "work">> {
-  const work = await loadWorkData();
+async function loadPublicWorkPageData(options: LoadOptions = {}): Promise<Pick<SiteData, "work">> {
+  const baseFallback = await getBaseFallbackData(options);
+  const work = await loadWorkData({ ...options, fallback: baseFallback });
   return { work };
 }
 
-async function loadPublicRentalsPageData(): Promise<Pick<SiteData, "rentals">> {
-  const rentals = await loadRentalsData();
+async function loadPublicRentalsPageData(options: LoadOptions = {}): Promise<Pick<SiteData, "rentals">> {
+  const baseFallback = await getBaseFallbackData(options);
+  const rentals = await loadRentalsData({ ...options, fallback: baseFallback });
   return { rentals };
 }
 
-async function loadPublicAboutPageData(): Promise<Pick<SiteData, "about">> {
-  const about = await loadAboutData();
+async function loadPublicAboutPageData(options: LoadOptions = {}): Promise<Pick<SiteData, "about">> {
+  const baseFallback = await getBaseFallbackData(options);
+  const about = await loadAboutData({ ...options, fallback: baseFallback });
   return { about };
 }
 
-async function loadPublicContactPageData(): Promise<Pick<SiteData, "brand" | "contact">> {
-  const [brand, contact] = await Promise.all([loadBrandData(), loadContactData()]);
+async function loadPublicContactPageData(options: LoadOptions = {}): Promise<Pick<SiteData, "brand" | "contact">> {
+  const baseFallback = await getBaseFallbackData(options);
+  const nextOptions: LoadOptions = { ...options, fallback: baseFallback };
+  const [brand, contact] = await Promise.all([loadBrandData(nextOptions), loadContactData(nextOptions)]);
   return { brand, contact };
 }
 
-async function loadPublicSitemapData(): Promise<Pick<SiteData, "brand" | "navigation" | "work" | "rentals">> {
+async function loadPublicSitemapData(options: LoadOptions = {}): Promise<Pick<SiteData, "brand" | "navigation" | "work" | "rentals">> {
+  const baseFallback = await getBaseFallbackData(options);
+  const nextOptions: LoadOptions = { ...options, fallback: baseFallback };
   const [brand, navigation, work, rentals] = await Promise.all([
-    loadBrandData(),
-    loadNavigationData(),
-    loadWorkData(),
-    loadRentalsData(),
+    loadBrandData(nextOptions),
+    loadNavigationData(nextOptions),
+    loadWorkData(nextOptions),
+    loadRentalsData(nextOptions),
   ]);
   return { brand, navigation, work, rentals };
+}
+
+export async function getPublicSiteDataFresh(): Promise<SiteData> {
+  return loadPublicSiteData({ fresh: true });
 }
 
 export const getPublicSiteData = unstable_cache(loadPublicSiteData, ["public-site-data-full"], {

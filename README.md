@@ -19,7 +19,7 @@ Production website and lightweight CMS for Hot Beam Productions.
 - `src/components` shared UI components
 - `src/components/admin` admin-specific UI + form utilities
 - `src/lib` shared runtime helpers, validation schemas, Firebase clients
-- `src/data/data.json` static fallback content used when Firestore is unavailable
+- `src/data/data.json` static fallback content (last-resort fallback)
 - `worker/` contact form worker
 - `worker-ig-refresh/` Instagram token refresh worker
 - `scripts/` one-off Firestore maintenance scripts
@@ -32,7 +32,39 @@ Data resolution order:
 
 1. Read from Firestore (`site`, `projects`, `rentals`)
 2. Validate against Zod schemas (`src/lib/schemas.ts`)
-3. Fall back to `src/data/data.json` for any missing/invalid data
+3. Fall back to last published snapshot in R2 (`system/public-site-data.json` by default)
+4. Fall back to `src/data/data.json` for any missing/invalid data
+
+## Refresh Static Fallback JSON
+
+To copy current Firestore content into `src/data/data.json`:
+
+```bash
+npm run sync:fallback-json
+```
+
+Validate only (no file write):
+
+```bash
+npm run sync:fallback-json:check
+```
+
+For periodic updates, run this command from cron/CI and then deploy.
+`src/data/data.json` is build-time content, so production does not use a new file until the next build/deploy.
+
+Automated option:
+
+- Workflow: [`.github/workflows/sync-fallback-and-deploy.yml`](/Users/danielmankin/Documents/GitHub/newwebsite/.github/workflows/sync-fallback-and-deploy.yml)
+- Schedule: every 6 hours (UTC) + manual `workflow_dispatch`
+- Behavior: syncs `src/data/data.json`, commits only when changed, then deploys to Vercel production
+
+Required GitHub repository secrets for this workflow:
+
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
 
 ## Environment Variables
 
@@ -65,6 +97,7 @@ Optional:
 - `NEXT_PUBLIC_ADMIN_EMAIL_DOMAIN` (client auth UX domain hint)
 - `ADMIN_EMAIL_DOMAIN` (server-side upload auth domain check)
 - `INSTAGRAM_ACCESS_TOKEN` (server-rendered Instagram feed)
+- `PUBLIC_SITE_SNAPSHOT_KEY` (override R2 key for published public-data snapshot; default: `system/public-site-data.json`)
 
 ## Local Development
 

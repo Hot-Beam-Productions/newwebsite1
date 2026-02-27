@@ -7,6 +7,8 @@
     "dev": "next dev",
     "start": "next start",
     "lint": "eslint",
+    "sync:fallback-json": "npx tsx scripts/sync-fallback-json.ts",
+    "sync:fallback-json:check": "npx tsx scripts/sync-fallback-json.ts --check",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",

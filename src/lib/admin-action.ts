@@ -6,6 +6,8 @@
 
 import { revalidatePath } from "next/cache";
 import { revalidateTag } from "next/cache";
+import { getPublicSiteDataFresh } from "@/lib/public-site-data";
+import { publishSiteSnapshot } from "@/lib/published-site-snapshot";
 
 export async function revalidatePaths(
   paths: string[]
@@ -14,4 +16,14 @@ export async function revalidatePaths(
     revalidatePath(path);
   }
   revalidateTag("public-site-data", "max");
+
+  try {
+    const siteData = await getPublicSiteDataFresh();
+    const published = await publishSiteSnapshot(siteData);
+    if (!published) {
+      console.warn("Failed to publish public-site-data snapshot to R2");
+    }
+  } catch (error) {
+    console.error("Snapshot publish failed after admin update", error);
+  }
 }
