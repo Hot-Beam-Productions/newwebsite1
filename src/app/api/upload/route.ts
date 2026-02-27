@@ -18,6 +18,28 @@ function getS3(): S3Client {
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+const SAFE_FOLDER_PATTERN = /^[a-z0-9/-]+$/;
+
+function sanitizeFolder(rawFolder: string): string {
+  const folder = rawFolder.toLowerCase().replace(/\\/g, "/").replace(/^\/+|\/+$/g, "");
+  if (!folder || folder.includes("..") || !SAFE_FOLDER_PATTERN.test(folder)) {
+    throw new Error("Invalid upload folder");
+  }
+  return folder;
+}
+
+function getFileExtension(fileName: string, mimeType: string): string {
+  const extFromType: Record<string, string> = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+    "image/avif": "avif",
+  };
+
+  const rawExt = fileName.split(".").pop()?.toLowerCase() ?? "";
+  const safeExt = /^[a-z0-9]+$/.test(rawExt) ? rawExt : "";
+  return safeExt || extFromType[mimeType] || "jpg";
+}
 
 export async function POST(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
@@ -33,7 +55,7 @@ export async function POST(request: NextRequest) {
 
   const formData = await request.formData();
   const file = formData.get("file") as File | null;
-  const folder = (formData.get("folder") as string) || "uploads";
+  const folderRaw = (formData.get("folder") as string) || "uploads";
 
   if (!file) {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -53,7 +75,14 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const ext = file.name.split(".").pop() || "jpg";
+  let folder: string;
+  try {
+    folder = sanitizeFolder(folderRaw);
+  } catch {
+    return NextResponse.json({ error: "Invalid upload folder" }, { status: 400 });
+  }
+
+  const ext = getFileExtension(file.name, file.type);
   const key = `${folder}/${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${ext}`;
 
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -63,6 +92,7 @@ export async function POST(request: NextRequest) {
       Key: key,
       Body: buffer,
       ContentType: file.type,
+      CacheControl: "public, max-age=31536000, immutable",
     })
   );
 
