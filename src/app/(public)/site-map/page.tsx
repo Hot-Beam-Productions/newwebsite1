@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getPublicSiteData } from "@/lib/public-site-data";
+import { getPublicNavigationData } from "@/lib/public-site-data";
 
 export const metadata: Metadata = {
   title: "Site Map",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function SiteMapPage() {
-  const { navigation } = await getPublicSiteData();
+  const { navigation } = await getPublicNavigationData();
 
   const legalLinks = [
     { href: "/privacy-policy", label: "Privacy Policy" },

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Manrope, Sora } from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { getPublicSiteData } from "@/lib/public-site-data";
+import { getPublicBrandSeoData } from "@/lib/public-site-data";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -23,7 +23,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { brand, seo } = await getPublicSiteData();
+  const { brand, seo } = await getPublicBrandSeoData();
 
   return {
     title: {
@@ -43,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const { brand, seo } = await getPublicSiteData();
+  const { brand, seo } = await getPublicBrandSeoData();
 
   const offerCatalog = {
     "@type": "OfferCatalog",

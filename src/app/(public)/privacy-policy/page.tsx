@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getPublicSiteData } from "@/lib/public-site-data";
+import { getPublicBrandData } from "@/lib/public-site-data";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default async function PrivacyPolicyPage() {
   const {
     brand: { name, email, location },
-  } = await getPublicSiteData();
+  } = await getPublicBrandData();
 
   const effectiveDate = "February 27, 2026";
 

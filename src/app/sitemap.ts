@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getPublicSiteData } from "@/lib/public-site-data";
+import { getPublicSitemapData } from "@/lib/public-site-data";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const {
@@ -7,7 +7,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     navigation,
     work,
     rentals,
-  } = await getPublicSiteData();
+  } = await getPublicSitemapData();
 
   const baseRoutes = navigation
     .map((item) => item.href)

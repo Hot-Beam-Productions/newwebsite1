@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getPublicSiteData } from "@/lib/public-site-data";
+import { getPublicBrandData } from "@/lib/public-site-data";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default async function TermsOfUsePage() {
   const {
     brand: { name, email },
-  } = await getPublicSiteData();
+  } = await getPublicBrandData();
 
   const effectiveDate = "February 27, 2026";
 

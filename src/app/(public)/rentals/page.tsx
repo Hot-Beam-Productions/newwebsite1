@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { RentalsFilter } from "@/components/rentals-filter";
 import { SectionHeading } from "@/components/section-heading";
-import { getPublicSiteData } from "@/lib/public-site-data";
+import { getPublicRentalsData } from "@/lib/public-site-data";
 
 export const metadata: Metadata = {
   title: "Inventory",
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RentalsPage() {
-  const { rentals } = await getPublicSiteData();
+  const { rentals } = await getPublicRentalsData();
 
   return (
     <div className="px-6 pb-24 pt-28 md:pt-32">

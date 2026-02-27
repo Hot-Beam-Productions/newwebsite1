@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { ContactForm } from "@/components/contact-form";
 import { SectionHeading } from "@/components/section-heading";
-import { getPublicSiteData } from "@/lib/public-site-data";
+import { getPublicContactData } from "@/lib/public-site-data";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
-  const { brand, contact } = await getPublicSiteData();
+  const { brand, contact } = await getPublicContactData();
 
   return (
     <div className="px-6 pb-24 pt-28 md:pt-32">

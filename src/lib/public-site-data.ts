@@ -52,6 +52,8 @@ interface FirestoreCollectionResponse {
 const fallbackSiteData = rawData as SiteData;
 const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? process.env.FIREBASE_PROJECT_ID;
 const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY ?? process.env.FIREBASE_API_KEY;
+const PUBLIC_DATA_REVALIDATE_SECONDS = 30 * 60;
+const PUBLIC_CACHE_TAG = "public-site-data";
 
 function decodeFirestoreValue(value: FirestoreValue): unknown {
   if ("nullValue" in value) return null;
@@ -115,8 +117,8 @@ async function fetchFirestoreJson<T>(url: string): Promise<T | null> {
   try {
     const response = await fetch(url, {
       next: {
-        revalidate: 300,
-        tags: ["public-site-data"],
+        revalidate: PUBLIC_DATA_REVALIDATE_SECONDS,
+        tags: [PUBLIC_CACHE_TAG],
       },
     });
     if (!response.ok) return null;
@@ -158,70 +160,206 @@ async function getCollectionDocs<T>(collectionName: string): Promise<T[] | null>
   return docs;
 }
 
-async function loadPublicSiteData(): Promise<SiteData> {
-  const [
-    brandDoc,
-    navigationDoc,
-    seoDoc,
-    homeDoc,
-    aboutDoc,
-    contactDoc,
-    footerDoc,
-    rentalsSettingsDoc,
-    projectsDocs,
-    rentalsDocs,
-  ] = await Promise.all([
-    getSiteDoc<BrandData>("brand"),
-    getSiteDoc<{ links?: NavLink[] }>("navigation"),
-    getSiteDoc<SeoData>("seo"),
-    getSiteDoc<HomeData>("home"),
-    getSiteDoc<AboutData>("about"),
-    getSiteDoc<ContactData>("contact"),
-    getSiteDoc<FooterData>("footer"),
-    getSiteDoc<RentalsSettings>("rentals-settings"),
-    getCollectionDocs<ProjectItem>("projects"),
-    getCollectionDocs<RentalItem>("rentals"),
-  ]);
+async function loadBrandData(): Promise<BrandData> {
+  const brandDoc = await getSiteDoc<BrandData>("brand");
+  return parseOrNull(brandSchema.safeParse(brandDoc)) ?? fallbackSiteData.brand;
+}
 
+async function loadNavigationData(): Promise<NavLink[]> {
+  const navigationDoc = await getSiteDoc<{ links?: NavLink[] }>("navigation");
+  return parseOrNull(navigationSchema.safeParse({ links: navigationDoc?.links ?? [] }))?.links ?? fallbackSiteData.navigation;
+}
+
+async function loadSeoData(): Promise<SeoData> {
+  const seoDoc = await getSiteDoc<SeoData>("seo");
+  return parseOrNull(seoSchema.safeParse(seoDoc)) ?? fallbackSiteData.seo;
+}
+
+async function loadHomeData(): Promise<HomeData> {
+  const homeDoc = await getSiteDoc<HomeData>("home");
+  return parseOrNull(homeSchema.safeParse(homeDoc)) ?? fallbackSiteData.home;
+}
+
+async function loadAboutData(): Promise<AboutData> {
+  const aboutDoc = await getSiteDoc<AboutData>("about");
+  return parseOrNull(aboutSchema.safeParse(aboutDoc)) ?? fallbackSiteData.about;
+}
+
+async function loadContactData(): Promise<ContactData> {
+  const contactDoc = await getSiteDoc<ContactData>("contact");
+  return parseOrNull(contactSchema.safeParse(contactDoc)) ?? fallbackSiteData.contact;
+}
+
+async function loadFooterData(): Promise<FooterData> {
+  const footerDoc = await getSiteDoc<FooterData>("footer");
+  return parseOrNull(footerSchema.safeParse(footerDoc)) ?? fallbackSiteData.footer;
+}
+
+async function loadWorkData(): Promise<SiteData["work"]> {
+  const projectsDocs = await getCollectionDocs<ProjectItem>("projects");
   const projects = mergeCollectionWithFallback(fallbackSiteData.work.projects, projectsDocs);
-  const rentals = mergeCollectionWithFallback(fallbackSiteData.rentals.items, rentalsDocs);
-  const parsedBrand = parseOrNull(brandSchema.safeParse(brandDoc));
-  const parsedNavigation = parseOrNull(navigationSchema.safeParse({ links: navigationDoc?.links ?? [] }))?.links;
-  const parsedSeo = parseOrNull(seoSchema.safeParse(seoDoc));
-  const parsedHome = parseOrNull(homeSchema.safeParse(homeDoc));
-  const parsedAbout = parseOrNull(aboutSchema.safeParse(aboutDoc));
-  const parsedContact = parseOrNull(contactSchema.safeParse(contactDoc));
-  const parsedFooter = parseOrNull(footerSchema.safeParse(footerDoc));
-  const parsedRentalsSettings = parseOrNull(rentalsSettingsSchema.safeParse(rentalsSettingsDoc));
   const parsedProjects = projects
     .map((project) => parseOrNull(projectSchema.safeParse(project)))
     .filter((project): project is ProjectItem => Boolean(project));
+
+  return {
+    ...fallbackSiteData.work,
+    projects: parsedProjects.length > 0 ? parsedProjects : fallbackSiteData.work.projects,
+  };
+}
+
+async function loadRentalsData(): Promise<SiteData["rentals"]> {
+  const [rentalsSettingsDoc, rentalsDocs] = await Promise.all([
+    getSiteDoc<RentalsSettings>("rentals-settings"),
+    getCollectionDocs<RentalItem>("rentals"),
+  ]);
+
+  const rentals = mergeCollectionWithFallback(fallbackSiteData.rentals.items, rentalsDocs);
+  const parsedRentalsSettings = parseOrNull(rentalsSettingsSchema.safeParse(rentalsSettingsDoc));
   const parsedRentals = rentals
     .map((rental) => parseOrNull(rentalSchema.safeParse(rental)))
     .filter((rental): rental is RentalItem => Boolean(rental));
 
   return {
-    ...fallbackSiteData,
-    brand: parsedBrand ?? fallbackSiteData.brand,
-    navigation: parsedNavigation ?? fallbackSiteData.navigation,
-    seo: parsedSeo ?? fallbackSiteData.seo,
-    home: parsedHome ?? fallbackSiteData.home,
-    about: parsedAbout ?? fallbackSiteData.about,
-    contact: parsedContact ?? fallbackSiteData.contact,
-    footer: parsedFooter ?? fallbackSiteData.footer,
-    work: {
-      ...fallbackSiteData.work,
-      projects: parsedProjects.length > 0 ? parsedProjects : fallbackSiteData.work.projects,
-    },
-    rentals: {
-      ...fallbackSiteData.rentals,
-      ...(parsedRentalsSettings ?? {}),
-      items: parsedRentals.length > 0 ? parsedRentals : fallbackSiteData.rentals.items,
-    },
+    ...fallbackSiteData.rentals,
+    ...(parsedRentalsSettings ?? {}),
+    items: parsedRentals.length > 0 ? parsedRentals : fallbackSiteData.rentals.items,
   };
 }
 
-export const getPublicSiteData = unstable_cache(loadPublicSiteData, ["public-site-data"], {
-  revalidate: 300,
-  tags: ["public-site-data"],
+async function loadPublicSiteData(): Promise<SiteData> {
+  const [brand, navigation, seo, home, about, contact, footer, work, rentals] = await Promise.all([
+    loadBrandData(),
+    loadNavigationData(),
+    loadSeoData(),
+    loadHomeData(),
+    loadAboutData(),
+    loadContactData(),
+    loadFooterData(),
+    loadWorkData(),
+    loadRentalsData(),
+  ]);
+
+  return {
+    ...fallbackSiteData,
+    brand,
+    navigation,
+    seo,
+    home,
+    about,
+    contact,
+    footer,
+    work,
+    rentals,
+  };
+}
+
+async function loadPublicShellData(): Promise<Pick<SiteData, "brand" | "navigation" | "footer">> {
+  const [brand, navigation, footer] = await Promise.all([loadBrandData(), loadNavigationData(), loadFooterData()]);
+  return { brand, navigation, footer };
+}
+
+async function loadPublicBrandData(): Promise<Pick<SiteData, "brand">> {
+  const brand = await loadBrandData();
+  return { brand };
+}
+
+async function loadPublicBrandSeoData(): Promise<Pick<SiteData, "brand" | "seo">> {
+  const [brand, seo] = await Promise.all([loadBrandData(), loadSeoData()]);
+  return { brand, seo };
+}
+
+async function loadPublicNavigationData(): Promise<Pick<SiteData, "navigation">> {
+  const navigation = await loadNavigationData();
+  return { navigation };
+}
+
+async function loadPublicHomePageData(): Promise<Pick<SiteData, "brand" | "home" | "work">> {
+  const [brand, home, work] = await Promise.all([loadBrandData(), loadHomeData(), loadWorkData()]);
+  return { brand, home, work };
+}
+
+async function loadPublicWorkPageData(): Promise<Pick<SiteData, "work">> {
+  const work = await loadWorkData();
+  return { work };
+}
+
+async function loadPublicRentalsPageData(): Promise<Pick<SiteData, "rentals">> {
+  const rentals = await loadRentalsData();
+  return { rentals };
+}
+
+async function loadPublicAboutPageData(): Promise<Pick<SiteData, "about">> {
+  const about = await loadAboutData();
+  return { about };
+}
+
+async function loadPublicContactPageData(): Promise<Pick<SiteData, "brand" | "contact">> {
+  const [brand, contact] = await Promise.all([loadBrandData(), loadContactData()]);
+  return { brand, contact };
+}
+
+async function loadPublicSitemapData(): Promise<Pick<SiteData, "brand" | "navigation" | "work" | "rentals">> {
+  const [brand, navigation, work, rentals] = await Promise.all([
+    loadBrandData(),
+    loadNavigationData(),
+    loadWorkData(),
+    loadRentalsData(),
+  ]);
+  return { brand, navigation, work, rentals };
+}
+
+export const getPublicSiteData = unstable_cache(loadPublicSiteData, ["public-site-data-full"], {
+  revalidate: PUBLIC_DATA_REVALIDATE_SECONDS,
+  tags: [PUBLIC_CACHE_TAG],
+});
+
+export const getPublicShellData = unstable_cache(loadPublicShellData, ["public-shell-data"], {
+  revalidate: PUBLIC_DATA_REVALIDATE_SECONDS,
+  tags: [PUBLIC_CACHE_TAG],
+});
+
+export const getPublicBrandData = unstable_cache(loadPublicBrandData, ["public-brand-data"], {
+  revalidate: PUBLIC_DATA_REVALIDATE_SECONDS,
+  tags: [PUBLIC_CACHE_TAG],
+});
+
+export const getPublicBrandSeoData = unstable_cache(loadPublicBrandSeoData, ["public-brand-seo-data"], {
+  revalidate: PUBLIC_DATA_REVALIDATE_SECONDS,
+  tags: [PUBLIC_CACHE_TAG],
+});
+
+export const getPublicNavigationData = unstable_cache(loadPublicNavigationData, ["public-navigation-data"], {
+  revalidate: PUBLIC_DATA_REVALIDATE_SECONDS,
+  tags: [PUBLIC_CACHE_TAG],
+});
+
+export const getPublicHomePageData = unstable_cache(loadPublicHomePageData, ["public-home-page-data"], {
+  revalidate: PUBLIC_DATA_REVALIDATE_SECONDS,
+  tags: [PUBLIC_CACHE_TAG],
+});
+
+export const getPublicWorkData = unstable_cache(loadPublicWorkPageData, ["public-work-page-data"], {
+  revalidate: PUBLIC_DATA_REVALIDATE_SECONDS,
+  tags: [PUBLIC_CACHE_TAG],
+});
+
+export const getPublicRentalsData = unstable_cache(loadPublicRentalsPageData, ["public-rentals-page-data"], {
+  revalidate: PUBLIC_DATA_REVALIDATE_SECONDS,
+  tags: [PUBLIC_CACHE_TAG],
+});
+
+export const getPublicAboutData = unstable_cache(loadPublicAboutPageData, ["public-about-page-data"], {
+  revalidate: PUBLIC_DATA_REVALIDATE_SECONDS,
+  tags: [PUBLIC_CACHE_TAG],
+});
+
+export const getPublicContactData = unstable_cache(loadPublicContactPageData, ["public-contact-page-data"], {
+  revalidate: PUBLIC_DATA_REVALIDATE_SECONDS,
+  tags: [PUBLIC_CACHE_TAG],
+});
+
+export const getPublicSitemapData = unstable_cache(loadPublicSitemapData, ["public-sitemap-data"], {
+  revalidate: PUBLIC_DATA_REVALIDATE_SECONDS,
+  tags: [PUBLIC_CACHE_TAG],
 });

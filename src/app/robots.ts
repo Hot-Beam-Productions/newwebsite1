@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getPublicSiteData } from "@/lib/public-site-data";
+import { getPublicBrandData } from "@/lib/public-site-data";
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const {
     brand: { url },
-  } = await getPublicSiteData();
+  } = await getPublicBrandData();
 
   return {
     rules: {

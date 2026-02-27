@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { CmsImage } from "@/components/cms-image";
 import { GlowButton } from "@/components/glow-button";
 import { MediaPlaceholder } from "@/components/media-placeholder";
-import { getPublicSiteData } from "@/lib/public-site-data";
+import { getPublicWorkData } from "@/lib/public-site-data";
 import { isPublishedMediaUrl, stripMediaUrlDecorators } from "@/lib/media-url";
 
 interface Props {
@@ -22,7 +22,7 @@ const serviceStyles: Record<string, string> = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const { work } = await getPublicSiteData();
+  const { work } = await getPublicWorkData();
   const project = work.projects.find((item) => item.slug === slug);
 
   if (!project) return { title: "Not Found" };
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function WorkProjectPage({ params }: Props) {
   const { slug } = await params;
-  const { work } = await getPublicSiteData();
+  const { work } = await getPublicWorkData();
   const project = work.projects.find((item) => item.slug === slug);
   if (!project) notFound();
 

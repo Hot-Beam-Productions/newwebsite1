@@ -7,10 +7,10 @@ import { InstagramFeed } from "@/components/instagram-feed";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import { CmsImage } from "@/components/cms-image";
 import { isPublishedMediaUrl } from "@/lib/media-url";
-import { getPublicSiteData } from "@/lib/public-site-data";
+import { getPublicHomePageData } from "@/lib/public-site-data";
 
 export default async function Home() {
-  const { home, work, brand } = await getPublicSiteData();
+  const { home, work, brand } = await getPublicHomePageData();
   const featuredProjects = work.projects.filter((project) => project.featured).slice(0, 3);
   const heroVideoSrc = home.hero.videoUrl || "/sae%20proppa%20odd%20mob%202.mov";
   const heroVideoType = home.hero.videoUrl

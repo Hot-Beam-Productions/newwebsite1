@@ -5,7 +5,7 @@ import { GlowButton } from "@/components/glow-button";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import { SectionHeading } from "@/components/section-heading";
 import { isPublishedMediaUrl } from "@/lib/media-url";
-import { getPublicSiteData } from "@/lib/public-site-data";
+import { getPublicAboutData } from "@/lib/public-site-data";
 
 export const metadata: Metadata = {
   title: "About",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 const statIcons = [Zap, Users, MapPin, Award];
 
 export default async function AboutPage() {
-  const { about } = await getPublicSiteData();
+  const { about } = await getPublicAboutData();
 
   return (
     <div className="px-6 pb-24 pt-28 md:pt-32">

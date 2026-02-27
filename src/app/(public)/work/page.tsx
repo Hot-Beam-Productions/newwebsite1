@@ -5,7 +5,7 @@ import { CmsImage } from "@/components/cms-image";
 import { MediaPlaceholder } from "@/components/media-placeholder";
 import { SectionHeading } from "@/components/section-heading";
 import { isPublishedMediaUrl } from "@/lib/media-url";
-import { getPublicSiteData } from "@/lib/public-site-data";
+import { getPublicWorkData } from "@/lib/public-site-data";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -22,7 +22,7 @@ const serviceStyles: Record<string, string> = {
 };
 
 export default async function WorkPage() {
-  const { work } = await getPublicSiteData();
+  const { work } = await getPublicWorkData();
 
   return (
     <div className="px-6 pb-24 pt-28 md:pt-32">

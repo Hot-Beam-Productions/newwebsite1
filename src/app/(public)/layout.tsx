@@ -1,11 +1,11 @@
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { getPublicSiteData } from "@/lib/public-site-data";
+import { getPublicShellData } from "@/lib/public-site-data";
 
 export default async function PublicLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const { brand, footer, navigation } = await getPublicSiteData();
+  const { brand, footer, navigation } = await getPublicShellData();
 
   return (
     <>

@@ -5,7 +5,7 @@ import { ArrowLeft, CheckCircle2, CircleAlert } from "lucide-react";
 import { CmsImage } from "@/components/cms-image";
 import { GlowButton } from "@/components/glow-button";
 import { MediaPlaceholder } from "@/components/media-placeholder";
-import { getPublicSiteData } from "@/lib/public-site-data";
+import { getPublicRentalsData } from "@/lib/public-site-data";
 import { isPublishedMediaUrl, stripMediaUrlDecorators } from "@/lib/media-url";
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const { rentals } = await getPublicSiteData();
+  const { rentals } = await getPublicRentalsData();
   const item = rentals.items.find((entry) => entry.id === id);
 
   if (!item) return { title: "Not Found" };
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function RentalDetailPage({ params }: Props) {
   const { id } = await params;
-  const { rentals } = await getPublicSiteData();
+  const { rentals } = await getPublicRentalsData();
   const item = rentals.items.find((entry) => entry.id === id);
   if (!item) notFound();
 
