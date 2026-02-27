@@ -1,4 +1,13 @@
-export type ServiceCategory = "lighting" | "video" | "lasers" | "sfx";
+export type ServiceCategory =
+  | "lighting"
+  | "video"
+  | "lasers"
+  | "sfx"
+  | "atmospherics"
+  | "audio-dj"
+  | "rigging"
+  | "staging"
+  | "power";
 export type ServiceIcon = "lightbulb" | "monitor" | "zap" | "sparkles";
 
 export interface NavLink {
@@ -64,8 +73,10 @@ export interface RentalItem {
   category: ServiceCategory;
   brand: string;
   dailyRate: number | null;
+  inventoryCount?: number;
   description: string;
   specs: string[];
+  frequentlyRentedTogether?: string[];
   imageUrl: string;
   available: boolean;
   order?: number;

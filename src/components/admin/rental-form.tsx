@@ -8,9 +8,14 @@ import { FormStatus } from "./form-status";
 import type { RentalItem, ServiceCategory } from "@/lib/types";
 
 const CATEGORY_OPTIONS: { value: ServiceCategory; label: string }[] = [
-  { value: "lighting", label: "Lighting" },
-  { value: "video", label: "Video" },
-  { value: "lasers", label: "Lasers" },
+  { value: "lighting", label: "Intelligent Lighting" },
+  { value: "video", label: "Visual Display" },
+  { value: "lasers", label: "Laser Systems" },
+  { value: "atmospherics", label: "Atmospherics" },
+  { value: "audio-dj", label: "Audio & DJ" },
+  { value: "rigging", label: "Rigging" },
+  { value: "staging", label: "Staging" },
+  { value: "power", label: "Power Distribution" },
   { value: "sfx", label: "SFX" },
 ];
 
@@ -34,8 +39,10 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
   const [category, setCategory] = useState<ServiceCategory>(initial?.category ?? "lighting");
   const [brand, setBrand] = useState(initial?.brand ?? "");
   const [dailyRate, setDailyRate] = useState<string>(initial?.dailyRate?.toString() ?? "");
+  const [inventoryCount, setInventoryCount] = useState<string>(initial?.inventoryCount?.toString() ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
   const [specs, setSpecs] = useState<string[]>(initial?.specs ?? []);
+  const [frequentlyRentedTogether, setFrequentlyRentedTogether] = useState<string[]>(initial?.frequentlyRentedTogether ?? []);
   const [imageUrl, setImageUrl] = useState(initial?.imageUrl ?? "");
   const [available, setAvailable] = useState(initial?.available ?? true);
   const [order, setOrder] = useState(initial?.order ?? 0);
@@ -58,8 +65,10 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
       category,
       brand,
       dailyRate: dailyRate ? parseFloat(dailyRate) : null,
+      inventoryCount: inventoryCount ? parseInt(inventoryCount, 10) : undefined,
       description,
       specs,
+      frequentlyRentedTogether,
       imageUrl,
       available,
       order,
@@ -94,7 +103,7 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div>
           <label className={labelClass}>Category</label>
           <select value={category} onChange={(e) => setCategory(e.target.value as ServiceCategory)} className={inputClass}>
@@ -111,6 +120,10 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
           <label className={labelClass}>Daily Rate ($)</label>
           <input type="number" value={dailyRate} onChange={(e) => setDailyRate(e.target.value)} className={inputClass} placeholder="Leave empty for 'on request'" />
         </div>
+        <div>
+          <label className={labelClass}>Inventory Count</label>
+          <input type="number" min={0} value={inventoryCount} onChange={(e) => setInventoryCount(e.target.value)} className={inputClass} placeholder="Optional" />
+        </div>
       </div>
 
       <div>
@@ -119,6 +132,12 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
       </div>
 
       <ArrayEditor label="Specs" value={specs} onChange={setSpecs} placeholder="Spec line..." />
+      <ArrayEditor
+        label="Frequently Rented Together (rental IDs)"
+        value={frequentlyRentedTogether}
+        onChange={setFrequentlyRentedTogether}
+        placeholder="Related rental ID..."
+      />
 
       <ImageUploader value={imageUrl} onChange={setImageUrl} folder="rentals" label="Image" />
 
