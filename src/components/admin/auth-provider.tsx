@@ -43,17 +43,15 @@ const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ hd: "hotbeamproductions.com" });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const firebaseConfigured = isFirebaseConfigured();
   const [user, setUser] = useState<User | null>(null);
   const [idToken, setIdToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [configError, setConfigError] = useState(false);
+  const [loading, setLoading] = useState(firebaseConfigured);
+  const [configError] = useState(!firebaseConfigured);
 
   useEffect(() => {
-    if (!isFirebaseConfigured()) {
-      setConfigError(true);
-      setLoading(false);
-      return;
-    }
+    if (!firebaseConfigured) return;
+
     const firebaseAuth = getFirebaseAuth();
     const unsubscribe = onAuthStateChanged(firebaseAuth, async (firebaseUser) => {
       setUser(firebaseUser);
@@ -66,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
     return unsubscribe;
-  }, []);
+  }, [firebaseConfigured]);
 
   const signIn = useCallback(async () => {
     await signInWithPopup(getFirebaseAuth(), googleProvider);

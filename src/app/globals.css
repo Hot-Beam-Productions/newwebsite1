@@ -130,3 +130,8 @@ body::before {
 .scanline-overlay:hover::after {
   opacity: 1;
 }
+
+dialog::backdrop {
+  background: oklch(6.5% 0.012 260 / 0.7);
+  backdrop-filter: blur(2px);
+}

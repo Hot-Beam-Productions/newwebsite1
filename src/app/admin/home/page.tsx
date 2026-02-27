@@ -54,7 +54,7 @@ export default function HomeEditorPage() {
                 <label className={labelClass}>Description</label>
                 <textarea className={inputClass} rows={3} value={data.hero.description} onChange={(e) => update("hero.description", e.target.value)} />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className={labelClass}>Primary CTA Label</label>
                   <input className={inputClass} value={data.hero.primaryCta.label} onChange={(e) => update("hero.primaryCta.label", e.target.value)} />
@@ -64,7 +64,7 @@ export default function HomeEditorPage() {
                   <input className={inputClass} value={data.hero.primaryCta.href} onChange={(e) => update("hero.primaryCta.href", e.target.value)} />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className={labelClass}>Secondary CTA Label</label>
                   <input className={inputClass} value={data.hero.secondaryCta.label} onChange={(e) => update("hero.secondaryCta.label", e.target.value)} />
@@ -91,7 +91,7 @@ export default function HomeEditorPage() {
             <div className={sectionClass}>
               <h2 className="font-heading text-lg text-foreground">Stats</h2>
               {data.results.map((stat, i) => (
-                <div key={i} className="grid grid-cols-2 gap-4">
+                <div key={i} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label className={labelClass}>Value</label>
                     <input
@@ -131,7 +131,7 @@ export default function HomeEditorPage() {
                 <label className={labelClass}>Description</label>
                 <textarea className={inputClass} rows={2} value={data.closingCta.description} onChange={(e) => update("closingCta.description", e.target.value)} />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className={labelClass}>Button Label</label>
                   <input className={inputClass} value={data.closingCta.button.label} onChange={(e) => update("closingCta.button.label", e.target.value)} />

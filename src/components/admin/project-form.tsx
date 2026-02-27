@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ImageUploader } from "./image-uploader";
 import { GalleryManager } from "./gallery-manager";
 import { FormStatus } from "./form-status";
+import { useUnsavedWarning } from "./use-unsaved-warning";
+import { useKeyboardShortcut } from "./use-keyboard-shortcut";
+import { useToast } from "./toast";
 import type { ProjectItem, ServiceCategory } from "@/lib/types";
 
 const SERVICE_OPTIONS: { value: ServiceCategory; label: string }[] = [
@@ -30,7 +33,25 @@ function slugify(text: string): string {
 export function ProjectForm({ initial, onSubmit, submitLabel }: ProjectFormProps) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const { addToast } = useToast();
+  const initialSnapshotValue = JSON.stringify({
+    id: initial?.id ?? "",
+    slug: initial?.slug ?? "",
+    title: initial?.title ?? "",
+    client: initial?.client ?? "",
+    location: initial?.location ?? "",
+    eventDate: initial?.eventDate ?? "",
+    services: initial?.services ?? [],
+    description: initial?.description ?? "",
+    longDescription: initial?.longDescription ?? "",
+    mainImageUrl: initial?.mainImageUrl ?? "",
+    gallery: initial?.gallery ?? [],
+    featured: initial?.featured ?? false,
+    order: initial?.order ?? 0,
+  });
+  const [initialSnapshot, setInitialSnapshot] = useState(initialSnapshotValue);
 
   const [title, setTitle] = useState(initial?.title ?? "");
   const [slug, setSlug] = useState(initial?.slug ?? "");
@@ -46,6 +67,7 @@ export function ProjectForm({ initial, onSubmit, submitLabel }: ProjectFormProps
   const [order, setOrder] = useState(initial?.order ?? 0);
 
   const [autoSlug, setAutoSlug] = useState(!initial);
+  const initialSnapshotRef = useRef(initialSnapshotValue);
 
   function handleTitleChange(val: string) {
     setTitle(val);
@@ -58,13 +80,8 @@ export function ProjectForm({ initial, onSubmit, submitLabel }: ProjectFormProps
     );
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    setSaving(true);
-    setStatus(null);
-
-    const data: ProjectItem = {
+  const currentData = useMemo<ProjectItem>(
+    () => ({
       id: initial?.id ?? slugify(title),
       slug,
       title,
@@ -78,15 +95,56 @@ export function ProjectForm({ initial, onSubmit, submitLabel }: ProjectFormProps
       gallery,
       featured,
       order,
-    };
+    }),
+    [
+      client,
+      description,
+      eventDate,
+      featured,
+      gallery,
+      initial?.id,
+      location,
+      longDescription,
+      mainImageUrl,
+      order,
+      services,
+      slug,
+      title,
+    ]
+  );
 
-    const result = await onSubmit(data);
+  const isDirty = useMemo(
+    () => JSON.stringify(currentData) !== initialSnapshot,
+    [currentData, initialSnapshot]
+  );
+
+  useUnsavedWarning(isDirty);
+
+  useKeyboardShortcut(
+    "s",
+    (event) => {
+      event.preventDefault();
+      formRef.current?.requestSubmit();
+    },
+    { meta: true, disabled: saving }
+  );
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    setSaving(true);
+    setError(null);
+
+    const result = await onSubmit(currentData);
 
     if (result.success) {
-      setStatus({ type: "success", message: "Saved successfully" });
+      const serializedCurrentData = JSON.stringify(currentData);
+      initialSnapshotRef.current = serializedCurrentData;
+      setInitialSnapshot(serializedCurrentData);
+      addToast("success", "Saved successfully");
       setTimeout(() => router.push("/admin/portfolio"), 1000);
     } else {
-      setStatus({ type: "error", message: result.error || "Save failed" });
+      setError(result.error || "Save failed");
     }
 
     setSaving(false);
@@ -97,8 +155,8 @@ export function ProjectForm({ initial, onSubmit, submitLabel }: ProjectFormProps
   const labelClass = "block text-sm font-medium text-muted-light mb-1.5";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {status && <FormStatus type={status.type} message={status.message} />}
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+      {error && <FormStatus type="error" message={error} />}
 
       {/* Title & Slug */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -263,8 +321,14 @@ export function ProjectForm({ initial, onSubmit, submitLabel }: ProjectFormProps
         <button
           type="submit"
           disabled={saving}
-          className="rounded-md bg-laser-cyan px-6 py-2 text-sm font-semibold text-background transition-all hover:brightness-110 disabled:opacity-50"
+          className="relative rounded-md bg-laser-cyan px-6 py-2 text-sm font-semibold text-background transition-all hover:brightness-110 disabled:opacity-50"
         >
+          {isDirty && (
+            <span
+              aria-hidden
+              className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-laser-cyan ring-2 ring-background"
+            />
+          )}
           {saving ? "Saving..." : submitLabel}
         </button>
       </div>

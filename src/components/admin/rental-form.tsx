@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ImageUploader } from "./image-uploader";
 import { ArrayEditor } from "./array-editor";
 import { FormStatus } from "./form-status";
+import { useUnsavedWarning } from "./use-unsaved-warning";
+import { useKeyboardShortcut } from "./use-keyboard-shortcut";
+import { useToast } from "./toast";
 import type { RentalItem, ServiceCategory } from "@/lib/types";
 
 const CATEGORY_OPTIONS: { value: ServiceCategory; label: string }[] = [
@@ -32,7 +35,25 @@ function slugify(text: string): string {
 export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const { addToast } = useToast();
+  const initialSnapshotValue = JSON.stringify({
+    id: initial?.id ?? "",
+    slug: initial?.slug ?? "",
+    name: initial?.name ?? "",
+    category: initial?.category ?? "lighting",
+    brand: initial?.brand ?? "",
+    dailyRate: initial?.dailyRate ?? null,
+    inventoryCount: initial?.inventoryCount,
+    description: initial?.description ?? "",
+    specs: initial?.specs ?? [],
+    frequentlyRentedTogether: initial?.frequentlyRentedTogether ?? [],
+    imageUrl: initial?.imageUrl ?? "",
+    available: initial?.available ?? true,
+    order: initial?.order ?? 0,
+  });
+  const [initialSnapshot, setInitialSnapshot] = useState(initialSnapshotValue);
 
   const [name, setName] = useState(initial?.name ?? "");
   const [slug, setSlug] = useState(initial?.slug ?? "");
@@ -47,18 +68,15 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
   const [available, setAvailable] = useState(initial?.available ?? true);
   const [order, setOrder] = useState(initial?.order ?? 0);
   const [autoSlug, setAutoSlug] = useState(!initial);
+  const initialSnapshotRef = useRef(initialSnapshotValue);
 
   function handleNameChange(val: string) {
     setName(val);
     if (autoSlug) setSlug(slugify(val));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSaving(true);
-    setStatus(null);
-
-    const data: RentalItem = {
+  const currentData = useMemo<RentalItem>(
+    () => ({
       id: initial?.id ?? slugify(name),
       slug,
       name,
@@ -72,14 +90,54 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
       imageUrl,
       available,
       order,
-    };
+    }),
+    [
+      available,
+      brand,
+      category,
+      dailyRate,
+      description,
+      frequentlyRentedTogether,
+      imageUrl,
+      initial?.id,
+      inventoryCount,
+      name,
+      order,
+      slug,
+      specs,
+    ]
+  );
 
-    const result = await onSubmit(data);
+  const isDirty = useMemo(
+    () => JSON.stringify(currentData) !== initialSnapshot,
+    [currentData, initialSnapshot]
+  );
+
+  useUnsavedWarning(isDirty);
+
+  useKeyboardShortcut(
+    "s",
+    (event) => {
+      event.preventDefault();
+      formRef.current?.requestSubmit();
+    },
+    { meta: true, disabled: saving }
+  );
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    setError(null);
+
+    const result = await onSubmit(currentData);
     if (result.success) {
-      setStatus({ type: "success", message: "Saved successfully" });
+      const serializedCurrentData = JSON.stringify(currentData);
+      initialSnapshotRef.current = serializedCurrentData;
+      setInitialSnapshot(serializedCurrentData);
+      addToast("success", "Saved successfully");
       setTimeout(() => router.push("/admin/rentals"), 1000);
     } else {
-      setStatus({ type: "error", message: result.error || "Save failed" });
+      setError(result.error || "Save failed");
     }
     setSaving(false);
   }
@@ -89,8 +147,8 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
   const labelClass = "block text-sm font-medium text-muted-light mb-1.5";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {status && <FormStatus type={status.type} message={status.message} />}
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+      {error && <FormStatus type="error" message={error} />}
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
@@ -156,7 +214,13 @@ export function RentalForm({ initial, onSubmit, submitLabel }: RentalFormProps) 
         <button type="button" onClick={() => router.push("/admin/rentals")} className="rounded-md border border-border px-4 py-2 text-sm text-muted-light transition-colors hover:bg-surface-light">
           Cancel
         </button>
-        <button type="submit" disabled={saving} className="rounded-md bg-laser-cyan px-6 py-2 text-sm font-semibold text-background transition-all hover:brightness-110 disabled:opacity-50">
+        <button type="submit" disabled={saving} className="relative rounded-md bg-laser-cyan px-6 py-2 text-sm font-semibold text-background transition-all hover:brightness-110 disabled:opacity-50">
+          {isDirty && (
+            <span
+              aria-hidden
+              className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-laser-cyan ring-2 ring-background"
+            />
+          )}
           {saving ? "Saving..." : submitLabel}
         </button>
       </div>

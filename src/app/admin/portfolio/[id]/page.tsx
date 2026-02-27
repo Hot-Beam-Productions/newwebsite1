@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { ProjectForm } from "@/components/admin/project-form";
+import { Breadcrumbs } from "@/components/admin/breadcrumbs";
 import { LoadingSpinner } from "@/components/admin/loading-spinner";
 import { FormStatus } from "@/components/admin/form-status";
 import { getProjectAdmin, updateProject } from "../actions";
@@ -39,6 +40,13 @@ export default function EditProjectPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
+      <Breadcrumbs
+        items={[
+          { label: "Dashboard", href: "/admin" },
+          { label: "Portfolio", href: "/admin/portfolio" },
+          { label: project?.title ?? "Edit Project" },
+        ]}
+      />
       <div>
         <h1 className="font-heading text-3xl tracking-wide text-foreground">
           Edit Project

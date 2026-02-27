@@ -1,7 +1,6 @@
 "use client";
 
 import { PageEditor } from "@/components/admin/page-editor";
-import { ArrayEditor } from "@/components/admin/array-editor";
 import { ImageUploader } from "@/components/admin/image-uploader";
 import { getAboutAdmin, updateAbout } from "./actions";
 import type { AboutData, TeamMember } from "@/lib/types";
@@ -59,7 +58,7 @@ function TeamMemberEditor({
           >
             <X className="h-4 w-4" />
           </button>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
               <label className={labelClass}>Name</label>
               <input className={inputClass} value={member.name} onChange={(e) => updateMember(i, "name", e.target.value)} />
@@ -149,7 +148,7 @@ export default function AboutEditorPage() {
             <div className={sectionClass}>
               <h2 className="font-heading text-lg text-foreground">Stats</h2>
               {data.stats.map((stat, i) => (
-                <div key={i} className="grid grid-cols-2 gap-4">
+                <div key={i} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label className={labelClass}>Value</label>
                     <input

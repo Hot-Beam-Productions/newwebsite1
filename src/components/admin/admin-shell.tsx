@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -12,6 +13,8 @@ import {
   Mail,
   Settings,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 import { useAuth } from "./auth-provider";
 import { cn } from "@/lib/utils";
@@ -29,11 +32,59 @@ const navItems = [
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setSidebarOpen(false);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname]);
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen flex-col overflow-hidden md:flex-row">
+      <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-3 md:hidden">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/"
+            aria-label="Back to website homepage"
+            className="rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/50"
+          >
+            <Image src="/logo-icon.png" alt="" width={28} height={24} className="h-6 w-auto" />
+          </Link>
+          <Link href="/admin" className="font-heading text-lg tracking-wide text-foreground">
+            HBP Admin
+          </Link>
+        </div>
+        <button
+          type="button"
+          onClick={() => setSidebarOpen((current) => !current)}
+          className="rounded-md border border-border p-2 text-muted-light transition-colors hover:bg-surface-light hover:text-foreground"
+          aria-label={sidebarOpen ? "Close menu" : "Open menu"}
+          aria-expanded={sidebarOpen}
+          aria-controls="admin-sidebar"
+        >
+          {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+        </button>
+      </div>
+
+      {sidebarOpen && (
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 z-30 bg-background/60 md:hidden"
+          aria-label="Close sidebar"
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="flex w-56 shrink-0 flex-col border-r border-border bg-surface">
+      <aside
+        id="admin-sidebar"
+        className={cn(
+          "fixed inset-y-0 left-0 z-40 flex w-56 shrink-0 flex-col border-r border-border bg-surface transition-transform duration-200 md:static md:translate-x-0",
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
         <div className="border-b border-border p-4">
           <div className="flex items-center gap-3">
             <Link href="/" aria-label="Back to website homepage" className="rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-laser-cyan/50">
@@ -85,7 +136,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 overflow-y-auto bg-background p-8">
+      <div className="flex-1 overflow-y-auto bg-background p-4 md:p-8">
         {children}
       </div>
     </div>

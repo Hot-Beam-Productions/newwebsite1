@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { LoadingSpinner } from "./loading-spinner";
 import { FormStatus } from "./form-status";
+import { useUnsavedWarning } from "./use-unsaved-warning";
+import { useKeyboardShortcut } from "./use-keyboard-shortcut";
+import { useToast } from "./toast";
 
 interface PageEditorProps<T> {
   title: string;
@@ -22,38 +25,80 @@ export function PageEditor<T>({
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState<{
-    type: "success" | "error";
-    message: string;
-  } | null>(null);
-
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const result = await loadData();
-      setData(result);
-    } catch {
-      setStatus({ type: "error", message: "Failed to load data" });
-    }
-    setLoading(false);
-  }, [loadData]);
+  const [error, setError] = useState<string | null>(null);
+  const [originalData, setOriginalData] = useState<string | null>(null);
+  const originalDataRef = useRef<string | null>(null);
+  const { addToast } = useToast();
 
   useEffect(() => {
-    load();
-  }, [load]);
+    let active = true;
+    const frame = window.requestAnimationFrame(() => {
+      setLoading(true);
+    });
 
-  async function handleSave() {
+    async function load() {
+      try {
+        const result = await loadData();
+        if (!active) return;
+        setData(result);
+        const serializedResult = JSON.stringify(result);
+        originalDataRef.current = serializedResult;
+        setOriginalData(serializedResult);
+      } catch {
+        if (!active) return;
+        setError("Failed to load data");
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    void load();
+
+    return () => {
+      active = false;
+      window.cancelAnimationFrame(frame);
+    };
+  }, [loadData]);
+
+  const serializedData = useMemo(
+    () => (data ? JSON.stringify(data) : null),
+    [data]
+  );
+
+  const isDirty = useMemo(() => {
+    if (!serializedData || !originalData) return false;
+    return serializedData !== originalData;
+  }, [serializedData, originalData]);
+
+  useUnsavedWarning(isDirty);
+
+  const handleSave = useCallback(async () => {
     if (!data) return;
     setSaving(true);
-    setStatus(null);
+    setError(null);
     const result = await saveData(data);
     if (result.success) {
-      setStatus({ type: "success", message: "Saved successfully" });
+      const serializedResult = JSON.stringify(data);
+      originalDataRef.current = serializedResult;
+      setOriginalData(serializedResult);
+      addToast("success", "Saved successfully");
     } else {
-      setStatus({ type: "error", message: result.error || "Save failed" });
+      setError(result.error || "Save failed");
     }
     setSaving(false);
-  }
+  }, [addToast, data, saveData]);
+
+  useKeyboardShortcut(
+    "s",
+    (event) => {
+      event.preventDefault();
+      void handleSave();
+    },
+    {
+      meta: true,
+      disabled: !data || loading || saving,
+    }
+  );
 
   if (loading) return <LoadingSpinner message={`Loading ${title.toLowerCase()}...`} />;
 
@@ -66,7 +111,7 @@ export function PageEditor<T>({
         <p className="mt-1 text-sm text-muted">{description}</p>
       </div>
 
-      {status && <FormStatus type={status.type} message={status.message} />}
+      {error && <FormStatus type="error" message={error} />}
 
       {data && renderForm(data, setData)}
 
@@ -74,8 +119,14 @@ export function PageEditor<T>({
         <button
           onClick={handleSave}
           disabled={saving}
-          className="rounded-md bg-laser-cyan px-6 py-2 text-sm font-semibold text-background transition-all hover:brightness-110 disabled:opacity-50"
+          className="relative rounded-md bg-laser-cyan px-6 py-2 text-sm font-semibold text-background transition-all hover:brightness-110 disabled:opacity-50"
         >
+          {isDirty && (
+            <span
+              aria-hidden
+              className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-laser-cyan ring-2 ring-background"
+            />
+          )}
           {saving ? "Saving..." : "Save Changes"}
         </button>
       </div>

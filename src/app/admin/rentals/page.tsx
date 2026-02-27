@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Plus, Pencil, Trash2, Settings } from "lucide-react";
+import { Package, Pencil, Plus, Search, Settings, Trash2 } from "lucide-react";
 import { LoadingSpinner } from "@/components/admin/loading-spinner";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { FormStatus } from "@/components/admin/form-status";
+import { EmptyState } from "@/components/admin/empty-state";
+import { useToast } from "@/components/admin/toast";
 import { getRentalsAdmin, deleteRental } from "./actions";
 import type { RentalItem } from "@/lib/types";
 
@@ -14,26 +16,65 @@ export default function RentalsListPage() {
   const [items, setItems] = useState<RentalItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState<RentalItem | null>(null);
-  const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const { addToast } = useToast();
 
-  const load = useCallback(async () => {
-    setLoading(true);
+  const refreshRentals = useCallback(async () => {
     const data = await getRentalsAdmin();
     setItems(data);
-    setLoading(false);
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    let active = true;
+
+    async function loadRentals() {
+      try {
+        const data = await getRentalsAdmin();
+        if (!active) return;
+        setItems(data);
+      } catch {
+        if (!active) return;
+        setError("Failed to load rentals");
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    void loadRentals();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const categories = useMemo(
+    () => Array.from(new Set(items.map((item) => item.category))).sort(),
+    [items]
+  );
+
+  const filteredItems = useMemo(() => {
+    const term = searchQuery.trim().toLowerCase();
+    return items.filter((item) => {
+      const matchesSearch = term
+        ? item.name.toLowerCase().includes(term)
+        : true;
+      const matchesCategory =
+        categoryFilter === "all" || item.category === categoryFilter;
+      return matchesSearch && matchesCategory;
+    });
+  }, [items, searchQuery, categoryFilter]);
 
   async function handleDelete() {
     if (!deleteTarget) return;
     const result = await deleteRental(deleteTarget.id);
     setDeleteTarget(null);
     if (result.success) {
-      setStatus({ type: "success", message: `"${deleteTarget.name}" deleted` });
-      load();
+      addToast("success", `"${deleteTarget.name}" deleted`);
+      void refreshRentals();
     } else {
-      setStatus({ type: "error", message: result.error || "Delete failed" });
+      setError(result.error || "Delete failed");
     }
   }
 
@@ -44,7 +85,9 @@ export default function RentalsListPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-heading text-3xl tracking-wide text-foreground">Rentals</h1>
-          <p className="mt-1 text-sm text-muted">{items.length} items</p>
+          <p className="mt-1 text-sm text-muted">
+            {filteredItems.length} of {items.length} items
+          </p>
         </div>
         <div className="flex gap-2">
           <Link
@@ -64,64 +107,143 @@ export default function RentalsListPage() {
         </div>
       </div>
 
-      {status && <FormStatus type={status.type} message={status.message} />}
+      {error && <FormStatus type="error" message={error} />}
 
-      <div className="overflow-hidden rounded-lg border border-border">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border bg-surface text-left text-xs uppercase tracking-wider text-muted">
-              <th className="px-4 py-3">Item</th>
-              <th className="px-4 py-3">Category</th>
-              <th className="px-4 py-3">Rate</th>
-              <th className="px-4 py-3">Available</th>
-              <th className="px-4 py-3 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => {
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_200px]">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Search by rental name..."
+            className="w-full rounded-md border border-border bg-surface py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted focus:border-laser-cyan focus:outline-none"
+          />
+        </div>
+        <select
+          value={categoryFilter}
+          onChange={(event) => setCategoryFilter(event.target.value)}
+          className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-foreground focus:border-laser-cyan focus:outline-none"
+        >
+          <option value="all">All categories</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {items.length === 0 ? (
+        <EmptyState
+          icon={Package}
+          title="No rental items yet"
+          description="Create your first rental item to build your inventory."
+          actionLabel="Add Item"
+          actionHref="/admin/rentals/new"
+        />
+      ) : filteredItems.length === 0 ? (
+        <div className="rounded-lg border border-border bg-surface/50 p-8 text-center text-sm text-muted">
+          No rental items match the current search/filter.
+        </div>
+      ) : (
+        <>
+          <div className="space-y-3 md:hidden">
+            {filteredItems.map((item) => {
               const hasImage = item.imageUrl && !item.imageUrl.includes("pub-XXXX");
               return (
-                <tr key={item.id} className="border-b border-border transition-colors hover:bg-surface/50">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded border border-border">
-                        {hasImage ? (
-                          <Image src={item.imageUrl} alt={item.name} fill className="object-cover" />
-                        ) : (
-                          <div className="flex h-full items-center justify-center bg-surface text-xs text-muted">--</div>
-                        )}
-                      </div>
-                      <div>
-                        <span className="font-medium text-foreground">{item.name}</span>
-                        <p className="text-xs text-muted">{item.brand}</p>
-                      </div>
+                <div key={item.id} className="rounded-lg border border-border bg-surface/60 p-3">
+                  <div className="flex items-start gap-3">
+                    <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded border border-border">
+                      {hasImage ? (
+                        <Image src={item.imageUrl} alt={item.name} fill className="object-cover" />
+                      ) : (
+                        <div className="flex h-full items-center justify-center bg-surface text-xs text-muted">--</div>
+                      )}
                     </div>
-                  </td>
-                  <td className="px-4 py-3 text-muted-light capitalize">{item.category}</td>
-                  <td className="px-4 py-3 text-muted-light">
-                    {item.dailyRate ? `$${item.dailyRate}/day` : "On request"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`text-xs ${item.available ? "text-emerald-400" : "text-amber-400"}`}>
-                      {item.available ? "Available" : "Unavailable"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex justify-end gap-2">
-                      <Link href={`/admin/rentals/${item.id}`} className="rounded p-1.5 text-muted-light transition-colors hover:bg-surface-light hover:text-foreground">
-                        <Pencil className="h-4 w-4" />
-                      </Link>
-                      <button onClick={() => setDeleteTarget(item)} className="rounded p-1.5 text-muted-light transition-colors hover:bg-red-500/10 hover:text-red-400">
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium text-foreground">{item.name}</p>
+                      <p className="text-xs text-muted">{item.brand}</p>
+                      <p className="text-xs text-muted capitalize">{item.category}</p>
+                      <p className="text-xs text-muted">
+                        {item.dailyRate ? `$${item.dailyRate}/day` : "On request"}
+                      </p>
+                      <p className={`text-xs ${item.available ? "text-emerald-400" : "text-amber-400"}`}>
+                        {item.available ? "Available" : "Unavailable"}
+                      </p>
                     </div>
-                  </td>
-                </tr>
+                  </div>
+                  <div className="mt-3 flex justify-end gap-2">
+                    <Link href={`/admin/rentals/${item.id}`} className="rounded p-1.5 text-muted-light transition-colors hover:bg-surface-light hover:text-foreground">
+                      <Pencil className="h-4 w-4" />
+                    </Link>
+                    <button onClick={() => setDeleteTarget(item)} className="rounded p-1.5 text-muted-light transition-colors hover:bg-red-500/10 hover:text-red-400">
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
               );
             })}
-          </tbody>
-        </table>
-      </div>
+          </div>
+
+          <div className="hidden overflow-hidden rounded-lg border border-border md:block">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-surface text-left text-xs uppercase tracking-wider text-muted">
+                  <th className="px-4 py-3">Item</th>
+                  <th className="px-4 py-3">Category</th>
+                  <th className="px-4 py-3">Rate</th>
+                  <th className="px-4 py-3">Available</th>
+                  <th className="px-4 py-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredItems.map((item) => {
+                  const hasImage = item.imageUrl && !item.imageUrl.includes("pub-XXXX");
+                  return (
+                    <tr key={item.id} className="border-b border-border transition-colors hover:bg-surface/50">
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded border border-border">
+                            {hasImage ? (
+                              <Image src={item.imageUrl} alt={item.name} fill className="object-cover" />
+                            ) : (
+                              <div className="flex h-full items-center justify-center bg-surface text-xs text-muted">--</div>
+                            )}
+                          </div>
+                          <div>
+                            <span className="font-medium text-foreground">{item.name}</span>
+                            <p className="text-xs text-muted">{item.brand}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-muted-light capitalize">{item.category}</td>
+                      <td className="px-4 py-3 text-muted-light">
+                        {item.dailyRate ? `$${item.dailyRate}/day` : "On request"}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`text-xs ${item.available ? "text-emerald-400" : "text-amber-400"}`}>
+                          {item.available ? "Available" : "Unavailable"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex justify-end gap-2">
+                          <Link href={`/admin/rentals/${item.id}`} className="rounded p-1.5 text-muted-light transition-colors hover:bg-surface-light hover:text-foreground">
+                            <Pencil className="h-4 w-4" />
+                          </Link>
+                          <button onClick={() => setDeleteTarget(item)} className="rounded p-1.5 text-muted-light transition-colors hover:bg-red-500/10 hover:text-red-400">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
 
       <ConfirmDialog
         open={!!deleteTarget}

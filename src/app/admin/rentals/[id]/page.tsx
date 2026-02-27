@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { RentalForm } from "@/components/admin/rental-form";
+import { Breadcrumbs } from "@/components/admin/breadcrumbs";
 import { LoadingSpinner } from "@/components/admin/loading-spinner";
 import { FormStatus } from "@/components/admin/form-status";
 import { getRentalAdmin, updateRental } from "../actions";
@@ -30,6 +31,13 @@ export default function EditRentalPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
+      <Breadcrumbs
+        items={[
+          { label: "Dashboard", href: "/admin" },
+          { label: "Rentals", href: "/admin/rentals" },
+          { label: item?.name ?? "Edit Rental" },
+        ]}
+      />
       <div>
         <h1 className="font-heading text-3xl tracking-wide text-foreground">Edit Rental</h1>
         <p className="mt-1 text-sm text-muted">{item?.name}</p>

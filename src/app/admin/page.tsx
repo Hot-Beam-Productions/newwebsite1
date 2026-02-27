@@ -1,11 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { collection, getCountFromServer } from "firebase/firestore";
 import { Film, Package, Home, Users, Mail, Settings } from "lucide-react";
+import { getFirebaseDb } from "@/lib/firebase";
 
 const quickLinks = [
-  { href: "/admin/portfolio", label: "Portfolio", description: "Manage productions", icon: Film },
-  { href: "/admin/rentals", label: "Rentals", description: "Equipment catalog", icon: Package },
+  { href: "/admin/portfolio", label: "Portfolio", description: "Manage productions", icon: Film, countKey: "projects" as const },
+  { href: "/admin/rentals", label: "Rentals", description: "Equipment catalog", icon: Package, countKey: "rentals" as const },
   { href: "/admin/home", label: "Home Page", description: "Hero & sections", icon: Home },
   { href: "/admin/about", label: "About Page", description: "Story & team", icon: Users },
   { href: "/admin/contact", label: "Contact Page", description: "Form settings", icon: Mail },
@@ -13,6 +16,40 @@ const quickLinks = [
 ];
 
 export default function AdminDashboard() {
+  const [counts, setCounts] = useState<{ projects: number | null; rentals: number | null }>({
+    projects: null,
+    rentals: null,
+  });
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadCounts() {
+      try {
+        const db = getFirebaseDb();
+        const [projectsSnap, rentalsSnap] = await Promise.all([
+          getCountFromServer(collection(db, "projects")),
+          getCountFromServer(collection(db, "rentals")),
+        ]);
+
+        if (!active) return;
+        setCounts({
+          projects: projectsSnap.data().count,
+          rentals: rentalsSnap.data().count,
+        });
+      } catch {
+        if (!active) return;
+        setCounts({ projects: 0, rentals: 0 });
+      }
+    }
+
+    void loadCounts();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <div className="space-y-8">
       <div>
@@ -24,20 +61,42 @@ export default function AdminDashboard() {
         </p>
       </div>
 
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="rounded-lg border border-border bg-surface/70 p-5">
+          <p className="font-heading text-2xl text-laser-cyan">
+            {counts.projects ?? "—"}
+          </p>
+          <p className="mt-1 text-xs uppercase tracking-wider text-muted">Portfolio Projects</p>
+        </div>
+        <div className="rounded-lg border border-border bg-surface/70 p-5">
+          <p className="font-heading text-2xl text-laser-cyan">
+            {counts.rentals ?? "—"}
+          </p>
+          <p className="mt-1 text-xs uppercase tracking-wider text-muted">Rental Items</p>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {quickLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="group rounded-lg border border-border bg-surface p-5 transition-colors hover:border-laser-cyan/40"
-          >
-            <link.icon className="mb-3 h-5 w-5 text-muted transition-colors group-hover:text-laser-cyan" />
-            <h2 className="font-heading text-lg tracking-wide text-foreground">
-              {link.label}
-            </h2>
-            <p className="mt-1 text-sm text-muted">{link.description}</p>
-          </Link>
-        ))}
+        {quickLinks.map((link) => {
+          const count = link.countKey ? counts[link.countKey] : null;
+          const countSuffix = count === null ? "" : ` · ${count} items`;
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="group rounded-lg border border-border bg-surface p-5 transition-colors hover:border-laser-cyan/40"
+            >
+              <link.icon className="mb-3 h-5 w-5 text-muted transition-colors group-hover:text-laser-cyan" />
+              <h2 className="font-heading text-lg tracking-wide text-foreground">
+                {link.label}
+              </h2>
+              <p className="mt-1 text-sm text-muted">
+                {link.description}
+                {countSuffix}
+              </p>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

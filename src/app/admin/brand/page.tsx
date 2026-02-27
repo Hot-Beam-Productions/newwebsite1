@@ -31,7 +31,7 @@ export default function BrandEditorPage() {
             {/* Brand Info */}
             <div className={sectionClass}>
               <h2 className="font-heading text-lg text-foreground">Brand</h2>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className={labelClass}>Name</label>
                   <input className={inputClass} value={data.brand.name} onChange={(e) => updateBrandField("name", e.target.value)} />
@@ -41,7 +41,7 @@ export default function BrandEditorPage() {
                   <input className={inputClass} value={data.brand.shortName} onChange={(e) => updateBrandField("shortName", e.target.value)} />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className={labelClass}>Phone (Display)</label>
                   <input className={inputClass} value={data.brand.phoneDisplay} onChange={(e) => updateBrandField("phoneDisplay", e.target.value)} />
@@ -55,7 +55,7 @@ export default function BrandEditorPage() {
                 <label className={labelClass}>Email</label>
                 <input className={inputClass} value={data.brand.email} onChange={(e) => updateBrandField("email", e.target.value)} />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className={labelClass}>Location</label>
                   <input className={inputClass} value={data.brand.location} onChange={(e) => updateBrandField("location", e.target.value)} />
@@ -69,7 +69,7 @@ export default function BrandEditorPage() {
                 <label className={labelClass}>Website URL</label>
                 <input className={inputClass} value={data.brand.url} onChange={(e) => updateBrandField("url", e.target.value)} />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className={labelClass}>Instagram Handle</label>
                   <input className={inputClass} value={data.brand.instagramHandle} onChange={(e) => updateBrandField("instagramHandle", e.target.value)} />
