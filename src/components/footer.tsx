@@ -68,7 +68,7 @@ export function Footer({ brand, footer, navigation }: FooterProps) {
             href={brand.instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mono-label !text-muted transition-colors hover:!text-laser-cyan"
+            className="mono-label text-[10px] !text-muted transition-colors hover:!text-laser-cyan"
           >
             {brand.instagramHandle}
           </a>
