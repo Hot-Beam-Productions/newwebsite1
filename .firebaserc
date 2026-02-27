@@ -1,5 +1,7 @@
 {
-  "projects": {},
+  "projects": {
+    "default": "hot-beam-website"
+  },
   "targets": {},
   "etags": {}
 }
