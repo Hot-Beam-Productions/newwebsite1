@@ -29,6 +29,7 @@ const DEFAULT_ALLOWED_ORIGINS = [
 ];
 
 const FROM_ADDRESS = "contact@hotbeamproductions.com";
+const MAX_BODY_BYTES = 25_000;
 
 const worker = {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -51,6 +52,11 @@ const worker = {
       return new Response("Forbidden", { status: 403 });
     }
 
+    const contentLength = Number(request.headers.get("content-length") ?? "0");
+    if (Number.isFinite(contentLength) && contentLength > MAX_BODY_BYTES) {
+      return corsResponse({ success: false, error: "Request body too large" }, 413, allowedOrigin);
+    }
+
     let body: unknown;
     try {
       body = await request.json();
@@ -67,7 +73,11 @@ const worker = {
       );
     }
 
-    const turnstileResult = await verifyTurnstile(parsed.data.turnstileToken, env.TURNSTILE_SECRET_KEY);
+    const turnstileResult = await verifyTurnstile(
+      parsed.data.turnstileToken,
+      env.TURNSTILE_SECRET_KEY,
+      request.headers.get("CF-Connecting-IP")
+    );
     if (!turnstileResult) {
       return corsResponse(
         { success: false, error: "Bot verification failed. Please try again." },
@@ -123,13 +133,14 @@ function getAllowedOrigins(raw: string | undefined): string[] {
   return parsed.length > 0 ? parsed : DEFAULT_ALLOWED_ORIGINS;
 }
 
-async function verifyTurnstile(token: string, secret: string): Promise<boolean> {
+async function verifyTurnstile(token: string, secret: string, ipAddress: string | null): Promise<boolean> {
   const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       secret,
       response: token,
+      ...(ipAddress ? { remoteip: ipAddress } : {}),
     }),
   });
 

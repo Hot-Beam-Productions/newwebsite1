@@ -1,52 +1,57 @@
 /**
- * Lightweight Firebase ID token verification without the Admin SDK.
- * Decodes the JWT and checks basic claims (issuer, audience, expiry, email domain).
+ * Firebase ID token verification without the Admin SDK.
+ * Uses Google Identity Toolkit to validate signature + claims server-side.
  * Used only for the R2 upload API route.
  */
 
 const ALLOWED_DOMAIN = "hotbeamproductions.com";
 const PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? "";
+const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY ?? "";
+
+interface AccountsLookupResponse {
+  users?: Array<{
+    localId?: string;
+    email?: string;
+    emailVerified?: boolean;
+  }>;
+}
 
 export async function verifyAdminToken(
   token: string
 ): Promise<{ uid: string; email: string }> {
-  // Decode the JWT payload (middle segment)
-  const parts = token.split(".");
-  if (parts.length !== 3) throw new Error("Invalid token format");
-
-  const payload = JSON.parse(
-    Buffer.from(parts[1], "base64url").toString("utf-8")
-  ) as {
-    iss?: string;
-    aud?: string;
-    exp?: number;
-    sub?: string;
-    email?: string;
-  };
-
-  // Verify issuer
-  if (payload.iss !== `https://securetoken.google.com/${PROJECT_ID}`) {
-    throw new Error("Invalid token issuer");
+  if (!PROJECT_ID || !FIREBASE_API_KEY) {
+    throw new Error("Firebase auth is not configured");
   }
 
-  // Verify audience
-  if (payload.aud !== PROJECT_ID) {
-    throw new Error("Invalid token audience");
+  const response = await fetch(
+    `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${encodeURIComponent(FIREBASE_API_KEY)}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idToken: token }),
+      cache: "no-store",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Invalid auth token");
   }
 
-  // Verify expiry
-  if (!payload.exp || payload.exp * 1000 < Date.now()) {
-    throw new Error("Token expired");
+  const payload = (await response.json()) as AccountsLookupResponse;
+  const user = payload.users?.[0];
+
+  if (!user?.localId || !user.email) {
+    throw new Error("Token missing required claims");
+  }
+
+  if (!user.emailVerified) {
+    throw new Error("Email must be verified");
   }
 
   // Verify email domain
-  if (!payload.email?.endsWith(`@${ALLOWED_DOMAIN}`)) {
+  if (!user.email.endsWith(`@${ALLOWED_DOMAIN}`)) {
     throw new Error("Unauthorized: account must be @hotbeamproductions.com");
   }
 
-  if (!payload.sub) {
-    throw new Error("Token missing subject");
-  }
-
-  return { uid: payload.sub, email: payload.email };
+  return { uid: user.localId, email: user.email };
 }
