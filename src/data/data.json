@@ -32,7 +32,7 @@
     }
   ],
   "seo": {
-    "defaultTitle": "Hotbeam Productions | Technical Event Lighting, Video & Lasers",
+    "defaultTitle": "Hot Beam Productions | Colorado Live Event Production for Touring, Festivals & Venues",
     "titleTemplate": "%s | Hot Beam Productions",
     "description": "Colorado-based production company specializing in intelligent concert lighting, high-resolution video walls, and variance-approved laser operations for tours, corporate events, and live venues.",
     "keywords": [
@@ -45,19 +45,19 @@
   },
   "home": {
     "hero": {
-      "eyebrow": "Rider-Compliant Visual Infrastructure",
-      "departmentLine": "Lighting Architecture \u00b7 Class IV Lasers \u00b7 LED Video Walls",
-      "description": "Specialized production partner delivering precision-engineered systems, meticulous maintenance standards, and 24/7 technical support.",
+      "eyebrow": "Colorado-Based. Nationally Deployed. Always Show-Ready.",
+      "departmentLine": "Lighting \u00b7 Lasers \u00b7 LED Video \u00b7 Special Effects",
+      "description": "One production team from pre-pro through show call. We handle the gear, the crew, and the details \u2014 so you can focus on the show.",
       "primaryCta": {
-        "label": "Request Production Specs",
+        "label": "Get a Quote",
         "href": "/contact"
       },
       "secondaryCta": {
-        "label": "View Equipment Inventory",
-        "href": "/rentals"
+        "label": "See Our Work",
+        "href": "/work"
       },
-      "headline": "Technical Event Lighting, Video & Laser Engineering",
-      "subheadline": "Precision-engineered lighting architecture, high-resolution video walls, and variance-approved laser operations. Deploying rider-compliant visual infrastructure for touring artists, corporate activations, and high-capacity events nationwide."
+      "headline": "Your Vision, Our Rig. World-Class Production Starts Here.",
+      "subheadline": "Lighting, lasers, LED video, and SFX for touring artists, venues, and festivals \u2014 designed and operated by people who live for the live show."
     },
     "services": {
       "label": "Capabilities",
@@ -121,23 +121,23 @@
         "value": "15"
       },
       {
-        "label": "States Delivered",
+        "label": "States Served",
         "value": "12"
       }
     ],
     "closingCta": {
-      "title": "Need a Rider-Compliant Visual Deployment Plan?",
-      "description": "Send your venue specs, schedule, and performance requirements. Our operations team will return a scoped deployment plan with crew, hardware, and risk controls.",
+      "title": "Let\u2019s Build Your Next Show",
+      "description": "Send us your date, venue, and rider. We\u2019ll come back with a clear plan \u2014 crew, gear, and timeline included.",
       "button": {
-        "label": "Contact Operations",
+        "label": "Get a Quote",
         "href": "/contact"
       }
     },
     "trustSignals": [
-      "24/7 technical support for touring and venue teams",
-      "Variance-approved Class IV laser operations",
-      "Precision-maintained inventory cleaned, tested, and show-ready",
-      "Colorado-based crew supporting nationwide deployments"
+      "Featured: Fox Theatre Boulder \u00b7 Boiler Room Production",
+      "FDA variance-compliant laser shows",
+      "Venue, promoter & artist rider workflows",
+      "Colorado-based crew, nationwide reach"
     ]
   },
   "work": {
@@ -412,7 +412,7 @@
         "value": "10+"
       },
       {
-        "label": "States Delivered",
+        "label": "States Served",
         "value": "12"
       }
     ],
@@ -1052,13 +1052,13 @@
     ]
   },
   "footer": {
-    "description": "Live event production for concerts, brand activations, and corporate stages. Clear plans, reliable execution.",
+    "description": "Live event production for concerts, tours, brand activations, and corporate stages. Real people, reliable production.",
     "departments": [
       "Lighting",
       "Video",
       "Lasers",
       "Special Effects",
-      "Technical Labor"
+      "Crew & Labor"
     ]
   }
 }
